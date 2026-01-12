@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useGameStore } from '../orchestrator/store';
 import { useCurrentChallenge } from '../orchestrator/selectors';
 import { useEffect } from 'react';
+import { useMemo } from 'react';
 
 export function SuccessOverlay() {
   const challenge = useCurrentChallenge();
@@ -9,7 +10,23 @@ export function SuccessOverlay() {
   const setCurrentChallenge = useGameStore((s) => s.setCurrentChallenge);
   const validationResult = useGameStore((s) => s.validationResult);
 
+  const SUCCESS_LINES = [
+    'Your presence is requested in the next compartment.',
+    'Tickets verified. You may proceed.',
+    'The next compartment needs your attention.',
+    'Compartment cleared. Advance when ready.',
+    'All conditions satisfied. You may advance.',
+    'Proceed when ready.',
+  ];
+
   if (!challenge) return null;
+
+  const successLine = useMemo(() => {
+    return SUCCESS_LINES[
+      Math.floor(Math.random() * SUCCESS_LINES.length)
+    ];
+  }, [challenge.id]);
+  
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -69,7 +86,7 @@ export function SuccessOverlay() {
         </div>
 
         <p className="text-xs sm:text-base text-gray-300 mb-8">
-            Your presence is requested in the next compartment.
+          {successLine}
         </p>
 
         {/* Footer buttons */}
