@@ -50,8 +50,8 @@ export function validateChallenge(
   return {
     success: true,
     message: optimized
-      ? 'Challenge completed optimally!'
-      : 'Challenge completed! Try to optimize your solution.',
+      ? '✔ Orders executed with maximum efficiency.'
+      : '✔ Orders executed. Try to improve your solution.',
     stepCount: state.stepCount,
     optimized,
   };
