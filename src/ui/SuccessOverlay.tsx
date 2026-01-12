@@ -36,14 +36,14 @@ export function SuccessOverlay() {
         initial={{ scale: 0.95, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="relative bg-gray-900 rounded-xl p-8 w-full max-w-xl border border-green-600"
+        className="relative bg-gray-900 rounded-xl p-6 sm:p-8 w-[80%] sm:w-[92%] max-w-xl border border-green-600"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-bold text-green-400 mb-2">
+        <h2 className="text-lm sm:text-2xl font-bold text-green-400 mb-2">
             <strong>{challenge.title}</strong> ✔
         </h2>
 
-        <p className="text-gray-300 mb-6">
+        <p className="text-xs sm:text-base text-gray-300 mb-6">
             Your presence is requested in the next compartment.
         </p>
 
@@ -52,7 +52,7 @@ export function SuccessOverlay() {
           {/* Back = close overlay */}
           <button
             onClick={dismissSuccessHint}
-            className="text-gray-400 hover:text-white"
+            className="text-xs sm:text-base text-gray-400 hover:text-white"
           >
             ← Back
           </button>
@@ -60,7 +60,7 @@ export function SuccessOverlay() {
           {/* Continue */}
           <button
             onClick={() => setCurrentChallenge(null)}
-            className="text-green-400 hover:text-green-300 font-semibold"
+            className="text-xs sm:text-base text-green-400 hover:text-green-300 font-semibold"
           >
             Continue to next compartment →
           </button>
