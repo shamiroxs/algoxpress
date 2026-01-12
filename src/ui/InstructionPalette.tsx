@@ -1639,7 +1639,7 @@ export function InstructionPalette() {
           {/* Current program */}
           <div
             ref={programContainerRef}
-            className={`w-full lg:w-1/2 mt-4 flex flex-col min-h-0 max-h-[126vh] relative`}
+            className={`w-full lg:w-1/2 mt-4 flex flex-col min-h-[300px] sm:min-h-0 max-h-[126vh] relative`}
           >
 
             <div className="flex items-center mb-2">
