@@ -64,7 +64,7 @@ export function SuccessOverlay() {
 
         {/* Validation panel */}
         <div className="rounded-lg bg-white/5 p-4 mb-6 border border-white/10">
-          <p className="text-sm text-gray-200">
+          <p className="text-xs sm:text-base text-gray-200">
             {validationResult?.message}
           </p>
 
@@ -103,13 +103,20 @@ export function SuccessOverlay() {
           <button
             onClick={() => setCurrentChallenge(null)}
             className="
-              rounded-md bg-green-500 px-5 py-2
+              rounded-md bg-green-500 px-4 py-2
               text-xs sm:text-sm font-semibold text-black
               hover:bg-green-400 transition
             "
           >
-            Continue to next compartment →
+            {/* Mobile */}
+            <span className="sm:hidden">Continue →</span>
+
+            {/* Desktop */}
+            <span className="hidden sm:inline">
+              Continue to next compartment →
+            </span>
           </button>
+
         </div>
       </motion.div>
     </motion.div>
