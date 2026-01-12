@@ -1379,7 +1379,7 @@ export function InstructionPalette() {
 
     return (
       <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-        <div ref={modalRef} className="bg-gray-800 rounded-lg shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
+        <div ref={modalRef} className="bg-gray-800 rounded-lg shadow-xl w-[84%] sm:w-full max-w-lg max-h-[80vh] flex flex-col">
           
           {/* Header */}
           <div className="flex justify-between items-center px-4 py-3 border-b border-gray-700">
@@ -1406,7 +1406,7 @@ export function InstructionPalette() {
                   className="bg-gray-700/60 rounded p-3"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono text-white text-sm">
+                    <span className="font-mono text-white text-xs sm:text-sm">
                       {inst.label}
                     </span>
   
@@ -1424,7 +1424,7 @@ export function InstructionPalette() {
                     </span>
                   </div>
   
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-xs sm:text-sm">
                     {inst.description}
                   </p>
                 </div>
