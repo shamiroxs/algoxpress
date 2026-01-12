@@ -1523,13 +1523,11 @@ export function InstructionPalette() {
     >
       <div className="instruction-palette bg-gray-800 rounded-lg p-4">
       <div className="relative flex items-center mb-3">
-      <h3 className="absolute left-1/2 -translate-x-1/2 text-white font-semibold">Instructions</h3>
-
-      <button
+        <button
         onClick={() => setShowHelp(true)}
         title="Instruction help"
         className={`
-          ml-auto
+          mr-auto
           text-gray-300
           transition
           text-lg
@@ -1539,69 +1537,12 @@ export function InstructionPalette() {
       >
         ⓘ
       </button>
+      <h3 className="absolute left-1/2 -translate-x-1/2 text-white font-semibold">Instructions</h3>
+
       </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          {/* Current program */}
-          <div
-            ref={programContainerRef}
-            className={`w-full lg:w-1/2 mt-4 flex flex-col min-h-0 max-h-[126vh] relative`}
-          >
-
-            <div className="flex items-center mb-2">
-              <button
-                onClick={() => {
-                  if (playerInstructions.length === 0) return;
-                  clearPlayerInstructions();
-                }}
-                title="Clear program"
-                className="
-                  text-gray-400
-                  hover:text-red-400
-                  transition
-                  text-xl
-                  leading-none
-                "
-              >
-                ⟲
-              </button>
-
-              <h4 className="text-gray-400 text-sm mx-auto">Your Program</h4>
-            </div>
-            <ProgramArrowsOverlay />
-            
-            <ProgramDropzone highlight ={highlightProgram}>
-            
-            <SortableContext
-              items={playerInstructions.map((i) => i.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              
-                {playerInstructions.length === 0 ? (
-                  <div className="flex flex-1 items-center justify-center h-full">
-                  <div 
-                    className={`text-mm text-gray-500 italic select-none pointer-events-none`}
-                    >
-                    Drag & drop ↓ 
-                  </div>
-                  </div>
-                
-                ) : (
-                  playerInstructions.map((inst, idx) => (
-                    <SortableInstructionLine
-                      key={inst.id}
-                      instruction={inst}
-                      index={idx}
-                      isActive={currentInstructionId === inst.id}
-                      insertPreview={insertPreview}
-                    />
-                  ))
-                )}
-              
-            </SortableContext>
-            </ProgramDropzone>
-           
-          </div>
+          
           <div className="w-full lg:w-1/2 flex flex-col gap-4">
             {/* Global Instructions */}
             {globalInstructionTemplates.length > 0 && (
@@ -1693,9 +1634,68 @@ export function InstructionPalette() {
             </div>
             </div>
             )}
+            
           </div>
-          
+          {/* Current program */}
+          <div
+            ref={programContainerRef}
+            className={`w-full lg:w-1/2 mt-4 flex flex-col min-h-0 max-h-[126vh] relative`}
+          >
 
+            <div className="flex items-center mb-2">
+              <button
+                onClick={() => {
+                  if (playerInstructions.length === 0) return;
+                  clearPlayerInstructions();
+                }}
+                title="Clear program"
+                className="
+                  text-gray-400
+                  hover:text-red-400
+                  transition
+                  text-xl
+                  leading-none
+                "
+              >
+                ⟲
+              </button>
+
+              <h4 className="text-gray-400 text-sm mx-auto">Your Program</h4>
+            </div>
+            <ProgramArrowsOverlay />
+            
+            <ProgramDropzone highlight ={highlightProgram}>
+            
+            <SortableContext
+              items={playerInstructions.map((i) => i.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              
+                {playerInstructions.length === 0 ? (
+                  <div className="flex flex-1 items-center justify-center h-full">
+                  <div 
+                    className={`text-mm text-gray-500 italic select-none pointer-events-none`}
+                    >
+                    Drag & drop ↓ 
+                  </div>
+                  </div>
+                
+                ) : (
+                  playerInstructions.map((inst, idx) => (
+                    <SortableInstructionLine
+                      key={inst.id}
+                      instruction={inst}
+                      index={idx}
+                      isActive={currentInstructionId === inst.id}
+                      insertPreview={insertPreview}
+                    />
+                  ))
+                )}
+              
+            </SortableContext>
+            </ProgramDropzone>
+           
+          </div>
         </div>
 
         
