@@ -54,7 +54,7 @@ export function SuccessOverlay() {
         initial={{ scale: 0.95, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="relative bg-gray-900 rounded-xl p-6 sm:p-8 w-[80%] sm:w-[92%] max-w-xl border 
+        className="relative bg-gray-900 rounded-xl p-6 sm:p-8 w-[84%] sm:w-[92%] max-w-xl border 
         border-green-600"
         onClick={(e) => e.stopPropagation()}
       >
@@ -67,8 +67,7 @@ export function SuccessOverlay() {
           <p className="text-xs sm:text-base text-gray-200">
             {validationResult?.message}
           </p>
-
-          <div className="text-xs sm:text-sm text-gray-400">
+          <div className="mt-1 text-xs sm:text-sm text-gray-400">
             <span>Steps: {validationResult?.stepCount}</span>
             {challenge.maxSteps && (
               <span
