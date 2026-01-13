@@ -74,7 +74,7 @@ export function ChallengePanel() {
           className="mt-4 p-3 rounded bg-red-900/30 border border-red-500"
         >
           <div className="font-semibold text-red-300">
-            ✗ Failed
+            ✗ Mismatch Found
           </div>
 
           <div className="text-sm text-gray-300 mt-1">
