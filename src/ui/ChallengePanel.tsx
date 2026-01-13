@@ -3,10 +3,12 @@
  * Shows challenge description, initial/target arrays, and validation results
  */
 
-import { useCurrentChallenge } from '../orchestrator/selectors';
+import { useCurrentChallenge, useValidationResult } from '../orchestrator/selectors';
 import { ArrayView } from '../renderer/ArrayView';
+import { motion } from 'framer-motion';
 export function ChallengePanel() {
   const challenge = useCurrentChallenge();
+  const validationResult = useValidationResult();
  
   if (!challenge) {
     return (
@@ -63,6 +65,33 @@ export function ChallengePanel() {
             </ul>
           </div>
         )} 
+
+      {/* Validation Result (FAILED ONLY) */}
+      {validationResult && !validationResult.success && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 p-3 rounded bg-red-900/30 border border-red-500"
+        >
+          <div className="font-semibold text-red-300">
+            ✗ Failed
+          </div>
+
+          <div className="text-sm text-gray-300 mt-1">
+            {validationResult.message}
+          </div>
+
+          <div className="text-xs text-gray-400 mt-1">
+            Steps: {validationResult.stepCount}
+            {challenge.maxSteps && (
+              <span className={validationResult.optimized ? '' : 'text-yellow-400'}>
+                {' '}({validationResult.optimized ? 'Optimized' : 'Not optimized'})
+              </span>
+            )}
+          </div>
+        </motion.div>
+      )}
+
     </div>
   );
 }

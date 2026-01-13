@@ -78,7 +78,7 @@ export function SuccessOverlay() {
                 }
               >
                 {' '}
-                • {validationResult?.optimized ? 'Optimized ✔' : 'Can be optimized x'}
+                • {validationResult?.optimized ? 'Optimized ✔' : 'Can be optimized ✗'}
               </span>
             )}
           </div>

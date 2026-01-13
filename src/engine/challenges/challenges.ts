@@ -36,14 +36,35 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-1',
-    title: 'Seat Dispute',
-    description: `Two passengers argue over Seat 0. The one with the higher ticket wins.`,
+    title: 'Ticket Challenge',
+    description: `Seat 1 challenges Seat 0. Higher ticket wins.`,
     hints: ['Compare the tickets in Seat 0 and Seat 1. Keep the higher value in Seat 0.'],
     difficulty: Difficulty.EASY,
     initialArray: [4, 9, 6, 2],
     targetArray: [9, 9, 6, 2],
     maxSteps: 7,
-    instructions: [],
+    instructions: [
+      {
+        id: 'pick',
+        type: InstructionType.PICK,
+        target: 'MOCO',
+      },
+      {
+        id: 'move-right',
+        type: InstructionType.MOVE_RIGHT,
+        target: 'MOCO',
+      },
+      {
+        id: 'move-left',
+        type: InstructionType.MOVE_LEFT,
+        target: 'MOCO',
+      },
+      {
+        id: 'put',
+        type: InstructionType.PUT,
+        target: 'MOCO',
+      },
+    ],
     unlocked: true,
     capabilities: {
       allowedPointers: ['MOCO'],
