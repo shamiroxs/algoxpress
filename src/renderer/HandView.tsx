@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { getArrayLayout } from './layout';
+import { useTutorialHighlight } from '../tutorial/selectors';
 
 interface HandViewProps {
   value: number | null;
@@ -20,7 +21,7 @@ export function HandView({
 }: HandViewProps) {
 
   const { viewBoxWidth } = getArrayLayout(arrayLength, size);
-  
+  const isHighlighted = useTutorialHighlight('HAND');
   const hasValue = value !== null;
 
   return (
@@ -32,6 +33,18 @@ export function HandView({
       }}
       transition={{ duration: 0.2 }}
     >
+      {/* Highlight ring */}
+      {isHighlighted && hasValue && (
+        <motion.circle
+          cx={viewBoxWidth / 2}
+          cy={size / 2}
+          r={size / 2 - 2}
+          fill="none"
+          stroke="#66BB6A"        
+          strokeWidth={4}
+          initial={{ opacity: 1 }}
+        />
+      )}
       {/* Hand (circle cell) */}
       <circle
         cx={viewBoxWidth / 2}

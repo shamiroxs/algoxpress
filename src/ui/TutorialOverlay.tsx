@@ -36,7 +36,7 @@ export function TutorialOverlay() {
   
     const timeoutId = setTimeout(() => {
       maybeCompleteTutorial('AUTO');
-    }, 3000); 
+    }, 4500); 
   
     return () => {
       clearTimeout(timeoutId);
