@@ -13,6 +13,7 @@ export const TutorialStepId = {
     PROGRAM_AREA_EXPLAINED: 'PROGRAM_AREA_EXPLAINED',
   
     PICK_EXPLAINED: 'PICK_EXPLAINED',
+    HAND_EXPLAINED: 'HAND_EXPLAINED',
     MOVE_EXPLAINED: 'MOVE_EXPLAINED',
     PUT_EXPLAINED: 'PUT_EXPLAINED',
     RUN_EXECUTION: 'RUN_EXECUTION',
@@ -26,7 +27,8 @@ export const TutorialStepId = {
     | 'WELCOME'
     | 'CONTROL_BAR'
     | 'INSTRUCTION_PALETTE'
-    | 'TIMELINE';
+    | 'TIMELINE'
+    | 'HAND';
   
   /** What user action can complete a tutorial step */
   export type TutorialTrigger =

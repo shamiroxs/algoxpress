@@ -12,7 +12,7 @@ import { InstructionType } from '../engine/instructions/types';
 > = {
   [TutorialStepId.WELCOME]: {
     blocksUI: true,
-    completesOn: 'SCROLL',
+    completesOn: 'AUTO',
   },
   [TutorialStepId.CHALLENGE_EXPLAINED]: {
     highlight: {
@@ -54,6 +54,15 @@ import { InstructionType } from '../engine/instructions/types';
     highlight: {
       scope: 'INSTRUCTION_PALETTE',
       instructionType: InstructionType.PICK,
+    },
+    completesOn: 'AUTO',
+  },
+
+  [TutorialStepId.HAND_EXPLAINED]: {
+    autoRun: true,
+    blocksUI: true,
+    highlight: {
+      scope: 'HAND',
     },
     completesOn: 'AUTO',
   },

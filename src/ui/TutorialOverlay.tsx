@@ -30,19 +30,17 @@ export function TutorialOverlay() {
   } = useGameStore();
 
   const [isBottom, setIsBottom] = useState(true);
-  const scrollHandledRef = useRef(false);
 
   useEffect(() => {
     if (!isTutorialActive || !blocksUI) return;
-
-    const handleScroll = () => {
-      if (scrollHandledRef.current) return;
-      scrollHandledRef.current = true;
-      maybeCompleteTutorial('SCROLL');
+  
+    const timeoutId = setTimeout(() => {
+      maybeCompleteTutorial('AUTO');
+    }, 3000); 
+  
+    return () => {
+      clearTimeout(timeoutId);
     };
-
-    window.addEventListener('scroll', handleScroll, { once: true });
-    return () => window.removeEventListener('scroll', handleScroll);
   }, [isTutorialActive, blocksUI, maybeCompleteTutorial]);
   
   useEffect(() => {
@@ -115,7 +113,6 @@ export function TutorialOverlay() {
           shadow-2xl
           animate-in fade-in slide-in-from-bottom-4 duration-300
           ${isBottom ? 'bottom-6 border-t' : 'top-6 border-b'}
-          ${blocksUI ? 'animate-pulse duration-[6s]' : ''}
         `}
       >
         {/* Speaker */}
