@@ -185,6 +185,15 @@ export function InstructionPalette() {
   const behavior = useTutorialBehavior();
   const highlight = behavior?.highlight;
 
+  const tutorialInstruction =
+  behavior?.highlight?.instructionType ?? null;
+
+  const restrictToSingleInstruction =
+    tutorialInstruction &&
+    (
+      behavior.highlight?.scope === 'INSTRUCTION_PALETTE'
+    );
+
   const [showHelp, setShowHelp] = useState(false);
 
   const { reorderInstructions, removeInstruction, updateInstruction } = useGameStore();
@@ -375,6 +384,10 @@ export function InstructionPalette() {
     isGlobal?: boolean;
   }) {
 
+    const isAllowedByTutorial =
+    !restrictToSingleInstruction ||
+    template.type === tutorialInstruction;
+
     const shouldPulse = useTutorialHighlight(
       'INSTRUCTION_PALETTE',
       { instructionType: template.type }
@@ -382,6 +395,7 @@ export function InstructionPalette() {
     const { attributes, listeners, setNodeRef, transform, transition } =
       useSortable({
         id: `palette-${pointer}-${template.type}`,
+        disabled: !isAllowedByTutorial,
         data: {
           source: 'PALETTE',
           instructionType: template.type,
@@ -401,15 +415,23 @@ export function InstructionPalette() {
       : pointer === 'MOCO'
       ? 'bg-blue-700 hover:bg-blue-600 text-white'
       : 'bg-red-700 hover:bg-red-600 text-white';
-
+    
+    const disabledClass = !isAllowedByTutorial
+      ? 'opacity-30 cursor-not-allowed'
+      : '';
+    
     return (
       <button
         ref={setNodeRef}
         {...attributes}
         {...listeners}
         style={style}
-        onClick={() => handleAddInstruction(template.type, pointer)}
+        onClick={() => {
+          if (!isAllowedByTutorial) return;
+          handleAddInstruction(template.type, pointer);
+        }}
         className={`${buttonClass} 
+          ${disabledClass}
           ${shouldPulse ? 'animate-pulse ring-2 ring-yellow-400' : ''}
           px-3 py-2 rounded text-sm transition-colors select-none touch-none`
         }
@@ -1543,7 +1565,7 @@ export function InstructionPalette() {
 
         <div className="flex flex-col sm:flex-row gap-4">
           
-          <div className="w-full lg:w-1/2 flex flex-col gap-4">
+          <div className="w-full lg:w-1/2 mt-6 flex flex-col gap-4">
             {/* Global Instructions */}
             {globalInstructionTemplates.length > 0 && (
             <div className="flex justify-center">
@@ -1639,10 +1661,12 @@ export function InstructionPalette() {
           {/* Current program */}
           <div
             ref={programContainerRef}
-            className={`w-full lg:w-1/2 mt-4 flex flex-col min-h-[300px] sm:min-h-0 max-h-[126vh] relative`}
+            className={`w-full lg:w-1/2 flex flex-col min-h-[300px] sm:min-h-0 max-h-[126vh] relative`}
           >
 
             <div className="flex items-center mb-2">
+              <h4 className="text-gray-400 text-sm mx-auto">Your Program</h4>
+            
               <button
                 onClick={() => {
                   if (playerInstructions.length === 0) return;
@@ -1659,8 +1683,6 @@ export function InstructionPalette() {
               >
                 ⟲
               </button>
-
-              <h4 className="text-gray-400 text-sm mx-auto">Your Program</h4>
             </div>
             <ProgramArrowsOverlay />
             
