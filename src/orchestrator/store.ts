@@ -329,7 +329,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   setChallenges: (challenges) => set({ challenges }),
   
   selectChallenge: (challengeId) => {
-    const { challenges, completedChallengeIds } = get();
+    const { challenges, completedChallengeIds, engine } = get();
     const challenge = challenges.find((c) => c.id === challengeId);
   
     if (!challenge) return;
@@ -340,15 +340,26 @@ export const useGameStore = create<GameState>((set, get) => ({
   
     const initialInstructions = challenge.instructions ?? [];
 
+    const executionState = engine.initializeChallenge(
+      challenge,
+      initialInstructions
+    );
+
     set({
       currentChallenge: challenge,
       playerInstructions: initialInstructions,
       initialInstructions,
+      executionState,
       tutorial: {
         isActive: isTutorial,
         currentStep: TUTORIAL_STEP_ORDER[0],
       },
       
+      isExecuting: false,
+      isPaused: false,
+      validationResult: null,
+      executionError: null,
+      executionErrorContext: null,
       successHintDismissed: false,
       rewindHintShown: false,
     });

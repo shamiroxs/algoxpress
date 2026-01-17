@@ -3,12 +3,13 @@ import { useGameStore } from '../orchestrator/store';
 import { useCurrentChallenge } from '../orchestrator/selectors';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function SuccessOverlay() {
   const challenge = useCurrentChallenge();
   const dismissSuccessHint = useGameStore((s) => s.dismissSuccessHint);
-  const setCurrentChallenge = useGameStore((s) => s.setCurrentChallenge);
   const validationResult = useGameStore((s) => s.validationResult);
+  const navigate = useNavigate();
 
   const SUCCESS_LINES = [
     'Your presence is requested in the next compartment.',
@@ -35,13 +36,13 @@ export function SuccessOverlay() {
       }
       if (e.key === 'Enter' || e.key === 'NumpadEnter') {
         e.preventDefault();
-        setCurrentChallenge(null);
+        navigate('/');
       }
     };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [dismissSuccessHint, setCurrentChallenge]);
+  }, [dismissSuccessHint, navigate]);
   
   return (
     <motion.div
@@ -100,7 +101,7 @@ export function SuccessOverlay() {
 
           {/* Continue */}
           <button
-            onClick={() => setCurrentChallenge(null)}
+            onClick={() => navigate('/')}
             className="
               rounded-md bg-green-500 px-4 py-2
               text-xs sm:text-sm font-semibold text-black

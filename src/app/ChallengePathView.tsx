@@ -5,12 +5,15 @@
 
 import { challenges } from '../engine/challenges/challenges';
 import { useGameStore } from '../orchestrator/store';
+import { useNavigate } from 'react-router-dom';
 import { Difficulty } from '../engine/challenges/types';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 
 export function ChallengePathView() {
-  const { selectChallenge, isChallengeCompleted } = useGameStore();
+  const { isChallengeCompleted } = useGameStore();
+
+  const navigate = useNavigate();
 
   const getNodeColor = (
     difficulty: Difficulty,
@@ -96,7 +99,7 @@ export function ChallengePathView() {
                 <motion.button
                   disabled={!challenge.unlocked}
                   onClick={() =>
-                    challenge.unlocked && selectChallenge(challenge.id)
+                    challenge.unlocked && navigate(`/challenge/${challenge.id}`)
                   }
                   animate={
                     isNext

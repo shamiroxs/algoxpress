@@ -38,6 +38,7 @@ import { useEffect, useRef, useState } from 'react';
 import { HandView } from '../renderer/HandView';
 import { useIsTutorialActive, useTutorialBehavior, useTutorialHighlight } from '../tutorial/selectors';
 import { SuccessOverlay } from '../ui/SuccessOverlay';
+import { useNavigate } from 'react-router-dom';
 
 export function GameView() {
   const isExecuting = useGameStore((s) => s.isExecuting);
@@ -52,6 +53,8 @@ export function GameView() {
   const behavior = useTutorialBehavior();
   const validationResult = useGameStore((s) => s.validationResult);
   const [isAboveMiddle, setIsAboveMiddle] = useState(true);
+
+  const navigate = useNavigate();
 
   const scrollToChallengeOnSuccess = useGameStore(
     (s) => s.scrollToChallengeOnSuccess
@@ -161,8 +164,6 @@ export function GameView() {
   const showMoco = allowedPointers.includes('MOCO');
   const showChoco = allowedPointers.includes('CHOCO');
 
-  const { setCurrentChallenge } = useGameStore();
-
   const instructions = usePlayerInstructions();
   const executionError = useExecutionError();
   const executionErrorContext = useExecutionErrorContext();
@@ -234,7 +235,7 @@ export function GameView() {
         <div className="mb-4 flex items-center justify-between">
           <div>
             <button
-              onClick={() => setCurrentChallenge(null)}
+              onClick={() => navigate('/')}
               className="text-gray-400 hover:text-white mb-2"
             >
               ← Back to Challenges
