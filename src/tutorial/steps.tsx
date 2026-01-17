@@ -2,6 +2,10 @@
 
 import { TutorialStepId } from './types';
 import type { TutorialStepContent } from './types';
+
+import { InlineInstructionIcon } from './InlineInstructionIcon';
+import { InstructionType } from '../engine/instructions/types';
+
 export const TUTORIAL_STEPS: TutorialStepContent[] = [
   {
     id: TutorialStepId.WELCOME,
@@ -37,22 +41,34 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
   {
     id: TutorialStepId.PICK_EXPLAINED,
     title: 'Your first instruction',
-    text: 'Drag PICK to your program',
+    text: (
+      <>
+        Drag <InlineInstructionIcon type={InstructionType.PICK} /> to your program
+      </>
+    ),
   },
   {
     id: TutorialStepId.HAND_EXPLAINED,
-    title: 'The Hand',
-    text: 'Now MOCO has a value',
+    title: 'Good job!',
+    text: 'Now MOCO carries a value',
   },
   {
     id: TutorialStepId.MOVE_EXPLAINED,
     title: 'Walk to another seat',
-    text: 'MOVE_RIGHT tells MOCO to move right side',
+    text: (
+      <>
+        <InlineInstructionIcon type={InstructionType.MOVE_RIGHT} /> tells MOCO to move right
+      </>
+    ),
   },
   {
     id: TutorialStepId.PUT_EXPLAINED,
-    title: 'Place the value',
-    text: 'PUT places the value into the current seat',
+    title: 'Change the value',
+    text: (
+      <>
+        Use <InlineInstructionIcon type={InstructionType.PUT} /> to place value in hand
+      </>
+    ),
   },
   {
     id: TutorialStepId.RUN_EXECUTION,

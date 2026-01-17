@@ -59,6 +59,6 @@ export const TutorialStepId = {
   export interface TutorialStepContent {
     id: TutorialStepId;
     title: string;
-    text: string;
+    text: React.ReactNode;
   }
   
