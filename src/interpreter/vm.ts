@@ -134,7 +134,6 @@ export function executeStep(state: ExecutionState): ExecutionResult {
   }
 
   const instruction = frame.instructions[frame.line] as Instruction;
-  newState.currentInstructionId = instruction.id;
 
   try {
     switch (instruction.type) {
@@ -421,12 +420,13 @@ export function executeStep(state: ExecutionState): ExecutionResult {
     }
 
     newState.stepCount++;
-    const topFrame = newState.executionStack[0];
+    const topFrame = newState.executionStack[newState.executionStack.length - 1];
 
-    newState.currentLine = topFrame
-      ? topFrame.line
-      : newState.instructions.length;
-    
+    newState.currentInstructionId =
+      topFrame && topFrame.line < topFrame.instructions.length
+        ? topFrame.instructions[topFrame.line]?.id ?? null
+        : null;
+
     return {
       state: newState,
       success: true,

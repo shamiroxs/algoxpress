@@ -36,6 +36,26 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-1',
+    title: 'End-Seat Correction',
+    description: 'Tickets were assigned to the wrong ends of the compartment.',
+    hints: ['Swap the values in the first and last seats.'],
+    difficulty: Difficulty.EASY,
+    initialArray: [10, 20, 30, 40, 50],
+    targetArray: [50, 20, 30, 40, 10],
+    maxSteps: 2,
+    instructions: [],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.MOVE_TO_END,
+        InstructionType.SWAP,
+      ],
+    }
+  },
+  {
+    id: 'challenge-2',
     title: 'Ticket Challenge',
     description: `Seat 1 challenges Seat 0. Higher ticket wins.`,
     hints: ['Compare the tickets in Seat 0 and Seat 1. Keep the higher value in Seat 0.'],
@@ -85,26 +105,6 @@ export const challenges: Challenge[] = [
     },
   },
   
-  {
-    id: 'challenge-2',
-    title: 'End-Seat Correction',
-    description: 'Tickets were assigned to the wrong ends of the compartment.',
-    hints: ['Swap the values in the first and last seats.'],
-    difficulty: Difficulty.EASY,
-    initialArray: [10, 20, 30, 40, 50],
-    targetArray: [50, 20, 30, 40, 10],
-    maxSteps: 2,
-    instructions: [],
-    unlocked: true,
-    capabilities: {
-      allowedPointers: ['MOCO', 'CHOCO'],
-      allowedInstructions: [
-        InstructionType.MOVE_RIGHT,
-        InstructionType.MOVE_TO_END,
-        InstructionType.SWAP,
-      ],
-    }
-  },
   {
     id: 'challenge-3',
     title: 'Backwards Tickets',
@@ -264,29 +264,55 @@ export const challenges: Challenge[] = [
     id: 'challenge-6',
     title: 'Inspection Check',
     description: `An inspector checks ticket order before departure.`,
-    hints: ['Set Seat 0 to 1 if the remaining seats are increasing order',
-      'Otherwise, set Seat 0 to 0',
+    hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
+      'Otherwise, no change needed (Seat 0 starts as 1)',
     ],
     difficulty: Difficulty.MEDIUM,
     initialArray: [1, 3, 5, 7, 6],
     targetArray: [0, 3, 5, 7, 6],
-    maxSteps: 21,
-    instructions: [],
+    maxSteps: 26,
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'pick',
+        type: InstructionType.PICK,
+        target: 'MOCO',
+      },
+      {
+        id: 'move-right',
+        type: InstructionType.MOVE_RIGHT,
+        target: 'MOCO',
+      },
+      {
+        id: 'if-end',
+        type: InstructionType.IF_END,
+        target: "MOCO",
+        label: 'stop'
+      },  
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },  
+      {
+        id: 'exit-loop',
+        type: InstructionType.LABEL,
+        labelName: 'stop',
+      },
+    ],
     unlocked: true,
     capabilities: {
       allowedPointers: ['MOCO'],
       allowedInstructions: [
-        InstructionType.MOVE_LEFT,
-        InstructionType.MOVE_RIGHT,
-        InstructionType.PICK,
-        InstructionType.PUT,
-
         InstructionType.SET_POINTER,
         InstructionType.SET_VALUE,
   
         InstructionType.IF_GREATER,
         InstructionType.IF_LESS,
-        InstructionType.IF_END,
   
         InstructionType.JUMP,
         InstructionType.LABEL,

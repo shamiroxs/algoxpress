@@ -106,8 +106,6 @@ const instructionTemplates = [
   { type: InstructionType.PICK, label: 'Pick', description: 'Pick value at pointer into hand' },
   { type: InstructionType.PUT, label: 'Put', description: 'Put hand value at pointer' },
   { type: InstructionType.MOVE_TO_END, label: 'ToEnd →→', description: 'Move pointer to end (pointer = length - 1)' },
-  { type: InstructionType.SET_POINTER, label: 'GotoSeat ↦', description: 'Set pointer to index' },
-  { type: InstructionType.SET_VALUE, label: 'SetValue ?', description: 'Set pointer to index' },
   { type: InstructionType.IF_GREATER, label: 'IFGreat ?', description: 'If hand > current value' },
   { type: InstructionType.IF_LESS, label: 'IFLess ?', description: 'If hand < current value' },
   { type: InstructionType.IF_EQUAL, label: 'IFEqual ?', description: 'If hand === current value' },
@@ -117,6 +115,8 @@ const instructionTemplates = [
     label: 'IFEnd ?', 
     description: 'Jump if pointer is at last element' 
   },  
+  { type: InstructionType.SET_POINTER, label: 'GotoSeat ↦', description: 'Set pointer to index' },
+  { type: InstructionType.SET_VALUE, label: 'SetValue ?', description: 'Set pointer to index' },
   { type: InstructionType.JUMP, label: 'Jump ⟲', description: 'Jump to label' },
   { type: InstructionType.LABEL, label: 'Label', description: 'Define a label' },
   { type: InstructionType.SWAP, label: 'Swap ⇄', description: 'Swap moco and choco value' },
