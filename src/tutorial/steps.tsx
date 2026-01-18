@@ -66,7 +66,7 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
     title: 'Change the value',
     text: (
       <>
-        Use <InlineInstructionIcon type={InstructionType.PUT} /> to place value in hand
+        Use <InlineInstructionIcon type={InstructionType.PUT} /> to change the value
       </>
     ),
   },

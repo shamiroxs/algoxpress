@@ -29,16 +29,26 @@ export function TutorialOverlay() {
   } = useGameStore();
 
   const [isBottom, setIsBottom] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     if (!isTutorialActive || !blocksUI) return;
   
-    const timeoutId = setTimeout(() => {
+    setIsVisible(false);
+  
+    // Hide step 2 seconds before auto-complete
+    const hideTimeoutId = setTimeout(() => {
+      setIsVisible(true);
+    }, 1500); 
+  
+    // Auto-complete tutorial
+    const completeTimeoutId = setTimeout(() => {
       maybeCompleteTutorial('AUTO');
-    }, 4500); 
+    }, 4500);
   
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(hideTimeoutId);
+      clearTimeout(completeTimeoutId);
     };
   }, [isTutorialActive, blocksUI, maybeCompleteTutorial]);
   
@@ -73,7 +83,7 @@ export function TutorialOverlay() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!isTutorialActive || isExecuting) return null;
+  if (!isTutorialActive || isExecuting || !isVisible) return null;
 
   const stepId = step?.id;
 
