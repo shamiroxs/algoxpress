@@ -26,7 +26,6 @@ export function TutorialOverlay() {
   
   const {
     maybeCompleteTutorial, 
-    endTutorial,
   } = useGameStore();
 
   const [isBottom, setIsBottom] = useState(true);
@@ -149,13 +148,6 @@ export function TutorialOverlay() {
             Next →
           </button>
         )}
-
-        <button
-          onClick={endTutorial}
-          className="text-xs text-gray-400 hover:text-white"
-        >
-          Skip
-        </button>
       </div>
 
       </div>

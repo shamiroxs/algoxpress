@@ -107,10 +107,10 @@ function formatInstruction(instruction: Instruction): string {
       return `${pointer}Set ${instruction.value}`;
 
     case InstructionType.PICK:
-      return `${pointer}Pick`;
+      return `${pointer}Copy`;
 
     case InstructionType.PUT:
-      return `${pointer}Put`;
+      return `${pointer}Paste`;
 
     case InstructionType.IF_GREATER:
       return `${pointer}IFGreat`;

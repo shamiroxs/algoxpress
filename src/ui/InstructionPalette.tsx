@@ -103,8 +103,8 @@ type DragItem =
 const instructionTemplates = [
   { type: InstructionType.MOVE_LEFT, label: '← Left', description: 'Move pointer left (pointer -= 1)' },
   { type: InstructionType.MOVE_RIGHT, label: 'Right →', description: 'Move pointer right (pointer += 1)' },
-  { type: InstructionType.PICK, label: 'Pick', description: 'Pick value at pointer into hand' },
-  { type: InstructionType.PUT, label: 'Put', description: 'Put hand value at pointer' },
+  { type: InstructionType.PICK, label: 'Copy', description: 'Copy value at pointer into memory' },
+  { type: InstructionType.PUT, label: 'Paste', description: 'Paste memory value at pointer' },
   { type: InstructionType.MOVE_TO_END, label: 'ToEnd →→', description: 'Move pointer to end (pointer = length - 1)' },
   { type: InstructionType.IF_GREATER, label: 'IFGreat ?', description: 'If hand > current value' },
   { type: InstructionType.IF_LESS, label: 'IFLess ?', description: 'If hand < current value' },
@@ -454,9 +454,9 @@ export function InstructionPalette() {
       case InstructionType.SET_VALUE:
         return `Set ${inst.value}`;
       case InstructionType.PICK:
-        return 'Pick';
+        return 'Copy';
       case InstructionType.PUT:
-        return 'Put';
+        return 'Paste';
       case InstructionType.IF_GREATER:
         return 'IFGreat';
       case InstructionType.IF_LESS:

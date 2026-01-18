@@ -2,9 +2,9 @@
 import { InstructionType } from '../engine/instructions/types';
 
 const ICON_LABELS: Record<InstructionType, string> = {
-  PICK: 'Pick',
+  PICK: 'Copy',
   MOVE_RIGHT: 'Right →',
-  PUT: 'Put',
+  PUT: 'Paste',
   MOVE_LEFT: 'MOVE_LEFT',
   MOVE_TO_END: 'MOVE_TO_END',
 
