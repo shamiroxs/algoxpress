@@ -126,6 +126,9 @@ export function GameView() {
       case 'TIMELINE':
         el = visualizationRef.current;
         break;
+      case 'CONTROL_BAR':
+        el = visualizationRef.current;
+        break;
     }
   
     if (!el) return;
