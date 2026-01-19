@@ -609,10 +609,6 @@ export function InstructionPalette() {
     return results;
   }, [playerInstructions, labelMap]);
   
-  const instructionTransforms = useRef<
-    Map<string, { x: number; y: number }>
-  >(new Map());
-
   const errorContext = useExecutionErrorContext();
 
   function SortableInstructionLine({
@@ -664,18 +660,29 @@ export function InstructionPalette() {
     });
     
     useLayoutEffect(() => {
-      if (!rowRef.current) return;
-      const rect = rowRef.current.getBoundingClientRect();
+      if (!rowRef.current || !programContainerRef.current) return;
+    
+      const rowRect = rowRef.current.getBoundingClientRect();
+      const containerRect =
+        programContainerRef.current.getBoundingClientRect();
+    
+      const relativeRect = {
+        top: rowRect.top - containerRect.top,
+        left: rowRect.left - containerRect.left,
+        right: rowRect.right - containerRect.left,
+        height: rowRect.height,
+        width: rowRect.width,
+      };
     
       if (!parentIfId) {
-        programRects.current.set(instruction.id, rect);
+        programRects.current.set(instruction.id, relativeRect as DOMRect);
       } else {
         if (!ifBodyRects.current.has(parentIfId)) {
           ifBodyRects.current.set(parentIfId, new Map());
         }
         ifBodyRects.current
           .get(parentIfId)!
-          .set(instruction.id, rect);
+          .set(instruction.id, relativeRect as DOMRect);
       }
     
       return () => {
@@ -685,7 +692,7 @@ export function InstructionPalette() {
           ifBodyRects.current.get(parentIfId)?.delete(instruction.id);
         }
       };
-    }, [instruction.id, transform, parentIfId]);
+    }, [instruction.id, parentIfId]);
     
     const style = {
       transform: CSS.Transform.toString(transform),
@@ -1266,47 +1273,13 @@ export function InstructionPalette() {
     );
   }
 
-  const getVisualRect = (id: string) => {
-    let rect: DOMRect | undefined;
-
-    // 1️⃣ Check top-level program
-    rect = programRects.current.get(id);
-
-    // 2️⃣ Check IF bodies if not found
-    if (!rect) {
-      for (const bodyRects of ifBodyRects.current.values()) {
-        rect = bodyRects.get(id);
-        if (rect) break;
-      }
-    }
-
-    if (!rect) return null;
-
-    const t = instructionTransforms.current.get(id);
-    if (!t) return rect;
-  
-    return {
-      ...rect,
-      top: rect.top + t.y,
-      bottom: rect.bottom + t.y,
-      left: rect.left + t.x,
-      right: rect.right + t.x,
-    };
-  };
-  
   function ProgramArrowsOverlay() {
     const container = programContainerRef.current;
     if (!container) return null;
-    
-  
-    const containerRect = container.getBoundingClientRect();
-    const laneX = containerRect.width < 360
-      ? containerRect.width * 0.82
-      : containerRect.width * 0.9;
 
     return (
       <svg
-        className="absolute top-0 left-8 w-full h-full pointer-events-none"
+        className="absolute insert-0 w-full h-full pointer-events-none"
       >
         <defs>
           <marker
@@ -1317,38 +1290,72 @@ export function InstructionPalette() {
             refY="2"
             orient="auto"
           >
-            <path d="M0,0 L0,4 L4,2 z" fill="currentColor" />
+            <path d="M0,0 L0,4 L4,2 z" fill="context-stroke" opacity="0.9"/>
           </marker>
         </defs>
   
         {arrows.map(({ from, to, color }) => {
-          const fromRect = getVisualRect(from.id);
-          const toRect = getVisualRect(to.id);          
+          const fromRect = programRects.current.get(from.id)
+            ?? [...ifBodyRects.current.values()]
+                .map(m => m.get(from.id))
+                .find(Boolean);
+
+          const toRect = programRects.current.get(to.id)
+            ?? [...ifBodyRects.current.values()]
+                .map(m => m.get(to.id))
+                .find(Boolean);
+
           if (!fromRect || !toRect) return null;
-  
-          const startX = Math.max(0, fromRect.right - containerRect.left * 4.5);
-          const startY = fromRect.top + fromRect.height / 3 - containerRect.top;
-  
-          const endX = Math.max(0, toRect.right - containerRect.left * 5);
-          const endY = toRect.top + toRect.height / 3 - containerRect.top;
-  
+          console.log(fromRect.width)
+          const startX = fromRect.left + fromRect.width / 2; //, laneX - 200);
+          const startY = fromRect.top + fromRect.height / 3;
+
+          const endX = fromRect.left + fromRect.width / 2;
+          const endY = toRect.top + toRect.height / 3;
+
+          const gutter = 100;
+          const midX =
+            endX >= startX
+              ? Math.max(startX, endX) + gutter
+              : Math.min(startX, endX) - gutter;
+
           const d = `
             M ${startX} ${startY}
-            C ${laneX} ${startY},
-              ${laneX} ${endY},
-              ${endX} ${endY}
+            L ${midX} ${startY}
+            L ${midX} ${endY}
+            L ${endX} ${endY}
           `;
-  
+          const dir = endY > startY ? 1 : -1;
+          
+          const arrowX = midX;
+          const arrowY = (startY + endY) / 2;
+          const arrowLen = 8;
+          
           return (
-            <path
-              key={`${from.id}->${to.id}`}
-              d={d}
-              stroke={color}
-              strokeWidth={4}
-              fill="none"
-              markerEnd="url(#arrowhead)"
-              opacity={0.7}
-            />
+            <>
+              {/* main elbow path */}
+              <path
+                d={d}
+                stroke={color}
+                strokeWidth={4}
+                fill="none"
+                opacity={0.5}
+              />
+
+              {/* centered arrow */}
+              <path
+                d={`
+                  M ${arrowX} ${arrowY - arrowLen * dir}
+                  L ${arrowX} ${arrowY + arrowLen * dir}
+                `}
+                stroke={color}
+                strokeWidth={4}
+                fill="none"
+                markerEnd="url(#arrowhead)"
+                opacity={1}
+              />
+            </>
+
           );
         })}
       </svg>
