@@ -220,6 +220,18 @@ export function InstructionPalette() {
 
   const programContainerRef = useRef<HTMLDivElement | null>(null);
 
+  const [layoutVersion, setLayoutVersion] = useState(0);
+  const instructionOrderSignature = useMemo(
+    () => playerInstructions.map(i => i.id).join('|'),
+    [playerInstructions]
+  );  
+
+  useLayoutEffect(() => {
+    // Runs after playerInstructions render,
+    // before browser paint — DOMRects are ready
+    setLayoutVersion(v => v + 1);
+  }, [instructionOrderSignature]); 
+
   // instruction.S → DOMRect
   const programRects = useRef<Map<string, DOMRect>>(new Map());
   const ifBodyRects = useRef<Map<string, Map<string, DOMRect>>>(new Map());
@@ -1310,7 +1322,7 @@ export function InstructionPalette() {
           const startX = fromRect.left + fromRect.width / 2; //, laneX - 200);
           const startY = fromRect.top + fromRect.height / 3;
 
-          const endX = fromRect.left + fromRect.width / 2;
+          const endX = toRect.left + fromRect.width / 2;
           const endY = toRect.top + toRect.height / 3;
 
           const gutter = 100;
@@ -1339,7 +1351,7 @@ export function InstructionPalette() {
                 stroke={color}
                 strokeWidth={4}
                 fill="none"
-                opacity={0.5}
+                opacity={0.6}
               />
 
               {/* centered arrow */}
@@ -1691,7 +1703,7 @@ export function InstructionPalette() {
                 ⟲
               </button>
             </div>
-            <ProgramArrowsOverlay />
+            <ProgramArrowsOverlay key={layoutVersion} />
             
             <ProgramDropzone highlight ={highlightProgram}>
             
