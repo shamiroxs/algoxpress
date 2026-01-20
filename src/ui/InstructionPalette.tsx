@@ -1578,7 +1578,7 @@ export function InstructionPalette() {
       >
         ⓘ
       </button>
-      <h3 className="absolute left-1/2 -translate-x-1/2 text-white font-semibold">Instructions</h3>
+      <h3 className="absolute left-1/2 -translate-x-1/2 text-white font-semibold">Action Cards</h3>
 
       </div>
 

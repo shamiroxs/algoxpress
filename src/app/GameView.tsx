@@ -241,7 +241,7 @@ export function GameView() {
               onClick={() => navigate('/')}
               className="text-gray-400 hover:text-white mb-2"
             >
-              ← Back to Challenges
+              ← Back to Station
             </button>
             <h1 className="text-2xl font-bold text-white">
               {challenge.title}
@@ -272,7 +272,7 @@ export function GameView() {
               `}
               >
               <h3 className="text-white font-semibold mb-4">
-                Visualization
+                Workspace
               </h3>
 
               {/* Hand */}

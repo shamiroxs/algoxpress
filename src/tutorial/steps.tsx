@@ -19,7 +19,7 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
   },
   {
     id: TutorialStepId.VISUALIZATION_EXPLAINED,
-    title: 'Your train car',
+    title: 'Live Workspace',
     text: 'Watch MOCO work here.',
   },
   {
