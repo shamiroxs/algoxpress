@@ -121,7 +121,7 @@ const instructionTemplates = [
   { type: InstructionType.LABEL, label: 'Label', description: 'Define a label' },
   { type: InstructionType.SWAP, label: 'Swap ⇄', description: 'Swap moco and choco value' },
   { type: InstructionType.SWAP_WITH_NEXT, label: 'SwapNext →←', description: 'Swap current with next element' },
-  { type: InstructionType.IF_MEET, label: 'IFMeet ?', description: 'Jump if moco === choco' },
+  { type: InstructionType.IF_MEET, label: 'IFMeet ?', description: 'Jump if moco == choco' },
   { type: InstructionType.INCREMENT_VALUE, label: 'Value +', description: 'Increment value at pointer' },
   { type: InstructionType.DECREMENT_VALUE, label: 'Value -', description: 'Decrement value at pointer' },
   { type: InstructionType.WAIT, label: 'Wait', description: 'Wait (no operation)' },
@@ -1373,12 +1373,38 @@ export function InstructionPalette() {
       </svg>
     );
   }
+  function collectInstructionTypes(
+    instructions: Instruction[],
+    set = new Set<InstructionType>()
+  ): Set<InstructionType> {
+    for (const inst of instructions) {
+      set.add(inst.type);
+  
+      if ('body' in inst && Array.isArray(inst.body)) {
+        collectInstructionTypes(inst.body, set);
+      }
+    }
+    return set;
+  }
+  
+  const usedInstructionTypes = useMemo(() => {
+    return collectInstructionTypes(playerInstructions);
+  }, [playerInstructions]);
+  
+  const guideInstructionTypes = useMemo(() => {
+    return new Set<InstructionType>([
+      ...allowedInstructions,
+      ...usedInstructionTypes,
+    ]);
+  }, [allowedInstructions, usedInstructionTypes]);
   
   function InstructionHelpModal({
     allowedInstructions,
+    guideInstructionTypes,
     onClose,
   }: {
     allowedInstructions: Set<InstructionType>;
+    guideInstructionTypes: Set<InstructionType>;
     onClose: () => void;
   }) {
     const modalRef = useRef<HTMLDivElement | null>(null);
@@ -1436,9 +1462,8 @@ export function InstructionPalette() {
           {/* Content */}
           <div className="overflow-y-auto p-4 space-y-3">
           {instructionTemplates
-            .filter((inst) => allowedInstructions.has(inst.type))
+            .filter((inst) => guideInstructionTypes.has(inst.type))
             .map((inst) => {
-
               const isGlobal = globalInstructionTypes.includes(inst.type);
   
               return (
@@ -1756,6 +1781,7 @@ export function InstructionPalette() {
       {showHelp && (
         <InstructionHelpModal
           allowedInstructions={allowedInstructions}
+          guideInstructionTypes={guideInstructionTypes}
           onClose={() => setShowHelp(false)}
         />
       )}
