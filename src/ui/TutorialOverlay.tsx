@@ -58,7 +58,7 @@ export function TutorialOverlay() {
 
     // Run execution only if instructions changed
     if (prevInstructionsRef.current !== instructions) {
-      runExecution(500);
+      runExecution();
     }
 
     prevInstructionsRef.current = instructions;

@@ -92,10 +92,8 @@ export function executeSingleStep(): void {
 /**
  * Run execution continuously
  */
-export function runExecution(
-  speed: number = 500,
+export function runExecution(): void {
 
-): void {
   const store = useGameStore.getState();
 
   store.maybeCompleteTutorial('RUN_CLICK');
@@ -109,6 +107,8 @@ export function runExecution(
   store.setIsExecuting(true);
   store.setIsPaused(false);
   store.setExecutionError(null);
+
+  const speed = store.getExecutionInterval();
 
   // Execute steps at interval
   runInterval = window.setInterval(() => {
@@ -133,11 +133,12 @@ export function pauseExecution(): void {
 /**
  * Resume execution
  */
-export function resumeExecution(speed: number = 500): void {
+export function resumeExecution(): void {
   const store = useGameStore.getState();
+  
   if (store.isExecuting && store.isPaused) {
     store.setIsPaused(false);
-    runExecution(speed);
+    runExecution();
   }
 }
 

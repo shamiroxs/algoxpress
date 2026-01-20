@@ -118,6 +118,10 @@ interface GameState {
     currentStep: TutorialStepId;
   };
 
+  executionSpeed: 1 | 2 | 4;
+  cycleExecutionSpeed: () => void;
+  getExecutionInterval: () => number;
+
   scrollToChallengeOnSuccess: boolean;
   setScrollToChallengeOnSuccess: (v: boolean) => void;
 
@@ -202,6 +206,24 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   scrollToChallengeOnSuccess: true,
   rewindHintShown: false,
+
+  executionSpeed: 1,
+
+  cycleExecutionSpeed: () =>
+    set((state) => ({
+      executionSpeed:
+        state.executionSpeed === 1
+          ? 2
+          : state.executionSpeed === 2
+          ? 4
+          : 1,
+    })),
+
+  getExecutionInterval: () => {
+    const speed = get().executionSpeed;
+    // base speed = 500ms at 1x
+    return 500 / speed;
+  },
 
   setScrollToChallengeOnSuccess: (v) =>
   set({ scrollToChallengeOnSuccess: v }),

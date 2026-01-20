@@ -2,7 +2,7 @@
  * Control bar for execution controls
  * Step, Run, Pause, Rewind, Reset
  */
-
+ 
 import {
   executeSingleStep,
   runExecution,
@@ -19,6 +19,10 @@ import {
 } from '../tutorial/selectors';
 
 export function ControlBar() {
+
+  const executionSpeed = useGameStore((s) => s.executionSpeed);
+  const cycleExecutionSpeed = useGameStore((s) => s.cycleExecutionSpeed);
+
   const isExecuting = useIsExecuting();
   const isPaused = useIsPaused();
   const { endTutorial } = useGameStore();
@@ -66,7 +70,7 @@ export function ControlBar() {
   const onRun = () => {
     onAnyControlClick();
     setScrollToChallengeOnSuccess(true);
-    runExecution(500);
+    runExecution();
 
     if (completesOnRun) {
       maybeCompleteTutorial('RUN_CLICK');
@@ -128,7 +132,22 @@ export function ControlBar() {
           ⏸ Pause
         </button>
       )}
-      
+
+      <button
+        onClick={cycleExecutionSpeed}
+        disabled={isExecuting && !isPaused}
+        className="
+          w-12 h-11
+          bg-gray-700 hover:bg-gray-600
+          text-white font-bold
+          rounded-md
+          flex items-center justify-center
+        "
+        title="Execution speed"
+      >
+        {executionSpeed}x
+      </button>
+
       <button
         onClick={onRewind}
         disabled={isExecuting && !isPaused}
