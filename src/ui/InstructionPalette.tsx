@@ -1399,7 +1399,6 @@ export function InstructionPalette() {
   }, [allowedInstructions, usedInstructionTypes]);
   
   function InstructionHelpModal({
-    allowedInstructions,
     guideInstructionTypes,
     onClose,
   }: {
