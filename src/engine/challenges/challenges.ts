@@ -89,8 +89,6 @@ export const challenges: Challenge[] = [
     capabilities: {
       allowedPointers: ['MOCO'],
       allowedInstructions: [
-        InstructionType.MOVE_RIGHT,
-        InstructionType.MOVE_LEFT,
         InstructionType.PICK,
         InstructionType.PUT,
 
@@ -198,40 +196,29 @@ export const challenges: Challenge[] = [
         labelName: 'loop',
       },
       {
+        id: 'move-right',
+        type: InstructionType.MOVE_RIGHT,
+        target: 'MOCO',
+      },
+      {
         id: 'if-less',
         type: InstructionType.IF_LESS,
         target: "MOCO",
         body: [],
-      },  
-      {
-        id: 'if-end',
-        type: InstructionType.IF_END,
-        target: "MOCO",
-        label: 'stop'
-      },  
-  
+      },    
       {
         id: 'jump-loop',
         type: InstructionType.JUMP,
         label: 'loop',
       },  
-      {
-        id: 'exit-loop',
-        type: InstructionType.LABEL,
-        labelName: 'stop',
-      },
     ],
     unlocked: true,
     capabilities: {
       allowedPointers: ['MOCO'],
       allowedInstructions: [
-        InstructionType.MOVE_LEFT,
-        InstructionType.MOVE_RIGHT,
         InstructionType.SET_POINTER,
         InstructionType.PICK,
         InstructionType.PUT,
-
-        InstructionType.IF_END,
       ],
       suggestedInstructions: [
         InstructionType.SET_POINTER,
@@ -270,24 +257,14 @@ export const challenges: Challenge[] = [
         type: InstructionType.IF_EQUAL,
         target: "CHOCO",
         body: [],
-      },  
-      {
-        id: 'if-end',
-        type: InstructionType.IF_END,
-        target: "CHOCO",
-        label: 'stop'
-      },  
+      },   
   
       {
         id: 'jump-loop',
         type: InstructionType.JUMP,
         label: 'loop',
       },  
-      {
-        id: 'exit-loop',
-        type: InstructionType.LABEL,
-        labelName: 'stop',
-      },
+
     ],
     unlocked: true,
     capabilities: {
@@ -329,23 +306,18 @@ export const challenges: Challenge[] = [
         id: 'move-right',
         type: InstructionType.MOVE_RIGHT,
         target: 'MOCO',
-      },
+      }, 
       {
-        id: 'if-end',
-        type: InstructionType.IF_END,
+        id: 'if-great',
+        type: InstructionType.IF_GREATER,
         target: "MOCO",
-        label: 'stop'
-      },  
+        body: [],
+      },   
       {
         id: 'jump-loop',
         type: InstructionType.JUMP,
         label: 'loop',
-      },  
-      {
-        id: 'exit-loop',
-        type: InstructionType.LABEL,
-        labelName: 'stop',
-      },
+      }, 
     ],
     unlocked: true,
     capabilities: {
@@ -353,9 +325,6 @@ export const challenges: Challenge[] = [
       allowedInstructions: [
         InstructionType.SET_POINTER,
         InstructionType.SET_VALUE,
-  
-        InstructionType.IF_GREATER,
-        InstructionType.IF_LESS,
   
         InstructionType.JUMP,
         InstructionType.LABEL,
