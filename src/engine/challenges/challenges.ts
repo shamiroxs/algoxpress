@@ -11,7 +11,7 @@ export const challenges: Challenge[] = [
   {
     id: 'challenge-0',
     title: 'Start Here',
-    description: `The passenger in Seat 0 wants a reservation in the next seat.`,
+    description: `Make Seat 1 match Seat 0.`,
     hints: ['Copy the ticket value from Seat 0 into Seat 1.'],
     difficulty: Difficulty.EASY,
     initialArray: [7, 0, 0, 0],
@@ -56,49 +56,6 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-2',
-    title: 'Seat Rotation',
-    description: 'All passengers move left, the first passenger goes to last seat',
-    hints: ['Swap each passenger with their right neighbor, one at a time.'],
-    difficulty: Difficulty.MEDIUM,
-    initialArray: [1, 2, 3, 4],
-    targetArray: [2, 3, 4, 1],
-    maxSteps: 15,
-    instructions: [
-      {
-        id: 'loop-start',
-        type: InstructionType.LABEL,
-        labelName: 'loop',
-      },
-      {
-        id: 'if-end',
-        type: InstructionType.IF_END,
-        target: "MOCO",
-        label: 'stop'
-      },  
-      {
-        id: 'jump-loop',
-        type: InstructionType.JUMP,
-        label: 'loop',
-      },  
-      {
-        id: 'exit-loop',
-        type: InstructionType.LABEL,
-        labelName: 'stop',
-      },
-    ],    
-    unlocked: true,
-    capabilities: {
-      allowedPointers: ['MOCO'],
-      allowedInstructions: [
-        InstructionType.MOVE_RIGHT,
-
-        InstructionType.SWAP_WITH_NEXT,
-      ],
-    },
-  },
-
-  {
-    id: 'challenge-3',
     title: 'Ticket Challenge',
     description: `Seat 1 challenges Seat 0. Higher ticket wins.`,
     hints: ['Compare the tickets in Seat 0 and Seat 1. Keep the higher value in Seat 0.'],
@@ -144,6 +101,37 @@ export const challenges: Challenge[] = [
       suggestedInstructions: [
         InstructionType.PICK,
         InstructionType.PUT,
+      ],
+    },
+  },
+  {
+    id: 'challenge-3',
+    title: 'Seat Rotation',
+    description: 'All passengers move left, the first passenger goes to last seat',
+    hints: ['Swap each passenger with their right neighbor, one at a time.'],
+    difficulty: Difficulty.EASY,
+    initialArray: [1, 2, 3, 4],
+    targetArray: [2, 3, 4, 1],
+    maxSteps: 15,
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },  
+    ],    
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+
+        InstructionType.SWAP_WITH_NEXT,
       ],
     },
   },

@@ -278,7 +278,7 @@ export function GameView() {
               {/* Hand */}
               <div className="mb-4 rounded p-3">
                 <div className="text-xs text-gray-400 mb-2">
-                  Hand
+                  Copied
                 </div>
                 <div className="flex justify-center">
                   <HandView

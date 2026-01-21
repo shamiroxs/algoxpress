@@ -227,6 +227,7 @@ export function InstructionPalette() {
   );  
 
   useLayoutEffect(() => {
+    if (activeDragItem) return;
     // Runs after playerInstructions render,
     // before browser paint — DOMRects are ready
     setLayoutVersion(v => v + 1);
@@ -1344,7 +1345,7 @@ export function InstructionPalette() {
           const arrowLen = 8;
           
           return (
-            <>
+            <g key={`${from.id}->${to.id}`}>
               {/* main elbow path */}
               <path
                 d={d}
@@ -1366,7 +1367,7 @@ export function InstructionPalette() {
                 markerEnd="url(#arrowhead)"
                 opacity={1}
               />
-            </>
+            </g>
 
           );
         })}
@@ -1525,6 +1526,14 @@ export function InstructionPalette() {
       collisionDetection={collisionDetection}
       onDragOver={(event) => {
         const activeData = event.active.data.current as DragItem | undefined;
+        const over = event.over;
+
+        if (!activeData || !over) return;
+
+        if (over.id === 'PROGRAM_DROPZONE') {
+          return;
+        }
+
         const overData = event.over?.data.current as
           | { source: 'PROGRAM'; instructionId: string }
           | { source: 'IF_BODY'; instructionId: string; parentIfId: string }
@@ -1537,6 +1546,8 @@ export function InstructionPalette() {
         if (!isInsertIntoProgram || !overData) {
           if (insertPreview !== null) {
             setInsertPreview(null);
+
+            setLayoutVersion(v => v + 1);
           }
           return;
         }
@@ -1557,9 +1568,10 @@ export function InstructionPalette() {
         const pointerY = getPointerClientY(event);
       
         const position =
-          pointerY > rect.top + rect.height / 2 ? 'below' : 'above';
+          pointerY > rect.top + rect.height / 2 + 1 ? 'below' : 'above';
       
         if (
+          insertPreview &&
           insertPreview?.id === overData.instructionId &&
           insertPreview?.position === position
         ) {
@@ -1580,10 +1592,14 @@ export function InstructionPalette() {
         handleDragEnd(event);
         setInsertPreview(null);
         setActiveDragItem(null);
+
+        setLayoutVersion(v => v + 1);
       }}
       onDragCancel={() => {
         setInsertPreview(null);
         setActiveDragItem(null);
+
+        setLayoutVersion(v => v + 1);
       }}
     >
       <div className="instruction-palette bg-gray-800 rounded-lg p-4">
@@ -1704,11 +1720,11 @@ export function InstructionPalette() {
           {/* Current program */}
           <div
             ref={programContainerRef}
-            className={`w-full lg:w-1/2 flex flex-col min-h-[300px] sm:min-h-0 max-h-[126vh] relative`}
+            className={`w-full lg:w-1/2 flex flex-col min-h-[300px] sm:min-h-[40vh] max-h-[126vh] relative`}
           >
 
             <div className="flex items-center mb-2">
-              <h4 className="text-gray-400 text-sm mx-auto">Your Program</h4>
+              <h4 className="text-gray-400 text-sm mx-auto">Your Workspace</h4>
             
               <button
                 onClick={() => {

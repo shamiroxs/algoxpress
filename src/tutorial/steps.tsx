@@ -23,6 +23,11 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
     text: 'Watch MOCO work here.',
   },
   {
+    id: TutorialStepId.PROGRAM_AREA_EXPLAINED,
+    title: 'Your Workspace',
+    text: 'Drag action cards here to tell MOCO what to do.',
+  },
+  {
     id: TutorialStepId.PALETTE_EXPLAINED,
     title: 'MOCOs action cards',
     text: 'These are the actions MOCO can perform.',
@@ -31,19 +36,13 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
     id: TutorialStepId.PALETTE_HELP_EXPLAINED,
     title: 'Need help?',
     text: 'Tap the ⓘ icon to see what each card does',
-  },
-  {
-    id: TutorialStepId.PROGRAM_AREA_EXPLAINED,
-    title: 'Build your program',
-    text: 'Drag action cards here to build plan for MOCO',
-  },
-  
+  },  
   {
     id: TutorialStepId.PICK_EXPLAINED,
     title: 'Your first instruction',
     text: (
       <>
-        Drag <InlineInstructionIcon type={InstructionType.PICK} /> to your program
+        Drag <InlineInstructionIcon type={InstructionType.PICK} /> to your workspace
       </>
     ),
   },
@@ -72,8 +71,8 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
   },
   {
     id: TutorialStepId.RUN_EXECUTION,
-    title: 'See your plan in action',
-    text: 'Run or step through your orders',
+    title: 'Run your orders',
+    text: 'Press Run, (or Step one at a time)',
   },
 ];
 
