@@ -518,7 +518,7 @@ export function InstructionPalette() {
         title={template.description}
       >
         {/* Icon */}
-        <div className="text-3xl mb-1">
+        <div className="text-xl sm:text-3xl">
           {INSTRUCTION_ICONS[template.type]}
         </div>
     
@@ -1793,7 +1793,7 @@ export function InstructionPalette() {
                   )}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="grid grid-cols-4 gap-3">
+                  <div className="grid grid-cols-4 gap-2 sm:gap-3">
                     {globalInstructionTemplates.map((template) => (
                       <DraggablePaletteItem
                         key={`global-${template.type}`}
@@ -1832,7 +1832,7 @@ export function InstructionPalette() {
                 )}
                 strategy={verticalListSortingStrategy}
               >
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-4 gap-2 sm:gap-3">
                   {pointerInstructionTemplates.map((template) => (
                     <DraggablePaletteItem
                       key={`moco-${template.type}`}
@@ -1867,7 +1867,7 @@ export function InstructionPalette() {
                 )}
                 strategy={verticalListSortingStrategy}
               >
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-4 gap-2 sm:gap-3">
                   {pointerInstructionTemplates.map((template) => (
                     <DraggablePaletteItem
                       key={`choco-${template.type}`}
