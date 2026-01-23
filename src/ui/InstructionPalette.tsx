@@ -103,8 +103,8 @@ type DragItem =
 const instructionTemplates = [
   { type: InstructionType.MOVE_LEFT, label: 'Left', description: 'Move pointer left (pointer -= 1)' },
   { type: InstructionType.MOVE_RIGHT, label: 'Right', description: 'Move pointer right (pointer += 1)' },
-  { type: InstructionType.PICK, label: 'Copy', description: 'Copy value at pointer into memory' },
-  { type: InstructionType.PUT, label: 'Paste', description: 'Paste memory value at pointer' },
+  { type: InstructionType.PICK, label: 'Copy', description: 'Copy value at pointer' },
+  { type: InstructionType.PUT, label: 'Paste', description: 'Paste value at pointer' },
   { type: InstructionType.MOVE_TO_END, label: 'ToEnd', description: 'Move pointer to end (pointer = length - 1)' },
   { type: InstructionType.IF_GREATER, label: 'IFGreat ?', description: 'If hand > current value' },
   { type: InstructionType.IF_LESS, label: 'IFLess ?', description: 'If hand < current value' },
@@ -150,6 +150,11 @@ const INSTRUCTION_ICONS: Record<InstructionType, string> = {
   [InstructionType.WAIT]: '⏳',
 };
 
+function getInstructionLabel(type: InstructionType): string {
+  return (
+    instructionTemplates.find(t => t.type === type)?.label ?? type
+  );
+}
 
 const globalInstructionTypes: InstructionType[] = [
   InstructionType.SWAP,
@@ -1373,7 +1378,7 @@ export function InstructionPalette() {
             {INSTRUCTION_ICONS[instructionType]}
           </div>
           <div className="text-xs font-semibold">
-            {instructionType}
+            {getInstructionLabel(instructionType)}
           </div>
         </div>
       );
