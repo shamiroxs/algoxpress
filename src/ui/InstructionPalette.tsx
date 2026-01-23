@@ -1374,7 +1374,7 @@ export function InstructionPalette() {
             ${skin}
           `}
         >
-          <div className="text-3xl mb-1">
+          <div className="text-xl sm:text-3xl">
             {INSTRUCTION_ICONS[instructionType]}
           </div>
           <div className="text-xs font-semibold">
