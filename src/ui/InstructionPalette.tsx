@@ -1611,12 +1611,12 @@ export function InstructionPalette() {
                     "
                   >
                     {/* Icon */}
-                    <div className="text-mm sm:text-2xl leading-none">
+                    <div className="text-lg sm:text-2xl leading-none">
                       {INSTRUCTION_ICONS[inst.type]}
                     </div>
 
                     {/* Label */}
-                    <div className="mt-2 text-[12px] leading-tight font-mono opacity-90 mt-0.5 text-center">
+                    <div className="mt-2 text-[10px] sm:text-[12px] leading-tight font-mono opacity-90 mt-0.5 text-center">
                       {inst.label}
                     </div>
 
@@ -1635,8 +1635,8 @@ export function InstructionPalette() {
                   </div>
 
                   {/* Mobile description (bottom, right-aligned) */}
-                  <div className="block sm:hidden mt-11 w-full">
-                    <p className="text-gray-300 text-xs leading-snug text-right">
+                  <div className="block sm:hidden mt-8 w-full">
+                    <p className="text-gray-300 text-[10px] leading-snug text-right">
                       {inst.description}
                     </p>
                   </div>
