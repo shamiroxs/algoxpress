@@ -1611,7 +1611,7 @@ export function InstructionPalette() {
                     "
                   >
                     {/* Icon */}
-                    <div className="text-2xl leading-none">
+                    <div className="text-mm sm:text-2xl leading-none">
                       {INSTRUCTION_ICONS[inst.type]}
                     </div>
 
@@ -1628,11 +1628,19 @@ export function InstructionPalette() {
                   <div className="flex-1" />
 
                   {/* Centered description across entire card */}
-                  <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
+                  <div className="absolute inset-0 hidden sm:flex items-center justify-center px-6 pointer-events-none">
                     <p className="text-gray-300 text-xs leading-snug text-center max-w-sm">
                       {inst.description}
                     </p>
                   </div>
+
+                  {/* Mobile description (bottom, right-aligned) */}
+                  <div className="block sm:hidden mt-11 w-full">
+                    <p className="text-gray-300 text-xs leading-snug text-right">
+                      {inst.description}
+                    </p>
+                  </div>
+
                 </div>
               );
             })}
