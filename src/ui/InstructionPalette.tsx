@@ -128,9 +128,9 @@ const instructionTemplates = [
 ];
 
 const INSTRUCTION_ICONS: Record<InstructionType, string> = {
-  [InstructionType.MOVE_LEFT]: '⮜',
-  [InstructionType.MOVE_RIGHT]: '⮞',
-  [InstructionType.MOVE_TO_END]: '➤➤',
+  [InstructionType.MOVE_LEFT]: '←',
+  [InstructionType.MOVE_RIGHT]: '→',
+  [InstructionType.MOVE_TO_END]: '→→',
   [InstructionType.PICK]: '🔗',
   [InstructionType.PUT]: '📋',
   [InstructionType.SET_POINTER]: '💺',
@@ -222,7 +222,7 @@ export function InstructionPalette() {
     useEffect(() => {
       const update = () => {
         // Tailwind sm = 640px
-        setColumns(window.innerWidth < 640 ? 5 : 4);
+        setColumns(window.innerWidth < 640 ? 4 : 4);
       };
   
       update();
