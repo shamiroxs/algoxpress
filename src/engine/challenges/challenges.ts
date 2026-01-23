@@ -241,12 +241,11 @@ export const challenges: Challenge[] = [
     targetArray: [1, 3, 12, 0, 0, 0],
     maxSteps: 28,
     initialHand: 0,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 1, 
+    },
     instructions: [
-      {
-        id: 'move-right',
-        type: InstructionType.MOVE_RIGHT,
-        target: 'CHOCO',
-      },
       {
         id: 'loop-start',
         type: InstructionType.LABEL,

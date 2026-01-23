@@ -101,11 +101,11 @@ type DragItem =
   | { source: 'IF_BODY'; instructionId: string; parentIfId: string };
 
 const instructionTemplates = [
-  { type: InstructionType.MOVE_LEFT, label: '← Left', description: 'Move pointer left (pointer -= 1)' },
-  { type: InstructionType.MOVE_RIGHT, label: 'Right →', description: 'Move pointer right (pointer += 1)' },
+  { type: InstructionType.MOVE_LEFT, label: 'Left', description: 'Move pointer left (pointer -= 1)' },
+  { type: InstructionType.MOVE_RIGHT, label: 'Right', description: 'Move pointer right (pointer += 1)' },
   { type: InstructionType.PICK, label: 'Copy', description: 'Copy value at pointer into memory' },
   { type: InstructionType.PUT, label: 'Paste', description: 'Paste memory value at pointer' },
-  { type: InstructionType.MOVE_TO_END, label: 'ToEnd →→', description: 'Move pointer to end (pointer = length - 1)' },
+  { type: InstructionType.MOVE_TO_END, label: 'ToEnd', description: 'Move pointer to end (pointer = length - 1)' },
   { type: InstructionType.IF_GREATER, label: 'IFGreat ?', description: 'If hand > current value' },
   { type: InstructionType.IF_LESS, label: 'IFLess ?', description: 'If hand < current value' },
   { type: InstructionType.IF_EQUAL, label: 'IFEqual ?', description: 'If hand === current value' },
@@ -115,17 +115,41 @@ const instructionTemplates = [
     label: 'IFEnd ?', 
     description: 'Jump if pointer is at last element' 
   },  
-  { type: InstructionType.SET_POINTER, label: 'GotoSeat ↦', description: 'Set pointer to index' },
+  { type: InstructionType.SET_POINTER, label: 'GotoSeat', description: 'Set pointer to index' },
   { type: InstructionType.SET_VALUE, label: 'SetValue ?', description: 'Set pointer to index' },
-  { type: InstructionType.JUMP, label: 'Jump ⟲', description: 'Jump to label' },
+  { type: InstructionType.JUMP, label: 'Jump', description: 'Jump to label' },
   { type: InstructionType.LABEL, label: 'Label', description: 'Define a label' },
-  { type: InstructionType.SWAP, label: 'Swap ⇄', description: 'Swap moco and choco value' },
-  { type: InstructionType.SWAP_WITH_NEXT, label: 'SwapNext →←', description: 'Swap current with next element' },
+  { type: InstructionType.SWAP, label: 'Swap', description: 'Swap moco and choco value' },
+  { type: InstructionType.SWAP_WITH_NEXT, label: 'SwapNext', description: 'Swap current with next element' },
   { type: InstructionType.IF_MEET, label: 'IFMeet ?', description: 'Jump if moco == choco' },
   { type: InstructionType.INCREMENT_VALUE, label: 'Value +', description: 'Increment value at pointer' },
   { type: InstructionType.DECREMENT_VALUE, label: 'Value -', description: 'Decrement value at pointer' },
   { type: InstructionType.WAIT, label: 'Wait', description: 'Wait (no operation)' },
 ];
+
+const INSTRUCTION_ICONS: Record<InstructionType, string> = {
+  [InstructionType.MOVE_LEFT]: '⮜',
+  [InstructionType.MOVE_RIGHT]: '⮞',
+  [InstructionType.MOVE_TO_END]: '➤➤',
+  [InstructionType.PICK]: '🔗',
+  [InstructionType.PUT]: '📋',
+  [InstructionType.SET_POINTER]: '💺',
+  [InstructionType.SET_VALUE]: '✍🏻',
+  [InstructionType.IF_GREATER]: '>',
+  [InstructionType.IF_LESS]: '<',
+  [InstructionType.IF_EQUAL]: '=',
+  [InstructionType.IF_NOT_EQUAL]: '!=',
+  [InstructionType.IF_END]: '🏁',
+  [InstructionType.IF_MEET]: '🤝',
+  [InstructionType.JUMP]: '↰',
+  [InstructionType.LABEL]: '🏷️',
+  [InstructionType.SWAP]: '⇄',
+  [InstructionType.SWAP_WITH_NEXT]: '→←',
+  [InstructionType.INCREMENT_VALUE]: '➕',
+  [InstructionType.DECREMENT_VALUE]: '➖',
+  [InstructionType.WAIT]: '⏳',
+};
+
 
 const globalInstructionTypes: InstructionType[] = [
   InstructionType.SWAP,
@@ -169,6 +193,11 @@ function getPointerClientY(event: DragEndEvent | DragOverEvent): number {
   return 0;
 }
 
+function getEmptySlotCount(count: number, columns = 4) {
+  const remainder = count % columns;
+  return remainder === 0 ? 0 : columns - remainder;
+}
+
 export function InstructionPalette() {
   const { playerInstructions, addInstruction, clearPlayerInstructions, executionState } = useGameStore();
   const sensors = useSensors(
@@ -182,6 +211,25 @@ export function InstructionPalette() {
       },
     })
   );
+  function useGridColumns() {
+    const [columns, setColumns] = useState(4);
+  
+    useEffect(() => {
+      const update = () => {
+        // Tailwind sm = 640px
+        setColumns(window.innerWidth < 640 ? 5 : 4);
+      };
+  
+      update();
+      window.addEventListener('resize', update);
+      return () => window.removeEventListener('resize', update);
+    }, []);
+  
+    return columns;
+  }
+  
+  const gridColumns = useGridColumns();
+
   const behavior = useTutorialBehavior();
   const highlight = behavior?.highlight;
 
@@ -433,8 +481,14 @@ export function InstructionPalette() {
       ? 'opacity-30 cursor-not-allowed'
       : '';
     
+    const cardHover =
+      'hover:scale-105 hover:-translate-y-1 hover:shadow-xl';
+    
+    const cardActive =
+      'active:scale-95 cursor-grab';
+    
     return (
-      <button
+      <div
         ref={setNodeRef}
         {...attributes}
         {...listeners}
@@ -443,15 +497,34 @@ export function InstructionPalette() {
           if (!isAllowedByTutorial) return;
           handleAddInstruction(template.type, pointer);
         }}
-        className={`${buttonClass} 
+        className={`
+          relative aspect-square
+          rounded-xl border-2
+          flex flex-col items-center justify-center
+          text-center
+          transition-all duration-200
+          select-none touch-none
+          ${buttonClass}
+          ${cardHover}
+          ${cardActive}
           ${disabledClass}
-          ${shouldPulse ? 'animate-pulse ring-2 ring-yellow-400' : ''}
-          px-3 py-2 rounded text-sm transition-colors select-none touch-none`
-        }
+          ${shouldPulse ? 'ring-2 ring-yellow-400 animate-pulse' : ''}
+        `}
         title={template.description}
       >
-        {template.label}
-      </button>
+        {/* Icon */}
+        <div className="text-3xl mb-1">
+          {INSTRUCTION_ICONS[template.type]}
+        </div>
+    
+        {/* Label */}
+        <div className="text-xs font-semibold tracking-wide">
+          {template.label}
+        </div>
+    
+        {/* Subtle glow */}
+        <div className="absolute inset-0 rounded-xl pointer-events-none bg-white/5" />
+      </div>
     );
   }
   const formatInstruction = (inst: Instruction): string => {
@@ -1271,19 +1344,39 @@ export function InstructionPalette() {
   
     if (!template) return null;
   
-    const buttonClass = isGlobal
+    /*const buttonClass = isGlobal
       ? 'bg-purple-700 text-white'
       : pointer === 'MOCO'
       ? 'bg-blue-700 text-white'
-      : 'bg-red-700 text-white';
+      : 'bg-red-700 text-white';*/
 
-    return (
-      <div
-        className={`${buttonClass} px-3 py-2 rounded text-sm shadow-lg`}
-      >
-        {template.label}
-      </div>
-    );
+    const skin = isGlobal
+      ? 'bg-purple-900 border-purple-400'
+      : pointer === 'MOCO'
+      ? 'bg-blue-900 border-blue-400'
+      : 'bg-red-900 border-red-400';
+  
+      return (
+        <div
+          className={`
+            relative aspect-square w-20
+            rounded-xl border-2
+            flex flex-col items-center justify-center
+            text-white
+            scale-110 rotate-3
+            shadow-2xl
+            ring-2 ring-yellow-400
+            ${skin}
+          `}
+        >
+          <div className="text-3xl mb-1">
+            {INSTRUCTION_ICONS[instructionType]}
+          </div>
+          <div className="text-xs font-semibold">
+            {instructionType}
+          </div>
+        </div>
+      );
   }
 
   function ProgramArrowsOverlay() {
@@ -1444,6 +1537,14 @@ export function InstructionPalette() {
       };
     }, [onClose]);
 
+    function getGuideStyle(type: InstructionType) {
+      if (globalInstructionTypes.includes(type)) {
+        return 'border-purple-500/50 bg-purple-900/20';
+      }
+    
+      return 'border-gray-600 bg-gray-800/60';
+    }    
+
     return (
       <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
         <div ref={modalRef} className="bg-gray-800 rounded-lg shadow-xl w-[84%] sm:w-full max-w-lg max-h-[80vh] flex flex-col">
@@ -1464,35 +1565,69 @@ export function InstructionPalette() {
           {instructionTemplates
             .filter((inst) => guideInstructionTypes.has(inst.type))
             .map((inst) => {
-              const isGlobal = globalInstructionTypes.includes(inst.type);
-  
               return (
                 <div
                   key={inst.type}
-                  className="bg-gray-700/60 rounded p-3"
+                  className={`
+                    relative
+                    flex gap-4 items-start
+                    rounded-xl border-2
+                    p-3
+                    transition
+                    ${getGuideStyle(inst.type)}
+                  `}
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono text-white text-xs sm:text-sm">
-                      {inst.label}
-                    </span>
-  
+                  {/* Header – top right of entire card */}
+                  <div className="absolute top-3 right-3 z-10">
                     <span
                       className={`
                         text-xs px-2 py-0.5 rounded
                         ${
-                          isGlobal
+                          globalInstructionTypes.includes(inst.type)
                             ? 'bg-purple-700 text-white'
-                            : 'bg-gray-600 text-gray-200'
+                            : 'bg-gray-700 text-gray-200'
                         }
                       `}
                     >
-                      {isGlobal ? 'BOTH' : 'POINTER'}
+                      {globalInstructionTypes.includes(inst.type) ? 'BOTH' : 'POINTER'}
                     </span>
                   </div>
-  
-                  <p className="text-gray-300 text-xs sm:text-sm">
-                    {inst.description}
-                  </p>
+                  {/* Icon slot */}
+                  <div
+                    className="
+                      w-16 h-16
+                      flex flex-col items-center justify-center
+                      rounded-lg
+                      border-2 border-gray-600
+                      bg-gray-900/90
+                      text-white
+                      shrink-0
+                      relative
+                    "
+                  >
+                    {/* Icon */}
+                    <div className="text-2xl leading-none">
+                      {INSTRUCTION_ICONS[inst.type]}
+                    </div>
+
+                    {/* Label */}
+                    <div className="mt-2 text-[12px] leading-tight font-mono opacity-90 mt-0.5 text-center">
+                      {inst.label}
+                    </div>
+
+                    {/* Subtle inner highlight */}
+                    <div className="absolute inset-0 rounded-lg bg-white/5 pointer-events-none" />
+                  </div>
+
+                  {/* Spacer column to preserve layout */}
+                  <div className="flex-1" />
+
+                  {/* Centered description across entire card */}
+                  <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
+                    <p className="text-gray-300 text-xs leading-snug text-center max-w-sm">
+                      {inst.description}
+                    </p>
+                  </div>
                 </div>
               );
             })}
@@ -1519,7 +1654,21 @@ export function InstructionPalette() {
     !highlightHelp &&
     !highlightProgram;
 
-  
+    function EmptyInventorySlot() {
+      return (
+        <div
+          className="
+            aspect-square
+            rounded-xl
+            border-2 border-dashed border-gray-600
+            bg-gray-900/40
+            opacity-50
+            pointer-events-none
+          "
+        />
+      );
+    }
+    
   return (
     <DndContext
       sensors={sensors}
@@ -1629,7 +1778,7 @@ export function InstructionPalette() {
             {globalInstructionTemplates.length > 0 && (
             <div className="flex justify-center">
               <div className="bg-gray-700/60 rounded-lg p-3 w-full max-w-md">
-                <h4 className="text-gray-300 font-semibold mb-2 text-center">
+                <h4 className="text-gray-300 font-semibold mb-2 text-center tracking-widest">
                   BOTH
                 </h4>
 
@@ -1639,7 +1788,7 @@ export function InstructionPalette() {
                   )}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-5 sm:grid-cols-4 gap-3">
                     {globalInstructionTemplates.map((template) => (
                       <DraggablePaletteItem
                         key={`global-${template.type}`}
@@ -1648,6 +1797,12 @@ export function InstructionPalette() {
                         isGlobal
                       />
                     ))}
+                    {Array.from({
+                      length: getEmptySlotCount(globalInstructionTemplates.length, gridColumns),
+                    }).map((_, i) => (
+                      <EmptyInventorySlot key={`global-empty-${i}`} />
+                    ))}
+
                   </div>
                 </SortableContext>
 
@@ -1662,7 +1817,7 @@ export function InstructionPalette() {
               bg-gray-700/60 rounded-lg p-3 w-full max-w-md
               ${highlightPalette ? 'ring-2 ring-yellow-400' : ''}
             `}>
-              <h4 className="text-blue-300 font-semibold mb-2 text-center">
+              <h4 className="text-blue-300 font-semibold mb-2 text-center tracking-widest">
                 MOCO
               </h4>
 
@@ -1672,7 +1827,7 @@ export function InstructionPalette() {
                 )}
                 strategy={verticalListSortingStrategy}
               >
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-5 sm:grid-cols-4 gap-3">
                   {pointerInstructionTemplates.map((template) => (
                     <DraggablePaletteItem
                       key={`moco-${template.type}`}
@@ -1680,6 +1835,12 @@ export function InstructionPalette() {
                       pointer="MOCO"
                     />
                   ))}
+
+                  {Array.from({
+                      length: getEmptySlotCount(pointerInstructionTemplates.length, gridColumns),
+                    }).map((_, i) => (
+                      <EmptyInventorySlot key={`moco-empty-${i}`} />
+                    ))}
                 </div>
               </SortableContext>
 
@@ -1691,7 +1852,7 @@ export function InstructionPalette() {
             {allowedPointers.includes('CHOCO') && (
             <div className="flex justify-center">
             <div className="bg-gray-700/60 rounded-lg p-3 w-full max-w-md">
-              <h4 className="text-red-300 font-semibold mb-2 text-center">
+              <h4 className="text-red-300 font-semibold mb-2 text-center tracking-widest">
                 CHOCO
               </h4>
 
@@ -1701,7 +1862,7 @@ export function InstructionPalette() {
                 )}
                 strategy={verticalListSortingStrategy}
               >
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-5 sm:grid-cols-4 gap-3">
                   {pointerInstructionTemplates.map((template) => (
                     <DraggablePaletteItem
                       key={`choco-${template.type}`}
@@ -1709,6 +1870,12 @@ export function InstructionPalette() {
                       pointer="CHOCO"
                     />
                   ))}
+                  {Array.from({
+                    length: getEmptySlotCount(pointerInstructionTemplates.length, gridColumns),
+                  }).map((_, i) => (
+                    <EmptyInventorySlot key={`choco-empty-${i}`} />
+                  ))}
+
                 </div>
               </SortableContext>
 
