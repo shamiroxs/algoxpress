@@ -1636,7 +1636,7 @@ export function InstructionPalette() {
 
                   {/* Mobile description (bottom, right-aligned) */}
                   <div className="block sm:hidden mt-8 w-full">
-                    <p className="text-gray-300 text-[10px] leading-snug text-right">
+                    <p className="text-gray-300 text-xs leading-snug text-right">
                       {inst.description}
                     </p>
                   </div>
