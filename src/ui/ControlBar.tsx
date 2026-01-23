@@ -97,22 +97,18 @@ export function ControlBar() {
   };
 
   return (
-    <div className="control-bar bg-gray-800 rounded-lg p-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+    <div className="control-bar bg-gray-800 rounded-lg p-3 flex flex-wrap items-center justify-center gap-3">
       <button
         onClick={onStep}
         disabled={isExecuting && !isPaused}
         className={`
           bg-blue-600 hover:bg-blue-700
           disabled:bg-gray-600 disabled:cursor-not-allowed
-          text-white px-3 py-1 sm:px-4 sm:py-2 rounded font-semibold
+          text-white px-4 py-2 rounded font-semibold
           ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
       >
-        {/* Icon (mobile) */}
-        <span className="inline sm:hidden">▶</span>
-
-        {/* Icon + text (desktop) */}
-        <span className="hidden sm:inline">▶ Step</span>
+        ▶ Step
       </button>
 
       
@@ -121,22 +117,19 @@ export function ControlBar() {
         onClick={onRun}
         className={`
           bg-green-600 hover:bg-green-700
-          text-white px-3 py-1 sm:px-4 sm:py-2 rounded font-semibold
+          text-white px-4 py-2 rounded font-semibold
           ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
-      > 
-        <span className="inline sm:hidden">⏩</span>
-        <span className="hidden sm:inline">⏩ Run</span>
+      >
+        ⏩ Run
       </button>
       
       ) : (
         <button
           onClick={onPause}
-          className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 sm:px-4 sm:py-2 rounded font-semibold text-sm sm:text-base"
+          className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded font-semibold text-sm sm:text-base"
         >
-        <span className="inline sm:hidden">⏸</span>
-        <span className="hidden sm:inline">⏸ Pause</span>
-
+          ⏸ Pause
         </button>
       )}
 
@@ -144,7 +137,7 @@ export function ControlBar() {
         onClick={cycleExecutionSpeed}
         disabled={isExecuting && !isPaused}
         className="
-          w-10 h-9 sm:w-12 sm:h-11
+          w-12 h-11
           bg-gray-700 hover:bg-gray-600
           text-white font-bold
           rounded-md
@@ -161,23 +154,20 @@ export function ControlBar() {
         className={`
           bg-purple-600 hover:bg-purple-700
           disabled:bg-gray-600 disabled:cursor-not-allowed
-          text-white px-3 py-1 sm:px-4 sm:py-2 rounded font-semibold
+          text-white px-4 py-2 rounded font-semibold
+          text-sm sm:text-base
           ${highlightRewind ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
       >
-        
-      <span className="inline sm:hidden">⏪</span>
-      <span className="hidden sm:inline">⏪ Rewind</span>
+        ⏪ Rewind
       </button>
 
       
       <button
         onClick={onReset}
-        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 sm:px-4 sm:py-2 rounded font-semibold"
+        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold text-sm sm:text-base"
       >
-        
-      <span className="inline sm:hidden">↺</span>
-      <span className="hidden sm:inline">↺ Reset</span>
+        ↺ Reset
       </button>
     </div>
   );
