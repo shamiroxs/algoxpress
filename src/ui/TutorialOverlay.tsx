@@ -114,11 +114,13 @@ export function TutorialOverlay() {
           w-[92%] sm:w-[60%]
           max-w-none sm:max-w-3xl
           pointer-events-auto
-          bg-gray-900/90 backdrop-blur-md
+          bg-gradient-to-b from-gray-900 to-gray-950
           ring-1 ring-yellow-400/40
+          border-2 border-yellow-400
           px-6 py-4
           flex items-center justify-between
-          rounded-xl
+          rounded-2xl
+          
           shadow-2xl
           animate-in fade-in slide-in-from-bottom-4 duration-300
           ${isBottom ? 'bottom-6 border-t' : 'top-6 border-b'}

@@ -116,7 +116,9 @@ interface GameState {
   tutorial: {
     isActive: boolean;
     currentStep: TutorialStepId;
+    spotlightRect?: DOMRect | null;
   };
+  setTutorialSpotlight: (rect: DOMRect | null) => void;
 
   executionSpeed: 1 | 2 | 4;
   cycleExecutionSpeed: () => void;
@@ -202,6 +204,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   tutorial: {
     isActive: false,
     currentStep: TUTORIAL_STEP_ORDER[0],
+    spotlightRect: null,
   },
 
   scrollToChallengeOnSuccess: true,
@@ -259,6 +262,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       tutorial: {
         isActive: false,
         currentStep: TUTORIAL_STEP_ORDER[0],
+        spotlightRect: null,
       },
     }),
   
@@ -281,6 +285,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           tutorial: {
             isActive: false,
             currentStep: step,
+            spotlightRect: null,
           },
         };
       }
@@ -300,7 +305,14 @@ export const useGameStore = create<GameState>((set, get) => ({
       return updates as GameState;
     }),
   
-
+  setTutorialSpotlight: (rect) =>
+    set((state) => ({
+      tutorial: {
+        ...state.tutorial,
+        spotlightRect: rect,
+      },
+    })),
+  
   // Completion state
   completedChallengeIds: loadCompletedFromProgress(),
 

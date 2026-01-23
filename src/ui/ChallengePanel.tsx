@@ -50,7 +50,7 @@ export function ChallengePanel() {
 
       {/* Target Array */}
       <div className="mb-2">
-      <h3 className="text-gray-400 text-sm mb-2">Correct Seating</h3>
+      <h3 className="text-gray-400 text-sm mb-2">Target Seating</h3>
         <ArrayView array={challenge.targetArray} />
       </div>
 
