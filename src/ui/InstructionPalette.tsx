@@ -222,7 +222,7 @@ export function InstructionPalette() {
     useEffect(() => {
       const update = () => {
         // Tailwind sm = 640px
-        setColumns(window.innerWidth < 640 ? 4 : 4);
+        setColumns(window.innerWidth < 640 ? 3 : 4);
       };
   
       update();
@@ -1793,7 +1793,7 @@ export function InstructionPalette() {
                   )}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="grid grid-cols-4 gap-1 sm:gap-3">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
                     {globalInstructionTemplates.map((template) => (
                       <DraggablePaletteItem
                         key={`global-${template.type}`}
@@ -1832,7 +1832,7 @@ export function InstructionPalette() {
                 )}
                 strategy={verticalListSortingStrategy}
               >
-                <div className="grid grid-cols-4 gap-1 sm:gap-3">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
                   {pointerInstructionTemplates.map((template) => (
                     <DraggablePaletteItem
                       key={`moco-${template.type}`}
@@ -1867,7 +1867,7 @@ export function InstructionPalette() {
                 )}
                 strategy={verticalListSortingStrategy}
               >
-                <div className="grid grid-cols-4 gap-1 sm:gap-3">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3">
                   {pointerInstructionTemplates.map((template) => (
                     <DraggablePaletteItem
                       key={`choco-${template.type}`}
