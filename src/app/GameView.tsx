@@ -347,7 +347,10 @@ export function GameView() {
                 </motion.div>
               </div>
               )}
-            <ControlBar />
+            <div className="mt-6 flex justify-center">
+              <ControlBar />
+            </div>
+
             </div>
           </div>
           

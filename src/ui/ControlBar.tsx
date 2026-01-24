@@ -2,7 +2,7 @@
  * Control bar for execution controls
  * Step, Run, Pause, Rewind, Reset
  */
- 
+
 import {
   executeSingleStep,
   runExecution,
@@ -18,41 +18,43 @@ import {
   useIsTutorialActive,
 } from '../tutorial/selectors';
 
-export function ControlBar() {
+import {
+  Play,
+  Pause,
+  StepBack,
+  StepForward,
+  RotateCcw,
+} from 'lucide-react';
 
+export function ControlBar() {
   const executionSpeed = useGameStore((s) => s.executionSpeed);
   const cycleExecutionSpeed = useGameStore((s) => s.cycleExecutionSpeed);
 
   const isExecuting = useIsExecuting();
   const isPaused = useIsPaused();
-  const { endTutorial } = useGameStore();
+
   const {
+    endTutorial,
     maybeCompleteTutorial,
     dismissSuccessHint,
+    setScrollToChallengeOnSuccess,
+    validationResult,
+    successHintDismissed,
+    rewindHintShown,
+    markRewindHintShown,
   } = useGameStore();
 
   const isActive = useIsTutorialActive();
-  const validationResult = useGameStore((s) => s.validationResult);
-  const successHintDismissed = useGameStore((s) => s.successHintDismissed);
-  const { setScrollToChallengeOnSuccess } = useGameStore();
-  const rewindHintShown = useGameStore((s) => s.rewindHintShown);
-  const markRewindHintShown = useGameStore(
-    (s) => s.markRewindHintShown
-  );
-  
+
+  const highlightRun =
+    useTutorialHighlight('CONTROL_BAR', { control: 'RUN' }) && isActive;
+
+  const completesOnRun = useTutorialCompletesOn('RUN_CLICK');
+
   const highlightRewind =
     validationResult?.success &&
     !rewindHintShown &&
     !successHintDismissed;
-  
-
-  const highlightRun = useTutorialHighlight(
-    'CONTROL_BAR',
-    { control: 'RUN' }
-  ) && isActive;
-  
-  const completesOnRun =
-    useTutorialCompletesOn('RUN_CLICK');
 
   const onAnyControlClick = () => {
     if (validationResult?.success) {
@@ -96,86 +98,111 @@ export function ControlBar() {
     resetExecution();
   };
 
-  return (
-    <div className="control-bar bg-gray-800 rounded-lg p-3 flex flex-wrap items-center justify-center gap-1 sm:gap-3">
-      <button
-        onClick={onStep}
-        disabled={isExecuting && !isPaused}
-        className={`
-          bg-blue-600 hover:bg-blue-700
-          disabled:bg-gray-600 disabled:cursor-not-allowed
-          text-white text-base
-          px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
-          ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
-        `}
-      >
-        ▶ 
-      </button>
+  const secondaryBtn =
+    'w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ' +
+    'bg-gray-700 hover:bg-gray-600 text-white text-sm ' +
+    'disabled:opacity-40 disabled:cursor-not-allowed transition';
 
-      
-      {!isExecuting || isPaused ? (
-        <button
-        onClick={onRun}
-        className={`
-          bg-green-600 hover:bg-green-700
-          text-white text-base
-          px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
-          ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
-        `}
-      >
-        ▶▶
-      </button>
-      
-      ) : (
-        <button
-          onClick={onPause}
-          className="bg-yellow-600 hover:bg-yellow-700 
-          text-white px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold 
-          text-base"
-        >
-          ⏸ 
-        </button>
-      )}
+  const retrySecondaryBtn =
+    'w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ' +
+    'bg-gray-800 hover:bg-gray-700 text-white text-sm ' +
+    'disabled:opacity-40 disabled:cursor-not-allowed transition';
 
-      <button
-        onClick={cycleExecutionSpeed}
-        disabled={isExecuting && !isPaused}
+    return (
+      <div
         className="
-          w-10 h-9 sm:w-12 sm:h-11
-          bg-gray-700 hover:bg-gray-600
-          text-white font-bold
-          rounded-sm sm:rounded
-          flex items-center justify-center
-          text-base
+          flex items-center
+          bg-gray-900/90
+          rounded-full
+          px-4 py-2
+          shadow-lg
+          w-full max-w-xl
         "
-        title="Execution speed"
       >
-        {executionSpeed}x
-      </button>
-
-      <button
-        onClick={onRewind}
-        disabled={isExecuting && !isPaused}
-        className={`
-          bg-purple-600 hover:bg-purple-700
-          disabled:bg-gray-600 disabled:cursor-not-allowed
-          text-white px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
-          text-base
-          ${highlightRewind ? 'ring-2 ring-green-400 animate-pulse' : ''}
-        `}
-      >
-        ◀◀ 
-      </button>
-
-      
-      <button
-        onClick={onReset}
-        className="bg-red-600 hover:bg-red-700 text-white 
-        px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold text-base"
-      >
-        ↺ 
-      </button>
-    </div>
-  );
+        {/* LEFT: Speed */}
+        <div className="flex-1 flex justify-start">
+          <button
+            onClick={cycleExecutionSpeed}
+            disabled={isExecuting && !isPaused}
+            className="
+              px-3 py-1
+              rounded-full
+              text-xs font-semibold
+              bg-gray-800 text-gray-200
+              hover:bg-gray-700
+              disabled:opacity-40
+            "
+            title="Execution speed"
+          >
+            {executionSpeed}×
+          </button>
+        </div>
+  
+        {/* CENTER: Transport controls */}
+        <div className="flex items-center gap-3 justify-center">
+          {/* Rewind */}
+          <button
+            onClick={onRewind}
+            disabled={isExecuting && !isPaused}
+            className={`
+              ${secondaryBtn}
+              ${highlightRewind ? 'ring-2 ring-green-400 animate-pulse' : ''}
+            `}
+          >
+            <StepBack size={18} />
+          </button>
+  
+          {/* Play / Pause */}
+          {!isExecuting || isPaused ? (
+            <button
+              onClick={onRun}
+              className={`
+                w-12 h-12
+                rounded-full
+                flex items-center justify-center
+                bg-green-600 hover:bg-green-500
+                text-white text-xl font-bold
+                transition
+                ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
+              `}
+            >
+              <Play size={24} fill="currentColor" />
+            </button>
+          ) : (
+            <button
+              onClick={onPause}
+              className="
+                w-12 h-12
+                rounded-full
+                flex items-center justify-center
+                bg-yellow-500 hover:bg-yellow-400
+                text-white text-xl font-bold
+                transition
+              "
+            >
+              <Pause size={24} />
+            </button>
+          )}
+  
+          {/* Step */}
+          <button
+            onClick={onStep}
+            disabled={isExecuting && !isPaused}
+            className={`
+              ${secondaryBtn}
+              ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
+            `}
+          >
+            <StepForward size={18} />
+          </button>
+        </div>
+  
+        {/* RIGHT: Reset */}
+        <div className="flex-1 flex justify-end">
+          <button onClick={onReset} className={retrySecondaryBtn}>
+            <RotateCcw size={18} />
+          </button>
+        </div>
+      </div>
+    );
 }
-
