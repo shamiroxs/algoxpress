@@ -104,7 +104,7 @@ export function ControlBar() {
         className={`
           bg-blue-600 hover:bg-blue-700
           disabled:bg-gray-600 disabled:cursor-not-allowed
-          text-white text-xs sm:text-base 
+          text-white text-sm sm:text-base 
           px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
           ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
@@ -118,7 +118,7 @@ export function ControlBar() {
         onClick={onRun}
         className={`
           bg-green-600 hover:bg-green-700
-          text-white text-xs sm:text-base 
+          text-white text-sm sm:text-base 
           px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
           ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
@@ -131,7 +131,7 @@ export function ControlBar() {
           onClick={onPause}
           className="bg-yellow-600 hover:bg-yellow-700 
           text-white px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold 
-          text-xs sm:text-base"
+          text-sm sm:text-base"
         >
           ⏸ 
         </button>
@@ -146,7 +146,7 @@ export function ControlBar() {
           text-white font-bold
           rounded-sm sm:rounded
           flex items-center justify-center
-          text-xs sm:text-base
+          text-sm sm:text-base
         "
         title="Execution speed"
       >
@@ -160,7 +160,7 @@ export function ControlBar() {
           bg-purple-600 hover:bg-purple-700
           disabled:bg-gray-600 disabled:cursor-not-allowed
           text-white px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
-          text-xs sm:text-base
+          text-sm sm:text-base
           ${highlightRewind ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
       >
@@ -171,7 +171,7 @@ export function ControlBar() {
       <button
         onClick={onReset}
         className="bg-red-600 hover:bg-red-700 text-white 
-        px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold text-xs sm:text-base"
+        px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold text-sm sm:text-base"
       >
         ↺ 
       </button>
