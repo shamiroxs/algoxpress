@@ -1594,7 +1594,7 @@ export function InstructionPalette() {
                         }
                       `}
                     >
-                      {globalInstructionTypes.includes(inst.type) ? 'BOTH' : 'POINTER'}
+                      {globalInstructionTypes.includes(inst.type) ? 'SHARED' : 'MOCO/CHOCO'}
                     </span>
                   </div>
                   {/* Icon slot */}
@@ -1792,7 +1792,7 @@ export function InstructionPalette() {
             <div className="flex justify-center">
               <div className="bg-gray-700/60 rounded-lg p-3 w-full max-w-md">
                 <h4 className="text-gray-300 font-semibold mb-2 text-center tracking-widest">
-                  BOTH
+                  SHARED
                 </h4>
 
                 <SortableContext
