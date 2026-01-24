@@ -97,15 +97,15 @@ export function ControlBar() {
   };
 
   return (
-    <div className="control-bar bg-gray-800 rounded-lg p-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+    <div className="control-bar bg-gray-800 rounded-lg p-3 flex flex-wrap items-center justify-center gap-1 sm:gap-3">
       <button
         onClick={onStep}
         disabled={isExecuting && !isPaused}
         className={`
           bg-blue-600 hover:bg-blue-700
           disabled:bg-gray-600 disabled:cursor-not-allowed
-          text-white text-base 
-          px-4 py-2 rounded font-semibold
+          text-white text-xs sm:text-base 
+          px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
           ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
       >
@@ -118,8 +118,8 @@ export function ControlBar() {
         onClick={onRun}
         className={`
           bg-green-600 hover:bg-green-700
-          text-white text-base 
-          px-4 py-2 rounded font-semibold
+          text-white text-xs sm:text-base 
+          px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
           ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
       >
@@ -130,8 +130,8 @@ export function ControlBar() {
         <button
           onClick={onPause}
           className="bg-yellow-600 hover:bg-yellow-700 
-          text-white px-4 py-2 rounded font-semibold 
-          text-base"
+          text-white px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold 
+          text-xs sm:text-base"
         >
           ⏸ 
         </button>
@@ -141,10 +141,10 @@ export function ControlBar() {
         onClick={cycleExecutionSpeed}
         disabled={isExecuting && !isPaused}
         className="
-          w-12 h-11
+          w-7 h-6 sm:w-12 sm:h-11
           bg-gray-700 hover:bg-gray-600
           text-white font-bold
-          rounded
+          rounded-sm sm:rounded
           flex items-center justify-center
           text-xs sm:text-base
         "
@@ -159,8 +159,8 @@ export function ControlBar() {
         className={`
           bg-purple-600 hover:bg-purple-700
           disabled:bg-gray-600 disabled:cursor-not-allowed
-          text-white px-4 py-2 rounded font-semibold
-          text-base
+          text-white px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold
+          text-xs sm:text-base
           ${highlightRewind ? 'ring-2 ring-green-400 animate-pulse' : ''}
         `}
       >
@@ -171,8 +171,7 @@ export function ControlBar() {
       <button
         onClick={onReset}
         className="bg-red-600 hover:bg-red-700 text-white 
-        px-4 py-2 rounded font-semibold 
-        text-base"
+        px-2 py-1 sm:px-4 sm:py-2 rounded-sm sm:rounded font-semibold text-xs sm:text-base"
       >
         ↺ 
       </button>
