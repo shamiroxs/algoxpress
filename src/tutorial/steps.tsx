@@ -5,6 +5,7 @@ import type { TutorialStepContent } from './types';
 
 import { InlineInstructionIcon } from './InlineInstructionIcon';
 import { InstructionType } from '../engine/instructions/types';
+import { Play, StepForward } from 'lucide-react';
 
 export const TUTORIAL_STEPS: TutorialStepContent[] = [
   {
@@ -68,11 +69,36 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
         Use <InlineInstructionIcon type={InstructionType.PUT} /> to change the value
       </>
     ),
-  },
+  }, 
   {
     id: TutorialStepId.RUN_EXECUTION,
     title: 'Run your orders',
-    text: 'Press Run, (or Step one at a time)',
+    text: (
+      <>
+        Press <span
+                className="
+                  inline-flex items-center justify-center
+                  w-5 h-5 mx-1
+                  rounded-full
+                  bg-green-600 text-white
+                  align-middle
+                "
+              >
+      <Play size={14} fill="currentColor" className="inline mx-1 text-white" />
+    </span>
+        or step with <span
+                className="
+                  inline-flex items-center justify-center
+                  w-5 h-5 mx-1
+                  rounded-full
+                  bg-gray-700 text-white
+                  align-middle
+                "
+              >
+                <StepForward size={14} className="inline mx-1" />
+              </span>
+      </>
+    ),
   },
 ];
 
