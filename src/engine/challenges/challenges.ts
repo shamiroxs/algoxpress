@@ -11,7 +11,7 @@ export const challenges: Challenge[] = [
   {
     id: 'challenge-0',
     title: 'Start Here',
-    description: `Make Seat 1 match Seat 0.`,
+    description: `Copy the first value into the second box`,
     hints: ['Copy the ticket value from Seat 0 into Seat 1.'],
     difficulty: Difficulty.EASY,
     initialArray: [7, 0, 0, 0],
