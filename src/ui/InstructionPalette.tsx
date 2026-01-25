@@ -523,7 +523,7 @@ export function InstructionPalette() {
         </div>
     
         {/* Label */}
-        <div className="text-xs font-semibold tracking-wide">
+        <div className="mt-1 text-xs font-semibold tracking-wide">
           {template.label}
         </div>
     
@@ -1377,7 +1377,7 @@ export function InstructionPalette() {
           <div className="text-xl sm:text-3xl">
             {INSTRUCTION_ICONS[instructionType]}
           </div>
-          <div className="text-xs font-semibold">
+          <div className="mt-1 text-xs font-semibold">
             {getInstructionLabel(instructionType)}
           </div>
         </div>
