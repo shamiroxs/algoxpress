@@ -97,7 +97,8 @@ export function TutorialOverlay() {
   const handleNext = () => {
     maybeCompleteTutorial('ANY_CONTROL');
   };
-    
+  const isWelcome = step?.id === TutorialStepId.WELCOME;
+
   return (
     <div
       className={`fixed inset-0 z-50 ${
@@ -105,8 +106,17 @@ export function TutorialOverlay() {
       }`}
     >
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/15" />
-
+      <div
+        className={`
+          absolute inset-0
+          transition-all duration-300
+          ${
+            isWelcome
+              ? 'bg-black/50 backdrop-blur-sm'
+              : 'bg-black/25'
+          }
+        `}
+      />
       {/* Coach box */}
       <div
         className={`
