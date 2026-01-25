@@ -25,11 +25,31 @@ export function ExecutionTimeline({
   const successHintDismissed = useGameStore((s) => s.successHintDismissed);
 
   const rewindHintShown = useGameStore((s) => s.rewindHintShown);
+
+  const playerInstructions = useGameStore((s) => s.playerInstructions);
+  const executionState = useGameStore((s) => s.executionState);
+
+  const hasInstructions = playerInstructions.length > 0;
+
+  const executionCompleted =
+    hasInstructions &&
+    executionState != null &&
+    executionState.currentInstructionId === null;
+
   
   const showSuccessHint =
     validationResult?.success &&
     !rewindHintShown &&
     !successHintDismissed;
+
+    let emptyStateText: string | null = null;
+
+  if (!hasInstructions) {
+    emptyStateText = 'Program is empty';
+  } else if (executionCompleted) {
+    emptyStateText = 'Execution complete';
+  }
+  
   
   return (   
     <div className="execution-timeline bg-gray-800 rounded-lg p-4">
@@ -47,21 +67,33 @@ export function ExecutionTimeline({
         </div>
       </div>
 
-      {currentInstruction && (
-        <motion.div
-          className="bg-blue-900/30 border border-blue-500 rounded p-3"
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="text-xs text-blue-300 mb-1">
-            Current Instruction
-          </div>
-          <div className="text-white font-mono text-sm">
-            {formatInstruction(currentInstruction)}
-          </div>
-        </motion.div>
-      )}
+      <motion.div
+        className="bg-blue-900/30 border border-blue-500 rounded p-3"
+        animate={{ opacity: currentInstruction ? 1 : 0.6 }}
+        transition={{ duration: 0.2 }}
+      >
+        {currentInstruction ? (
+          <>
+            <div className="text-xs text-blue-300 mb-1">
+              Current Action
+            </div>
+            <div className="text-white font-mono text-sm">
+              {formatInstruction(currentInstruction)}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="text-xs text-gray-400 mb-1">
+              Current Action
+            </div>
+            <div className="text-gray-400 text-sm italic">
+              {emptyStateText}
+            </div>
+          </>
+        )}
+      </motion.div>
+
+
 
       {showSuccessHint && (
         <motion.div
