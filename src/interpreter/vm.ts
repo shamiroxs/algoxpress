@@ -142,7 +142,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.IF_LESS: {
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in hand.');
+          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
         }
 
         const ptr = getPointer(newState, instruction.target);
@@ -161,7 +161,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.IF_GREATER: {
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in hand.');
+          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
         }
 
         const ptr = getPointer(newState, instruction.target);
@@ -180,7 +180,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.IF_EQUAL: {
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in hand.');
+          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
         }
 
         const ptr = getPointer(newState, instruction.target);
@@ -199,7 +199,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.IF_NOT_EQUAL: {
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in hand.');
+          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
         }
 
         const ptr = getPointer(newState, instruction.target);
@@ -356,7 +356,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'No ticket in hand. Pick up a ticket before using this instruction.');
+          return instructionError(newState, instruction, 'No ticket in clipboard. Pick up a ticket before using this instruction.');
         }
         newState.array[ptr] = newState.hand;
         frame.line++;

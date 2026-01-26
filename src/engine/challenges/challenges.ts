@@ -180,7 +180,7 @@ export const challenges: Challenge[] = [
     description: `A VIP is already seated somewhere. Seat 0 is also reserved by them.`,
     hints: ['Copy the highest ticket value into Seat 0.'
     ],
-    difficulty: Difficulty.EASY,
+    difficulty: Difficulty.MEDIUM,
     initialArray: [0, 7, 2, 9, 1],
     targetArray: [9, 7, 2, 9, 1],
     maxSteps: 30,
@@ -229,6 +229,65 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-6',
+    title: 'Duplicate Ticket',
+    description: 'Only one ticket per passenger is allowed.',
+    hints: ['If any duplicate ticket exists, copy that value into Seat 0.', 'Assume no passenger at seat 0'],
+    difficulty: Difficulty.MEDIUM,
+    initialArray: [0, 3, 4, 2, 2],
+    targetArray: [2, 3, 4, 2, 2],
+    maxSteps: 23,
+    initialPointers: {
+      MOCO: 1,
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'pick',
+        type: InstructionType.PICK,
+        target: 'MOCO',
+      },
+      {
+        id: 'move-right',
+        type: InstructionType.MOVE_RIGHT,
+        target: 'MOCO',
+      }, 
+      {
+        id: 'if-equal',
+        type: InstructionType.IF_EQUAL,
+        target: "MOCO",
+        body: [],
+      }, 
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      }, 
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO'],
+      allowedInstructions: [
+        
+        InstructionType.SET_POINTER,
+
+        InstructionType.PICK,
+        InstructionType.PUT,
+
+        InstructionType.JUMP,
+        InstructionType.LABEL,
+      ],
+      suggestedInstructions: [
+        InstructionType.IF_LESS,
+        InstructionType.IF_EQUAL,
+      ],
+    }
+  },
+  {
+    id: 'challenge-7',
     title: 'Clear the Aisle',
     description: `Passengers without tickets must step aside without disturbing valid ones.`,
     hints: [
@@ -280,7 +339,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-7',
+    id: 'challenge-8',
     title: 'Inspection Check',
     description: `An inspector checks ticket order before departure.`,
     hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
@@ -330,41 +389,6 @@ export const challenges: Challenge[] = [
       ],
     },
   },  
-  {
-    id: 'challenge-8',
-    title: 'Duplicate Ticket',
-    description: 'Only one ticket per passenger is allowed.',
-    hints: ['If any duplicate ticket exists, copy that value into Seat 0.'],
-    difficulty: Difficulty.MEDIUM,
-    initialArray: [1, 3, 4, 2, 2],
-    targetArray: [2, 3, 4, 2, 2],
-    maxSteps: 25,
-    instructions: [],
-    unlocked: false,
-    capabilities: {
-      allowedPointers: ['MOCO', 'CHOCO'],
-      allowedInstructions: [
-        InstructionType.MOVE_LEFT,
-        InstructionType.MOVE_RIGHT,
-        InstructionType.MOVE_TO_END,
-        InstructionType.SET_POINTER,
-        InstructionType.PICK,
-        InstructionType.PUT,
-
-        InstructionType.IF_GREATER,
-        InstructionType.IF_LESS,
-        InstructionType.IF_EQUAL,
-        InstructionType.IF_END,
-
-        InstructionType.JUMP,
-        InstructionType.LABEL,
-        InstructionType.WAIT,
-      ],
-      suggestedInstructions: [
-        InstructionType.IF_LESS,
-        InstructionType.IF_EQUAL,
-      ],
-    }
-  },
+  
 ];
 
