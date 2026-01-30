@@ -1,5 +1,5 @@
-// src/ui/builder/ProgramBuilderDnD.tsx
-import React, { useMemo, useState } from 'react';
+// src/ui/ProgramBuilderDnD.tsx
+import { useMemo, useState } from 'react';
 import {
   DndContext,
   DragOverlay,
