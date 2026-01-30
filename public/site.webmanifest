@@ -1,6 +1,11 @@
 {
     "name": "Algorithm Express",
     "short_name": "AlgoXpress",
+    "start_url": "/",
+    "display": "fullscreen",
+    "orientation": "landscape",
+    "background_color": "#111827",
+    "theme_color": "#111827",
     "icons": [
       {
         "src": "/android-chrome-192x192.png",
@@ -12,9 +17,6 @@
         "sizes": "512x512",
         "type": "image/png"
       }
-    ],
-    "theme_color": "#000000",
-    "background_color": "#000000",
-    "display": "standalone"
+    ]
   }
   

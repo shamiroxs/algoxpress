@@ -100,19 +100,19 @@ export function ControlBar() {
 
   const secondaryBtn =
     'w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ' +
-    'bg-gray-700 hover:bg-gray-600 text-white text-sm ' +
+    'bg-gray-800 hover:bg-gray-600 text-white text-sm ' +
     'disabled:opacity-40 disabled:cursor-not-allowed transition';
 
   const retrySecondaryBtn =
     'w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ' +
-    'bg-gray-800 hover:bg-gray-700 text-white text-sm ' +
+    'bg-gray-900 hover:bg-gray-700 text-white text-sm ' +
     'disabled:opacity-40 disabled:cursor-not-allowed transition';
 
     return (
       <div
         className="
           flex items-center
-          bg-gray-900/90
+          bg-gray-800/35
           rounded-full
           px-4 py-2
           shadow-lg
@@ -128,7 +128,7 @@ export function ControlBar() {
               px-3 py-1
               rounded-full
               text-xs font-semibold
-              bg-gray-800 text-gray-200
+              bg-gray-900 text-gray-200
               hover:bg-gray-700
               disabled:opacity-40
             "

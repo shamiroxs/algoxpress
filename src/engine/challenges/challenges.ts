@@ -389,6 +389,346 @@ export const challenges: Challenge[] = [
       ],
     },
   },  
+  // New challenges based on classic two-pointer problems
+  
+  {
+    id: 'challenge-9',
+    title: '3Sum',
+    description: 'Find all unique triplets whose sum equals zero.',
+    hints: [
+      'First sort the array.',
+      'Fix one element and use two pointers for the rest.',
+      // 'Target sum = 0'
+    ],
+    difficulty: Difficulty.HARD,
+    initialArray: [-1, 0, 1, 2, -1, -4],
+    targetArray: [-4, -1, -1, 0, 1, 2], // Sorted first, then find triplets
+    maxSteps: 50,
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_LEFT,
+        InstructionType.MOVE_RIGHT,
+        InstructionType.PICK,
+        InstructionType.PUT,
+        InstructionType.SWAP,
+        InstructionType.IF_GREATER,
+        InstructionType.IF_LESS,
+        InstructionType.IF_EQUAL,
+      ],
+    },
+  },
+
+  {
+    id: 'challenge-10',
+    title: 'Container With Most Water',
+    description: 'Find the maximum area of water a container can store.',
+    hints: [
+      'Start from both ends of the compartment.',
+      'Move the pointer with the smaller height inward.',
+      // 'Input: [1, 8, 6, 2, 5, 4, 8, 3, 7]',
+      // 'Output: 49'
+    ],
+    difficulty: Difficulty.HARD,
+    initialArray: [1, 8, 6, 2, 5, 4, 8, 3, 7],
+    targetArray: [49, 8, 6, 2, 5, 4, 8, 3, 7], // Store result in first position
+    maxSteps: 40,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 8,
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_LEFT,
+        InstructionType.MOVE_RIGHT,
+        InstructionType.IF_GREATER,
+        InstructionType.IF_LESS,
+        InstructionType.IF_MEET,
+      ],
+    },
+  },
+
+  {
+    id: 'challenge-11',
+    title: 'Sort Colors',
+    description: 'Sort passengers by ticket class: 0, 1, and 2 only.',
+    hints: [
+      'Use three pointers: low, mid, high.',
+      'Single pass through the compartment.',
+      'Dutch National Flag algorithm.',
+    ],
+    difficulty: Difficulty.HARD,
+    initialArray: [2, 0, 2, 1, 1, 0],
+    targetArray: [0, 0, 1, 1, 2, 2],
+    maxSteps: 35,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 5,
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_LEFT,
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+        InstructionType.IF_EQUAL,
+        InstructionType.IF_GREATER,
+        InstructionType.IF_LESS,
+      ],
+    },
+  },
+
+  {
+    id: 'challenge-12',
+    title: 'Longest Valid Window',
+    description: 'Find the length of the longest subarray with sum not exceeding the limit.',
+    hints: [
+      'Expand right pointer to include more seats.',
+      'Shrink left when sum exceeds limit.',
+      // 'k = 14',
+      // 'Expected length: 4'
+    ],
+    difficulty: Difficulty.MEDIUM,
+    initialArray: [2, 5, 1, 7, 10],
+    targetArray: [4, 5, 1, 7, 10], // Store result (length=4) in first position
+    maxSteps: 30,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 0,
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.MOVE_LEFT,
+        InstructionType.IF_GREATER,
+        InstructionType.PICK,
+        InstructionType.PUT,
+      ],
+    },
+  },
+
+  {
+    id: 'challenge-13',
+    title: 'Remove Duplicates II',
+    description: 'Each ticket value can appear at most twice.',
+    hints: [
+      'Allow each element to appear at most twice.',
+      'Maintain order of remaining elements.',
+      'Array is sorted.',
+    ],
+    difficulty: Difficulty.MEDIUM,
+    initialArray: [0, 0, 1, 1, 1, 1, 2, 3, 3],
+    targetArray: [0, 0, 1, 1, 2, 3, 3, 0, 0], // Modified array with duplicates removed
+    maxSteps: 30,
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.PICK,
+        InstructionType.PUT,
+        InstructionType.IF_EQUAL,
+        InstructionType.SWAP,
+      ],
+    },
+  },
+
+  {
+    id: 'challenge-14',
+    title: 'Minimum Window Size',
+    description: 'Find the minimum length subarray with sum meeting the target.',
+    hints: [
+      'Use two pointers to track window.',
+      'Expand until sum >= target.',
+      'Shrink to find minimum.',
+      // 'Target = 7'
+    ],
+    difficulty: Difficulty.HARD,
+    initialArray: [2, 3, 1, 2, 4, 3],
+    targetArray: [2, 3, 1, 2, 4, 3], // Store result (length=2) in first position
+    maxSteps: 35,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 0,
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.MOVE_LEFT,
+        InstructionType.IF_GREATER,
+        InstructionType.PICK,
+        InstructionType.PUT,
+      ],
+    },
+  },
+
+  {
+    id: 'challenge-15',
+    title: 'Squared and Sorted',
+    description: 'Return sorted array of squares of each ticket value.',
+    hints: [
+      'Array contains negative and positive values.',
+      'Compare absolute values from both ends.',
+      'Fill result from the back.',
+    ],
+    difficulty: Difficulty.MEDIUM,
+    initialArray: [-7, -3, 2, 3, 11],
+    targetArray: [4, 9, 9, 49, 121],
+    maxSteps: 30,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 4,
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_LEFT,
+        InstructionType.MOVE_RIGHT,
+        InstructionType.PICK,
+        InstructionType.PUT,
+        InstructionType.IF_GREATER,
+        InstructionType.IF_LESS,
+      ],
+    },
+  },
+
+  {
+    id: 'challenge-16',
+    title: 'Trapping Rain Water',
+    description: 'Calculate total water trapped between ticket holders.',
+    hints: [
+      'Use two pointers from both ends.',
+      'Track leftMax and rightMax heights.',
+      'Move the pointer with smaller height.',
+      'Water trapped = min(leftMax, rightMax) - current height.',
+    ],
+    difficulty: Difficulty.HARD,
+    initialArray: [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1],
+    targetArray: [6, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1], // Store result (6) in first position
+    maxSteps: 60,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 11,
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_LEFT,
+        InstructionType.MOVE_RIGHT,
+        InstructionType.IF_GREATER,
+        InstructionType.IF_LESS,
+        InstructionType.PICK,
+        InstructionType.PUT,
+        InstructionType.IF_MEET,
+      ],
+    },
+  },
   
 ];
 

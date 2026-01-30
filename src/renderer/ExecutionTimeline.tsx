@@ -5,7 +5,6 @@
 
 import { motion } from 'framer-motion';
 import type { Instruction } from '../engine/instructions/types';
-import { InstructionType } from '../engine/instructions/types';
 import { useGameStore } from '../orchestrator/store';
 
 interface ExecutionTimelineProps {
@@ -19,41 +18,20 @@ export function ExecutionTimeline({
   currentLine,
   totalLines,
   stepCount,
-  currentInstruction,
 }: ExecutionTimelineProps) {
   const validationResult = useGameStore((s) => s.validationResult);
   const successHintDismissed = useGameStore((s) => s.successHintDismissed);
 
   const rewindHintShown = useGameStore((s) => s.rewindHintShown);
 
-  const playerInstructions = useGameStore((s) => s.playerInstructions);
-  const executionState = useGameStore((s) => s.executionState);
-
-  const hasInstructions = playerInstructions.length > 0;
-
-  const executionCompleted =
-    hasInstructions &&
-    executionState != null &&
-    executionState.currentInstructionId === null;
-
-  
   const showSuccessHint =
     validationResult?.success &&
     !rewindHintShown &&
     !successHintDismissed;
-
-    let emptyStateText: string | null = null;
-
-  if (!hasInstructions) {
-    emptyStateText = 'Program is empty';
-  } else if (executionCompleted) {
-    emptyStateText = 'Execution complete';
-  }
-  
   
   return (   
-    <div className="execution-timeline bg-gray-800 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-2">
+    <div className="execution-timeline bg-gray-900 rounded-lg p-4">
+      <div className="flex items-center justify-between">
         <div className="text-sm text-gray-400">
           Step:{' '} 
           <span className="text-white font-semibold">{stepCount}</span>
@@ -66,34 +44,6 @@ export function ExecutionTimeline({
           / {totalLines}
         </div>
       </div>
-
-      <motion.div
-        className="bg-blue-900/30 border border-blue-500 rounded p-3"
-        animate={{ opacity: currentInstruction ? 1 : 0.6 }}
-        transition={{ duration: 0.2 }}
-      >
-        {currentInstruction ? (
-          <>
-            <div className="text-xs text-blue-300 mb-1">
-              Current Action
-            </div>
-            <div className="text-white font-mono text-sm">
-              {formatInstruction(currentInstruction)}
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="text-xs text-gray-400 mb-1">
-              Current Action
-            </div>
-            <div className="text-gray-400 text-sm italic">
-              {emptyStateText}
-            </div>
-          </>
-        )}
-      </motion.div>
-
-
 
       {showSuccessHint && (
         <motion.div
@@ -109,80 +59,4 @@ export function ExecutionTimeline({
       )}
     </div>
   );
-}
-
-/**
- * Converts instruction into readable string for UI
- */
-function formatInstruction(instruction: Instruction): string {
-  const pointer =
-    (instruction as any).pointer === 'MOCO'
-      ? '[MOCO] '
-      : (instruction as any).pointer === 'CHOCO'
-      ? '[CHOCO] '
-      : '';
-
-  switch (instruction.type) {
-    case InstructionType.MOVE_LEFT:
-      return `${pointer}← Left`;
-
-    case InstructionType.MOVE_RIGHT:
-      return `${pointer}Right →`;
-
-    case InstructionType.MOVE_TO_END:
-      return `${pointer}ToEnd →→`;
-
-    case InstructionType.SET_POINTER:
-      return `${pointer}Goto ${instruction.index}`;
-
-    case InstructionType.SET_VALUE:
-      return `${pointer}Set ${instruction.value}`;
-
-    case InstructionType.PICK:
-      return `${pointer}Copy`;
-
-    case InstructionType.PUT:
-      return `${pointer}Paste`;
-
-    case InstructionType.IF_GREATER:
-      return `${pointer}IFGreat`;
-
-    case InstructionType.IF_LESS:
-      return `${pointer}IFLess`;
-
-    case InstructionType.IF_EQUAL:
-      return `${pointer}IFEqual`;
-    case InstructionType.IF_NOT_EQUAL:
-      return `${pointer}IFNotEqual`;
-
-    case InstructionType.IF_END:
-      return `${pointer}IFEnd ${instruction.label}`;
-
-    case InstructionType.IF_MEET:
-      return `${pointer}IFMeet ${instruction.label}`;
-
-    case InstructionType.JUMP:
-      return `${pointer}Jump ${instruction.label}`;
-
-    case InstructionType.LABEL:
-      return `${instruction.labelName}:`;
-
-    case InstructionType.SWAP:
-      return `${pointer}Swap ⇄`;
-
-    case InstructionType.SWAP_WITH_NEXT:
-      return `${pointer}SwapNext →←`;
-
-    case InstructionType.INCREMENT_VALUE:
-      return `${pointer}Value +`;
-
-    case InstructionType.DECREMENT_VALUE:
-      return `${pointer}Value -`;
-
-    case InstructionType.WAIT:
-      return `${pointer}Wait`;
-
-    default:
-      return 'UNKNOWN';
-  }
 }
