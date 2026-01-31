@@ -4,7 +4,7 @@
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -163,21 +163,6 @@ function PaletteDragPreview({
   );
 }
 
-const GAME_WIDTH = 1280;
-const GAME_HEIGHT = 720;
-
-function useViewportSize() {
-  const [size, setSize] = useState({ w: window.innerWidth, h: window.innerHeight });
-
-  useEffect(() => {
-    const onResize = () => setSize({ w: window.innerWidth, h: window.innerHeight });
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  return size;
-}
-
 export function GameView() {
   const navigate = useNavigate();
 
@@ -259,10 +244,6 @@ const [layoutVersion, setLayoutVersion] = useState(0);
 const addInstruction = useGameStore((s) => s.addInstruction);
 const updateInstruction = useGameStore((s) => s.updateInstruction);
 const setPlayerInstructions = useGameStore((s) => s.setPlayerInstructions);
-
-const { w, h } = useViewportSize();
-const scale = Math.min(w / GAME_WIDTH, h / GAME_HEIGHT);
-
 
 const sensors = useSensors(
   useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -430,14 +411,15 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
   
   return (
     <div className="fixed inset-0 bg-black flex items-center justify-center">
-    <div
-      style={{
-        width: GAME_WIDTH,
-        height: GAME_HEIGHT,
-        transform: `scale(${scale})`,
-        transformOrigin: 'center center',
-      }}
-    >
+  <div
+    className="origin-center"
+    style={{
+      width: '100vw',
+      height: '100vh',
+      maxWidth: '100%',
+      maxHeight: '100%',
+    }}
+  >
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
