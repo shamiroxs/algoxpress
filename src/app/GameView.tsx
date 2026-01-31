@@ -4,7 +4,7 @@
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -161,6 +161,21 @@ function PaletteDragPreview({
       </div>
     </div>
   );
+}
+
+const GAME_WIDTH = 1280;
+const GAME_HEIGHT = 720;
+
+function useViewportSize() {
+  const [size, setSize] = useState({ w: window.innerWidth, h: window.innerHeight });
+
+  useEffect(() => {
+    const onResize = () => setSize({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  return size;
 }
 
 export function GameView() {
@@ -409,17 +424,19 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
     return <RotateDeviceOverlay />;
   }
   
+  const { w, h } = useViewportSize();
+  const scale = Math.min(w / GAME_WIDTH, h / GAME_HEIGHT);
+
   return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center">
-  <div
-    className="origin-center"
-    style={{
-      width: '100vw',
-      height: '100vh',
-      maxWidth: '100%',
-      maxHeight: '100%',
-    }}
-  >
+    <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
+    <div
+      style={{
+        width: GAME_WIDTH,
+        height: GAME_HEIGHT,
+        transform: `scale(${scale})`,
+        transformOrigin: 'center center',
+      }}
+    >
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
