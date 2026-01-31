@@ -260,6 +260,10 @@ const addInstruction = useGameStore((s) => s.addInstruction);
 const updateInstruction = useGameStore((s) => s.updateInstruction);
 const setPlayerInstructions = useGameStore((s) => s.setPlayerInstructions);
 
+const { w, h } = useViewportSize();
+const scale = Math.min(w / GAME_WIDTH, h / GAME_HEIGHT);
+
+
 const sensors = useSensors(
   useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
 );
@@ -424,11 +428,8 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
     return <RotateDeviceOverlay />;
   }
   
-  const { w, h } = useViewportSize();
-  const scale = Math.min(w / GAME_WIDTH, h / GAME_HEIGHT);
-
   return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 bg-black flex items-center justify-center">
     <div
       style={{
         width: GAME_WIDTH,
