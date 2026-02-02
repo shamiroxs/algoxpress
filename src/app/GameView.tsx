@@ -141,7 +141,8 @@ function PaletteDragPreview({
   return (
     <div
       className={`
-        relative aspect-square w-20
+        relative aspect-square 
+        w-18 sm:w-20
         rounded-xl border-2
         flex flex-col items-center justify-center
         text-white
