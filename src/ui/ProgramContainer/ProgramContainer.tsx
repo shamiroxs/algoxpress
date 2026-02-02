@@ -742,7 +742,7 @@ export function ProgramContainer({
         >
           {playerInstructions.length === 0 ? (
             <div className="flex flex-1 items-center justify-center h-full">
-              <div className="text-mm text-gray-500 italic select-none pointer-events-none">
+              <div className="text-xs sm:text-base text-gray-500 italic select-none pointer-events-none">
                 Drag &amp; drop ↓
               </div>
             </div>
