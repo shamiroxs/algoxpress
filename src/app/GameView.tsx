@@ -55,8 +55,6 @@ import { InstructionType } from '../engine/instructions/types';
 import type { Instruction } from '../engine/instructions/types';
 import { useIsTutorialActive, useTutorialHighlight } from '../tutorial/selectors';
 
-import { useIsPortrait } from '../hooks/useIsPortrait';
-
 type DragItem =
   | {
       source: 'PALETTE';
@@ -176,7 +174,6 @@ export function GameView() {
   const successHintDismissed = useGameStore((s) => s.successHintDismissed);
 
   const isTutorialActive = useIsTutorialActive();
-  const isPortrait = useIsPortrait();
   const highlightTimeline = useTutorialHighlight('TIMELINE');
 
   /** ---------- LOCAL UI STATE ---------- */
@@ -389,25 +386,6 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
 
     setInsertPreview(null);
   };
-  function RotateDeviceOverlay() {
-    return (
-      <div className="fixed inset-0 z-[9999] bg-black flex items-center justify-center text-white">
-        <div className="text-center px-6">
-          <div className="text-6xl mb-4">📱↔️</div>
-          <div className="text-xl font-semibold">
-            Rotate your device
-          </div>
-          <div className="text-sm text-gray-400 mt-2">
-            This game is played in landscape mode
-          </div>
-        </div>
-      </div>
-    );
-  }  
-
-  if (isPortrait) {
-    return <RotateDeviceOverlay />;
-  }
   
   return (
     <div className="fixed inset-0 bg-black flex items-center justify-center">
@@ -427,7 +405,7 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
     >
-    <div className="h-full w-full overflow-hidden bg-gray-900 text-white">
+    <div className="h-full w-full overflow-y-auto bg-gray-900 text-white">
       {/* ================= SUCCESS OVERLAY ================= */}
       {validationResult?.success && 
         !successHintDismissed && 
@@ -435,17 +413,17 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
         <SuccessOverlay />
       )}
 
-      {/* ================= TOP BAR (HUD) ================= */}
-      <div className="h-30 relative flex items-center justify-between px-4 bg-gray-800 border-b border-gray-700 z-20">
+      {/* ================= TOP BAR (HUD) — DESKTOP ================= */}
+      <div className="hidden sm:flex h-48 relative items-center justify-between px-4 bg-gray-800 border-b border-gray-700 z-20">
         
         <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate('/');
-            }}
-            className="absolute top-4 left-4 text-gray-400 hover:text-white"
-          >
-            ← Back to Station
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate('/');
+          }}
+          className="absolute top-4 left-4 text-gray-400 hover:text-white text-sm sm:text-base"
+        >
+          ← Back to Station
         </button>
 
         {/* LEFT : Challenge Dropdown */}
@@ -453,8 +431,7 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
           className="absolute left-0 w-1/2 flex items-center justify-center gap-3 cursor-pointer select-none"
           onClick={toggleChallengePanel}
         >
-
-          <div className="flex items-center gap-2">
+          <div className="mr-auto flex items-center gap-2 px-12">
             <span className="font-semibold">{challenge.title}</span>
             <motion.span
               animate={{ rotate: mode === 'READ' ? 180 : 0 }}
@@ -471,20 +448,57 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
         </div>
       </div>
 
+      {/* ================= TOP BAR (HUD) — MOBILE ================= */}
+      <div className="sm:hidden relative bg-gray-800 border-b border-gray-700 z-20">
+        
+        {/* Row 1: Back + Centered Title */}
+        <div className="relative min-h-[3rem] flex items-center px-4">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/');
+            }}
+            className="text-gray-400 hover:text-white text-sm z-10"
+          >
+            ← Back
+          </button>
+
+          <div className="absolute left-0 right-0 flex justify-center pointer-events-none">
+            <div
+              className="pointer-events-auto flex items-center gap-2 cursor-pointer select-none"
+              onClick={toggleChallengePanel}
+            >
+              <span className="font-semibold text-sm">{challenge.title}</span>
+              <motion.span
+                animate={{ rotate: mode === 'READ' ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                ▼
+              </motion.span>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 2: Action Cards */}
+        <div className="w-full flex justify-center">
+          <InstructionPalette />
+        </div>
+      </div>
+
       {/* ================= MAIN AREA ================= */}
-      <div className="relative h-[calc(100%-4rem)] flex">
+      <div className="relative h-[calc(100vh-12rem)] flex">
         {/* ===== Visualization (2/3) ===== */}
         <div
-          className={`w-2/3 p-6 transition-opacity duration-200 
+          className={`w-2/3 p-2 sm:p-6 transition-opacity duration-200 
             ${mode === 'READ' ? 'opacity-30 pointer-events-none' : ''}
             ${highlightTimeline ? 'ring-2 ring-yellow-400' : ''}
           `}
         >
-          <h3 className="text-white font-semibold mb-4">
+          <h3 className="text-white font-semibold  text-sm sm:text-base mb-2 sm:mb-4">
                 Workspace
           </h3>
           {/* Hand */}
-          <div className="mb-4 flex justify-center">
+          <div className="mb-2 sm:mb-3 flex justify-center">
             <HandView
               value={hand}
               isActive={isHandActive}
@@ -510,7 +524,7 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
           )}
 
           {/* Array */}
-          <div className="flex justify-center my-6">
+          <div className="flex justify-center my-2">
             <ArrayView
               array={array}
               mocoPointer={mocoPointer}
@@ -529,25 +543,25 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
 
           {/* Error */}
           {executionError && (
-            <div className="mt-4 bg-red-900/30 border border-red-500 rounded p-3">
-              <div className="text-sm font-semibold text-red-300">
+            <div className="mt-2 sm:mt-4 bg-red-900/30 border border-red-500 rounded p-2 sm:p-3">
+              <div className="text-xs sm:text-sm font-semibold text-red-300">
                 Execution Error
               </div>
-              <div className="text-sm text-red-200">{executionError}</div>
+              <div className="text-xs sm:text-sm text-red-200">{executionError}</div>
             </div>
           )}
 
           {/* Controls */}
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-2">
             <ControlBar />
           </div>
         </div>
 
         {/* ===== Program Container (1/3) ===== */}
-        <div className="w-1/3 border-l border-gray-700 bg-gray-850 p-4">
+        <div className="w-1/3 border-l border-gray-700 bg-gray-850 p-2">
           <TutorialOverlay />
           {/* Program instructions live here */}
-          <div className="mt-2 flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto">
             <ProgramContainer
                 insertPreview={insertPreview}
                 activeDragItem={activeDragItem}
@@ -564,7 +578,7 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
               animate={{ y: 0 }}
               exit={{ y: '-100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="absolute top-0 left-0 w-2/3 h-full bg-gray-900 z-30 border-r border-gray-700"
+              className="absolute top-0 left-0 w-full sm:w-2/3 h-full bg-gray-900 z-30 border-r border-gray-700"
             >
               <div className="h-full overflow-y-auto p-6">
                 <ChallengePanel />

@@ -30,13 +30,13 @@ export function ExecutionTimeline({
     !successHintDismissed;
   
   return (   
-    <div className="execution-timeline bg-gray-900 rounded-lg p-4">
+    <div className="execution-timeline bg-gray-900 rounded-lg px-4">
       <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-400">
+        <div className="text-xs sm:text-sm text-gray-400">
           Step:{' '} 
           <span className="text-white font-semibold">{stepCount}</span>
         </div>
-        <div className="text-sm text-gray-400">
+        <div className="text-xs sm:text-sm text-gray-400">
           Line:{' '}
           <span className="text-white font-semibold">
             {currentLine + 1}
@@ -47,12 +47,12 @@ export function ExecutionTimeline({
 
       {showSuccessHint && (
         <motion.div
-          className="mt-3 bg-green-900/30 border border-green-500 rounded p-3"
+          className="mt-1 sm:mt-3 bg-green-900/30 border border-green-500 rounded p-2 sm:p-3"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="text-sm text-green-300">
+          <div className="text-xs sm:text-sm text-green-300">
             You can replay the last few steps to see how you cleared.
           </div>
         </motion.div>

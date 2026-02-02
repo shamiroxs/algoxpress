@@ -179,7 +179,7 @@ function DraggablePaletteItem({
       }}
       className={`
         relative
-        w-20 sm:w-16
+        w-14 sm:w-16
         aspect-square
         rounded-xl border-2
         flex flex-col items-center justify-center
@@ -194,7 +194,7 @@ function DraggablePaletteItem({
       `}
       title={template.description}
     >
-      <div className="text-xl sm:text-3xl">{INSTRUCTION_ICONS[template.type]}</div>
+      <div className="text-lg sm:text-3xl">{INSTRUCTION_ICONS[template.type]}</div>
       <div className="text-xs font-semibold tracking-wide">{template.label}</div>
       <div className="absolute inset-0 rounded-xl pointer-events-none bg-white/5" />
     </div>
@@ -485,17 +485,17 @@ export function InstructionPalette() {
   };
 
   return (
-    <div className="instruction-palette bg-gray-800 rounded-lg p-4">
+    <div className="instruction-palette bg-gray-800 rounded-lg sm:p-4">
       {/* Header */}
-      <div className="relative flex items-center mb-3">
+      <div className="relative flex items-center mb-2 sm:mb-3">
         <button
           onClick={() => setShowHelp(true)}
           title="Instruction help"
           className={`
-            mr-auto
+            ml-auto
             text-gray-300
             transition
-            text-lg
+            sm:text-lg
             px-2
             ${highlightHelp ? 'ring-2 ring-yellow-400 rounded' : 'hover:text-yellow-400'}
           `}
@@ -503,12 +503,12 @@ export function InstructionPalette() {
           ⓘ
         </button>
 
-        <h3 className="absolute left-1/2 -translate-x-1/2 text-white font-semibold">
+        <h3 className="absolute left-1/2 -translate-x-1/2 text-sm sm:text-base text-white font-semibold">
           Action Cards
         </h3>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 justify-end">
         {/* Shared instructions */}
         {globalInstructionTemplates.length > 0 && (
           <div className="flex justify-center">

@@ -57,40 +57,7 @@ function getInstructionStyle(inst: Instruction) {
   const owner = getInstructionOwner(inst);
   return OWNER_STYLE_MAP[owner];
 }
-/*
-function getPointerClientY(event: DragEndEvent | DragOverEvent): number {
-  const e = event.activatorEvent;
-  if (!e) return 0;
 
-  if (e instanceof MouseEvent) return e.clientY;
-  if (e instanceof TouchEvent && e.touches[0]) return e.touches[0].clientY;
-
-  return 0;
-}
-
-function getInsertIndex(
-  event: DragEndEvent | DragOverEvent,
-  overInstructionId: string,
-  instructions: Instruction[],
-  rectMap: Map<string, DOMRect>
-) {
-  const hoverIndex = instructions.findIndex((i) => i.id === overInstructionId);
-  if (hoverIndex === -1) return instructions.length;
-
-  const rect = rectMap.get(overInstructionId);
-  if (!rect) return hoverIndex;
-
-  const pointerY = getPointerClientY(event);
-  const midpoint = rect.top + rect.height / 2;
-
-  return pointerY > midpoint ? hoverIndex + 1 : hoverIndex;
-}
-
-function isAllowedInIfBody(inst: Instruction | InstructionType): boolean {
-  const type = typeof inst === 'string' ? inst : inst.type;
-  return type !== InstructionType.LABEL;
-}
-*/
 function formatInstruction(inst: Instruction): string {
   switch (inst.type) {
     case InstructionType.MOVE_LEFT:
@@ -236,8 +203,10 @@ export function ProgramContainer({
           relative
           max-w-sm
           flex items-center justify-between
-          px-5 py-0.5
-          rounded-lg
+          px-3 py-0.4
+          sm:px-5 sm:py-0.5
+          rounded-md
+          sm:rounded-lg
           border
           shadow-md
           transition
@@ -255,6 +224,8 @@ export function ProgramContainer({
           className={`
             flex-1
             text-center
+            text-xs
+            sm:text-base
             select-none
             ${hasEditableParameter ? 'cursor-pointer hover:opacity-90' : ''}
           `}
@@ -489,7 +460,7 @@ export function ProgramContainer({
         style={style}
         {...attributes}
         {...listeners}
-        className={`flex justify-center relative`}
+        className={`flex justify-center relative mt-2 sm:mt-4`}
       >
         <div className="flex flex-col items-center">
           {/* GAP ABOVE */}
@@ -506,7 +477,8 @@ export function ProgramContainer({
                   top-1/2
                   -translate-y-1/2
                   text-green-400
-                  text-lg
+                  text-sm
+                  sm:text-lg
                   select-none
                 "
               >
@@ -739,7 +711,7 @@ export function ProgramContainer({
     >
       {/* Header */}
       <div className="flex items-center mb-2">
-        <h4 className="text-gray-400 text-sm mx-auto">Your Workspace</h4>
+        <h4 className="text-gray-400 text-xs sm:text-sm mx-auto">Your Workspace</h4>
 
         <button
           onClick={() => {
@@ -751,7 +723,8 @@ export function ProgramContainer({
             text-gray-400
             hover:text-red-400
             transition
-            text-xl
+            text-base
+            sm:text-xl
             leading-none
           "
         >
