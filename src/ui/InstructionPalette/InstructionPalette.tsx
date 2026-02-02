@@ -487,7 +487,7 @@ export function InstructionPalette() {
   return (
     <div className="instruction-palette bg-gray-800 rounded-lg sm:p-4">
       {/* Header */}
-      <div className="relative flex items-center mb-2 sm:mb-3">
+      <div className="relative flex items-center mb-1 sm:mb-3">
         <button
           onClick={() => setShowHelp(true)}
           title="Instruction help"
@@ -508,12 +508,12 @@ export function InstructionPalette() {
         </h3>
       </div>
 
-      <div className="flex gap-3 justify-end">
+      <div className="flex gap-1 sm:gap-3 justify-end">
         {/* Shared instructions */}
         {globalInstructionTemplates.length > 0 && (
           <div className="flex justify-center">
-            <div className="bg-gray-700/60 rounded-lg p-3 w-full max-w-md">
-              <h4 className="text-sm text-gray-400 font-semibold mb-2 text-center tracking-widest">
+            <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
+              <h4 className="text-sm text-gray-400 font-semibold mb-1 sm:mb-2 text-xs sm:text-base text-center tracking-widest">
                 SHARED
               </h4>
 
@@ -546,9 +546,9 @@ export function InstructionPalette() {
             flex justify-center
             ${highlightPalette ? 'ring-2 ring-yellow-400' : ''}
             `}>
-            <div className="bg-gray-700/60 rounded-lg p-3 w-full max-w-md">
+            <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
 
-              <h4 className="text-blue-400 text-sm font-semibold mb-2 text-center tracking-widest">
+              <h4 className="text-blue-400 text-sm font-semibold mb-1 sm:mb-2 text-xs sm:text-base text-center tracking-widest">
                 MOCO
               </h4>
 
@@ -577,8 +577,8 @@ export function InstructionPalette() {
         {/* CHOCO */}
         {allowedPointers.includes('CHOCO') && (
           <div className="flex justify-center">
-            <div className="bg-gray-700/60 rounded-lg p-3 w-full max-w-md">
-              <h4 className="text-red-400 text-sm font-semibold mb-2 text-center tracking-widest">
+            <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
+              <h4 className="text-red-400 text-sm font-semibold mb-1 sm:mb-2 text-xs sm:text-base text-center tracking-widest">
                 CHOCO
               </h4>
 
