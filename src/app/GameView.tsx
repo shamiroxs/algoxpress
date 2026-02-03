@@ -441,12 +441,12 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
       <div className="relative h-[calc(100vh-12rem)] flex">
         {/* ===== Visualization (2/3) ===== */}
         <div
-          className={`w-2/3 p-2 sm:p-6 transition-opacity duration-200 
+          className={`w-2/3 px-2 py-4 sm:p-6 transition-opacity duration-200 
             ${mode === 'READ' ? 'opacity-30 pointer-events-none' : ''}
             ${highlightTimeline ? 'ring-2 ring-yellow-400' : ''}
           `}
         >
-          <h3 className="text-white font-semibold  text-sm sm:text-base mb-2 sm:mb-4">
+          <h3 className="text-white font-semibold  text-sm sm:text-base mb-3 sm:mb-4">
                 Workspace
           </h3>
           {/* Hand */}
@@ -504,13 +504,13 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
           )}
 
           {/* Controls */}
-          <div className="flex justify-center mt-2">
+          <div className="flex justify-center mt-3">
             <ControlBar />
           </div>
         </div>
 
         {/* ===== Program Container (1/3) ===== */}
-        <div className="w-1/3 border-l border-gray-700 bg-gray-850 p-2">
+        <div className="w-1/3 border-l border-gray-700 bg-gray-850 p-3">
           <TutorialOverlay />
           {/* Program instructions live here */}
           <div className="flex-1 overflow-y-auto">
