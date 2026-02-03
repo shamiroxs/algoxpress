@@ -619,7 +619,7 @@ export function ProgramContainer({
     if (!container) return null;
 
   const isPhone = window.innerWidth < 640;
-  const strokeW = isPhone ? 2 : 4;
+  const strokeW = isPhone ? 2.5 : 4;
   const markerSize = isPhone ? 8 : 8;
 
     return (
