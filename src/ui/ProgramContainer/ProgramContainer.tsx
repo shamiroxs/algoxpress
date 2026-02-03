@@ -214,7 +214,7 @@ export function ProgramContainer({
           ${style.border}
           ${style.text}
           font-mono
-          text-sm
+          text-xs
           group
           select-none
           touch-none
@@ -224,7 +224,7 @@ export function ProgramContainer({
           className={`
             flex-1
             text-center
-            text-xs
+            text-[10px]
             sm:text-base
             select-none
             ${hasEditableParameter ? 'cursor-pointer hover:opacity-90' : ''}
@@ -472,7 +472,8 @@ export function ProgramContainer({
               <span
                 className="
                   absolute
-                  -left-2
+                  -left-1
+                  sm:-left-2
                   -translate-x-full
                   top-1/2
                   -translate-y-1/2
