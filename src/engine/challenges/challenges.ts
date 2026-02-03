@@ -152,12 +152,16 @@ export const challenges: Challenge[] = [
         type: InstructionType.LABEL,
         labelName: 'loop',
       },
-  
+      {
+        id: 'swap',
+        type: InstructionType.SWAP,
+      },
       {
         id: 'jump-loop',
         type: InstructionType.JUMP,
         label: 'loop',
       },  
+        
     ],
     
     unlocked: true,
@@ -168,7 +172,6 @@ export const challenges: Challenge[] = [
         InstructionType.MOVE_RIGHT,
 
         InstructionType.IF_MEET,
-        InstructionType.SWAP,
       ],
     }
     

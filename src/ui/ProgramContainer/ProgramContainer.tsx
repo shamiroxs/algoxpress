@@ -205,7 +205,7 @@ export function ProgramContainer({
           flex items-center justify-between
           px-1.5 py-0.4
           sm:px-5 sm:py-0.5
-          rounded-md
+          rounded
           sm:rounded-lg
           border
           shadow-md
