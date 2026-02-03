@@ -488,8 +488,8 @@ export function ProgramContainer({
             )}
 
             {isEditing && hasEditableParameter ? (
-              <div className="flex items-center gap-1 sm:gap-2 bg-gray-700 px-3 py-2 rounded text-sm w-full max-w-sm">
-                <span className="text-gray-400 w-6">{index + 1}</span>
+              <div className="flex items-center gap-1 bg-gray-700 px-1.5 py-1 sm:px-3 sm:py-2 rounded text-xs sm:text-sm w-full max-w-[160px] sm:max-w-[280px]">
+                <span className="text-gray-400 text-[10px] sm:text-xs w-4 sm:w-6">{index + 1}</span>
                 <input
                   type="text"
                   value={editValue}
@@ -499,17 +499,17 @@ export function ProgramContainer({
                     if (e.key === 'Escape') handleCancel();
                   }}
                   autoFocus
-                  className="flex-1 bg-gray-600 text-white px-2 py-1 rounded font-mono"
+                  className="flex-1 bg-gray-600 text-white max-w-[60px] sm:max-w-[100px] px-1 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded font-mono"
                 />
                 <button
                   onClick={handleSave}
-                  className="text-green-400 hover:text-green-300 text-xs"
+                  className="text-green-400 hover:text-green-300 text-xs sm:text-sm"
                 >
                   ✓
                 </button>
                 <button
                   onClick={handleCancel}
-                  className="text-gray-500 hover:text-gray-300 text-xs"
+                  className="text-gray-500 hover:text-gray-300 text-xs sm:text-sm"
                 >
                   ×
                 </button>
