@@ -203,7 +203,7 @@ export function ProgramContainer({
           relative
           max-w-sm
           flex items-center justify-between
-          px-3 py-0.4
+          px-2 py-0.4
           sm:px-5 sm:py-0.5
           rounded-md
           sm:rounded-lg
