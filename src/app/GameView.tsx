@@ -24,7 +24,8 @@ import {
 import { useGameStore } from '../orchestrator/store';
 
 import { ChallengePanel } from '../ui/ChallengePanel';
-import { InstructionPalette } from '../ui/InstructionPalette/InstructionPalette';
+import { DesktopTopBar } from './TopBar/DesktopTopBar';
+import { MobileTopBar } from './TopBar/MobileTopBar';
 import { ProgramContainer } from "../ui/ProgramContainer/ProgramContainer"
 import { ControlBar } from '../ui/ControlBar';
 import { TutorialOverlay } from '../ui/TutorialOverlay';
@@ -54,6 +55,8 @@ import { createInstruction } from '../engine/instructions/factory';
 import { InstructionType } from '../engine/instructions/types';
 import type { Instruction } from '../engine/instructions/types';
 import { useIsTutorialActive, useTutorialHighlight } from '../tutorial/selectors';
+
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 type DragItem =
   | {
@@ -142,7 +145,7 @@ function PaletteDragPreview({
     <div
       className={`
         relative aspect-square 
-        w-18 sm:w-20
+        w-14 sm:w-16
         rounded-xl border-2
         flex flex-col items-center justify-center
         text-white
@@ -388,6 +391,8 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
     setInsertPreview(null);
   };
   
+  const isDesktop = useMediaQuery('(min-width: 640px)');
+  
   return (
     <div className="fixed inset-0 bg-black flex items-center justify-center">
   <div
@@ -415,76 +420,22 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
       )}
 
       {/* ================= TOP BAR (HUD) — DESKTOP ================= */}
-      <div className="hidden sm:flex h-48 relative items-center justify-between px-4 bg-gray-800 border-b border-gray-700 z-20">
-        
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate('/');
-          }}
-          className="absolute top-4 left-4 text-gray-400 hover:text-white text-sm sm:text-base"
-        >
-          ← Back to Station
-        </button>
+      {isDesktop ? (
+        <DesktopTopBar
+          challengeTitle={challenge.title}
+          mode={mode}
+          onToggleChallenge={toggleChallengePanel}
+          onBack={() => navigate('/')}
+        />
+      ) : (
+        <MobileTopBar
+          challengeTitle={challenge.title}
+          mode={mode}
+          onToggleChallenge={toggleChallengePanel}
+          onBack={() => navigate('/')}
+        />
+      )}
 
-        {/* LEFT : Challenge Dropdown */}
-        <div
-          className="absolute left-0 w-1/2 flex items-center justify-center gap-3 cursor-pointer select-none"
-          onClick={toggleChallengePanel}
-        >
-          <div className="mr-auto flex items-center gap-2 px-12">
-            <span className="font-semibold">{challenge.title}</span>
-            <motion.span
-              animate={{ rotate: mode === 'READ' ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              ▼
-            </motion.span>
-          </div>
-        </div>
-
-        {/* RIGHT : Action Cards */}
-        <div className="ml-auto h-full flex items-center">
-          <InstructionPalette />
-        </div>
-      </div>
-
-      {/* ================= TOP BAR (HUD) — MOBILE ================= */}
-      <div className="sm:hidden relative bg-gray-800 border-b border-gray-700 z-20">
-        
-        {/* Row 1: Back + Centered Title */}
-        <div className="relative min-h-[3rem] flex items-center px-4">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate('/');
-            }}
-            className="text-gray-400 hover:text-white text-sm z-10"
-          >
-            ← Back
-          </button>
-
-          <div className="absolute left-0 right-0 flex justify-center pointer-events-none">
-            <div
-              className="pointer-events-auto flex items-center gap-2 cursor-pointer select-none"
-              onClick={toggleChallengePanel}
-            >
-              <span className="font-semibold text-sm">{challenge.title}</span>
-              <motion.span
-                animate={{ rotate: mode === 'READ' ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                ▼
-              </motion.span>
-            </div>
-          </div>
-        </div>
-
-        {/* Row 2: Action Cards */}
-        <div className="w-full flex justify-center">
-          <InstructionPalette />
-        </div>
-      </div>
 
       {/* ================= MAIN AREA ================= */}
       <div className="relative h-[calc(100vh-12rem)] flex">
