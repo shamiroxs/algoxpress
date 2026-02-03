@@ -203,7 +203,7 @@ export function ProgramContainer({
           relative
           max-w-sm
           flex items-center justify-between
-          px-2 py-0.4
+          px-1.5 py-0.4
           sm:px-5 sm:py-0.5
           rounded-md
           sm:rounded-lg
@@ -472,7 +472,7 @@ export function ProgramContainer({
               <span
                 className="
                   absolute
-                  -left-1
+                  -left-0.5
                   sm:-left-2
                   -translate-x-full
                   top-1/2
@@ -488,7 +488,7 @@ export function ProgramContainer({
             )}
 
             {isEditing && hasEditableParameter ? (
-              <div className="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded text-sm w-full max-w-sm">
+              <div className="flex items-center gap-1 sm:gap-2 bg-gray-700 px-3 py-2 rounded text-sm w-full max-w-sm">
                 <span className="text-gray-400 w-6">{index + 1}</span>
                 <input
                   type="text"
@@ -576,7 +576,7 @@ export function ProgramContainer({
             }
 
             return index < container.length - 1 ? (
-              <div className="text-gray-400 text-sm leading-none mt-0.5 select-none">↓</div>
+              <div className="text-gray-400 text-[10px] sm:text-sm leading-none sm:mt-0.5 select-none">↓</div>
             ) : null;
           })()}
         </div>
@@ -618,18 +618,26 @@ export function ProgramContainer({
     const container = programContainerRef.current;
     if (!container) return null;
 
+  const isPhone = window.innerWidth < 640;
+  const strokeW = isPhone ? 2 : 4;
+  const markerSize = isPhone ? 8 : 8;
+
     return (
       <svg className="absolute insert-0 w-full h-full pointer-events-none">
         <defs>
           <marker
             id="arrowhead"
-            markerWidth="8"
-            markerHeight="8"
-            refX="3.5"
-            refY="2"
+            markerWidth={markerSize}
+            markerHeight={markerSize}
+            refX={markerSize * 0.45}
+            refY={markerSize * 0.25}
             orient="auto"
           >
-            <path d="M0,0 L0,4 L4,2 z" fill="context-stroke" opacity="0.9" />
+            <path
+              d={`M0,0 L0,${markerSize * 0.5} L${markerSize * 0.5},${markerSize * 0.25} z`}
+              fill="context-stroke"
+              opacity="0.9"
+            />
           </marker>
         </defs>
 
@@ -654,7 +662,8 @@ export function ProgramContainer({
           const endX = toRect.left + fromRect.width / 2;
           const endY = toRect.top + toRect.height / 3;
 
-          const gutter = 100;
+          const gutter = isPhone ? 40 : 80;
+          
           const midX =
             endX >= startX ? Math.max(startX, endX) + gutter : Math.min(startX, endX) - gutter;
 
@@ -672,7 +681,7 @@ export function ProgramContainer({
 
           return (
             <g key={`${from.id}->${to.id}`}>
-              <path d={d} stroke={color} strokeWidth={4} fill="none" opacity={0.6} />
+              <path d={d} stroke={color} strokeWidth={strokeW} fill="none" opacity={0.6} />
 
               <path
                 d={`
@@ -680,7 +689,7 @@ export function ProgramContainer({
                   L ${arrowX} ${arrowY + arrowLen * dir}
                 `}
                 stroke={color}
-                strokeWidth={4}
+                strokeWidth={strokeW}
                 fill="none"
                 markerEnd="url(#arrowhead)"
                 opacity={1}
