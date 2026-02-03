@@ -99,12 +99,12 @@ export function ControlBar() {
   };
 
   const secondaryBtn =
-    'w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ' +
+    'w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ' +
     'bg-gray-800 hover:bg-gray-600 text-white text-sm ' +
     'disabled:opacity-40 disabled:cursor-not-allowed transition';
 
   const retrySecondaryBtn =
-    'w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ' +
+    'w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ' +
     'bg-gray-900 hover:bg-gray-700 text-white text-sm ' +
     'disabled:opacity-40 disabled:cursor-not-allowed transition';
 
@@ -141,7 +141,7 @@ export function ControlBar() {
         </div>
   
         {/* CENTER: Transport controls */}
-        <div className="flex items-center gap-3 justify-center">
+        <div className="flex items-center gap-2 sm:gap-3 justify-center">
           {/* Rewind */}
           <button
             onClick={onRewind}
@@ -151,7 +151,7 @@ export function ControlBar() {
               ${highlightRewind ? 'ring-2 ring-green-400 animate-pulse' : ''}
             `}
           >
-            <StepBack size={14} className="block sm:hidden" />
+            <StepBack size={12} className="block sm:hidden" />
             <StepBack size={18} className="hidden sm:block" />
           </button>
   
@@ -170,7 +170,7 @@ export function ControlBar() {
                 ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
               `}
             >
-              <Play size={20} fill="currentColor" className="block sm:hidden"/>
+              <Play size={18} fill="currentColor" className="block sm:hidden"/>
               <Play size={24} fill="currentColor" className="sm:block hidden"/>
               </button>
           ) : (
@@ -185,7 +185,7 @@ export function ControlBar() {
                 transition
               "
             >
-              <Pause size={20} className="block sm:hidden"/>
+              <Pause size={18} className="block sm:hidden"/>
               <Pause size={24} className="sm:block hidden"/>
             </button>
           )}
@@ -199,7 +199,7 @@ export function ControlBar() {
               ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
             `}
           >
-            <StepForward size={18} className="sm:block hidden" />
+            <StepForward size={16} className="sm:block hidden" />
             <StepForward size={14} className="block sm:hidden" />
           </button>
         </div>
@@ -207,7 +207,7 @@ export function ControlBar() {
         {/* RIGHT: Reset */}
         <div className="flex-1 flex justify-end">
           <button onClick={onReset} className={retrySecondaryBtn}>
-            <RotateCcw size={18} className="sm:block hidden" />
+            <RotateCcw size={16} className="sm:block hidden" />
             <RotateCcw size={14} className="block sm:hidden" />
           </button>
         </div>
