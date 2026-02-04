@@ -4,7 +4,7 @@
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -48,8 +48,8 @@ import {
   type DragStartEvent,
   type DragOverEvent,
   type DragEndEvent,
+  TouchSensor,
 } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
 
 import { createInstruction } from '../engine/instructions/factory';
 import { InstructionType } from '../engine/instructions/types';
@@ -57,6 +57,18 @@ import type { Instruction } from '../engine/instructions/types';
 import { useIsTutorialActive, useTutorialHighlight } from '../tutorial/selectors';
 
 import { useMediaQuery } from '../hooks/useMediaQuery';
+
+import {
+  createLabel,
+  createJump,
+  createIfEnd,
+  createIfMeet,
+} from '../engine/instructions/factory';
+
+import {
+  rectIntersection,
+} from '@dnd-kit/core';
+import type { CollisionDetection } from '@dnd-kit/core';
 
 type DragItem =
   | {
@@ -69,6 +81,98 @@ type DragItem =
   | { source: 'IF_BODY'; instructionId: string; parentIfId: string };
 
 type InsertPreview = { id: string; position: 'above' | 'below' } | null;
+
+const collisionDetection: CollisionDetection = (args) => {
+  // 1️⃣ Prefer child instructions inside IF bodies
+  const childHits = rectIntersection({
+    ...args,
+    droppableContainers: args.droppableContainers.filter(
+      (c) =>
+        !c.id.toString().startsWith('IF_BODY_') &&
+        c.data.current?.source === 'IF_BODY'
+    ),
+  });
+
+  if (childHits.length > 0) return childHits;
+
+  // 2️⃣ Then allow IF_BODY container as fallback
+  const ifBodyHits = rectIntersection({
+    ...args,
+    droppableContainers: args.droppableContainers.filter((c) =>
+      c.id.toString().startsWith('IF_BODY_')
+    ),
+  });
+
+  if (ifBodyHits.length > 0) return ifBodyHits;
+
+  // 3️⃣ Final fallback
+  return closestCenter(args);
+};
+
+/** ---------- Label helpers ---------- */
+function collectAllLabelNames(instructions: Instruction[]): Set<string> {
+  const labels = new Set<string>();
+
+  const walk = (list: Instruction[]) => {
+    for (const inst of list) {
+      if (inst.type === InstructionType.LABEL && 'labelName' in inst) {
+        labels.add(inst.labelName);
+      }
+      if ('body' in inst && Array.isArray(inst.body)) {
+        walk(inst.body);
+      }
+    }
+  };
+
+  walk(instructions);
+  return labels;
+}
+
+function generateUniqueLabelName(instructions: Instruction[]): string {
+  const existing = collectAllLabelNames(instructions);
+  let n = 1;
+  while (existing.has(`label${n}`)) n++;
+  return `label${n}`;
+}
+
+function createInstructionFromPaletteDrop(
+  instructionType: InstructionType,
+  pointer: 'MOCO' | 'CHOCO',
+  instructions: Instruction[]
+): Instruction {
+  const labelName = generateUniqueLabelName(instructions);
+
+  switch (instructionType) {
+    case InstructionType.LABEL:
+      return createLabel(labelName);
+
+    case InstructionType.JUMP:
+      return createJump(labelName);
+
+    case InstructionType.IF_END:
+      return createIfEnd(pointer, labelName);
+
+    case InstructionType.IF_MEET:
+      return createIfMeet(labelName);
+
+    default:
+      return createInstruction(instructionType, pointer);
+  }
+}
+
+function getPointerClientY(event: DragEndEvent | DragOverEvent): number {
+  const e = event.activatorEvent;
+  if (!e) return 0;
+
+  if (e instanceof MouseEvent) return e.clientY;
+  if (e instanceof TouchEvent && e.touches[0]) return e.touches[0].clientY;
+  return 0;
+}
+
+function isAllowedInIfBody(inst: Instruction | InstructionType): boolean {
+  const type = typeof inst === 'string' ? inst : inst.type;
+  return type !== InstructionType.LABEL;
+}
 
 const INSTRUCTION_ICONS: Record<InstructionType, string> = {
   [InstructionType.MOVE_LEFT]: '←',
@@ -170,7 +274,7 @@ export function GameView() {
 
   /** ---------- GLOBAL STATE ---------- */
   const challenge = useCurrentChallenge();
-  const instructions = usePlayerInstructions();
+  const playerInstructions = usePlayerInstructions();
   const executionError = useExecutionError();
   const executionErrorContext = useExecutionErrorContext();
   const validationResult = useGameStore((s) => s.validationResult);
@@ -236,160 +340,340 @@ export function GameView() {
     setMode((m) => (m === 'PLAY' ? 'READ' : 'PLAY'));
   };
 
-  const totalLines = instructions.length;
+  const totalLines = playerInstructions.length;
 
   const [insertPreview, setInsertPreview] = useState<InsertPreview>(null);
 const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
 const [layoutVersion, setLayoutVersion] = useState(0);
 
 const addInstruction = useGameStore((s) => s.addInstruction);
+const removeInstruction = useGameStore((s) => s.removeInstruction);
 const updateInstruction = useGameStore((s) => s.updateInstruction);
-const setPlayerInstructions = useGameStore((s) => s.setPlayerInstructions);
+const reorderInstructions = useGameStore((s) => s.reorderInstructions);
 
-const sensors = useSensors(
-  useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+const instructionOrderSignature = useMemo(
+  () => playerInstructions.map((i) => i.id).join('|'),
+  [playerInstructions]
 );
 
-const instructionIndexById = useMemo(() => {
-  const map = new Map<string, number>();
-  instructions.forEach((i, idx) => map.set(i.id, idx));
-  return map;
-}, [instructions]);
+useLayoutEffect(() => {
+  if (activeDragItem) return;
+  setLayoutVersion((v) => v + 1);
+}, [instructionOrderSignature]); // after render, before paint
 
-const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
-  const clientY =
-    e.activatorEvent instanceof MouseEvent
-      ? e.activatorEvent.clientY
-      : e.activatorEvent instanceof TouchEvent && e.activatorEvent.touches[0]
-      ? e.activatorEvent.touches[0].clientY
-      : 0;
+/** program rects for accurate insert preview */
+const programContainerRef = useRef<HTMLDivElement | null>(null);
+const programRects = useRef<Map<string, DOMRect>>(new Map());
+const ifBodyRects = useRef<Map<string, Map<string, DOMRect>>>(new Map());
 
-  const rect = e.over?.rect;
-  if (!rect) return 'below';
-  return clientY < rect.top + rect.height / 2 ? 'above' : 'below';
-};
+const sensors = useSensors(
+  useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  useSensor(TouchSensor, {
+    activationConstraint: { delay: 150, tolerance: 5 },
+  })
+);
 
-  const parseDragItem = (data: any): DragItem | null => {
-    if (!data) return null;
-    if (data.source === 'PALETTE') return data;
-    if (data.source === 'PROGRAM') return data;
-    if (data.source === 'IF_BODY') return data;
-    return null;
-  };
+  function getInsertIndex(
+    event: DragEndEvent | DragOverEvent,
+    overInstructionId: string,
+    instructions: Instruction[],
+    rectMap: Map<string, DOMRect>
+  ) {
+    const hoverIndex = instructions.findIndex((i) => i.id === overInstructionId);
+    if (hoverIndex === -1) return instructions.length;
 
-  const isIfContainer = (inst: Instruction) =>
-    inst.type === InstructionType.IF_GREATER ||
-    inst.type === InstructionType.IF_LESS ||
-    inst.type === InstructionType.IF_EQUAL ||
-    inst.type === InstructionType.IF_NOT_EQUAL;
+    const rect = rectMap.get(overInstructionId);
+    if (!rect) return hoverIndex;
 
-  const isAllowedInIfBody = (type: InstructionType) => type !== InstructionType.LABEL;
+    const pointerY = getPointerClientY(event);
+    const midpoint = rect.top + rect.height / 2;
 
-  const onDragStart = (e: DragStartEvent) => {
-    const item = parseDragItem(e.active.data.current);
-    setActiveDragItem(item);
+    return pointerY > midpoint ? hoverIndex + 1 : hoverIndex;
+  }
+
+  const onDragStart = (event: DragStartEvent) => {
+    setActiveDragItem(event.active.data.current as DragItem);
     setInsertPreview(null);
   };
 
-  const onDragOver = (e: DragOverEvent) => {
-    if (!activeDragItem || !e.over) {
-      setInsertPreview(null);
+  const onDragOver = (event: DragOverEvent) => {
+    const activeData = event.active.data.current as DragItem | undefined;
+    const over = event.over;
+    if (!activeData || !over) return;
+
+    if (over.id === 'PROGRAM_DROPZONE') return;
+
+    const overData = over.data.current as
+      | { source: 'PROGRAM'; instructionId: string }
+      | { source: 'IF_BODY'; instructionId: string; parentIfId: string }
+      | undefined;
+
+    const isInsert =
+      activeData.source === 'PALETTE' ||
+      activeData.source === 'IF_BODY' ||
+      activeData.source === 'PROGRAM';
+
+    if (!isInsert || !overData) {
+      if (insertPreview !== null) {
+        setInsertPreview(null);
+        setLayoutVersion((v) => v + 1);
+      }
       return;
     }
 
-    const overId = String(e.over.id);
+    let rect: DOMRect | undefined;
 
-    if (overId.startsWith('IF_BODY_')) {
-      setInsertPreview(null);
+    if (overData.source === 'PROGRAM') {
+      rect = programRects.current.get(overData.instructionId);
+    } else if (overData.source === 'IF_BODY') {
+      rect =
+        ifBodyRects.current.get(overData.parentIfId)?.get(overData.instructionId);
+    }
+
+    if (!rect) return;
+
+    const pointerY = getPointerClientY(event);
+    const position = pointerY > rect.top + rect.height / 2 + 1 ? 'below' : 'above';
+
+    if (
+      insertPreview &&
+      insertPreview.id === overData.instructionId &&
+      insertPreview.position === position
+    ) {
       return;
     }
 
-    if (overId !== 'PROGRAM_DROPZONE') {
-      const pos = computeAboveBelow(e);
-      setInsertPreview({ id: overId, position: pos });
+    setInsertPreview({ id: overData.instructionId, position });
+  };
+
+  const onDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    const activeData = active.data.current as DragItem | undefined;
+    if (!activeData) {
+      setInsertPreview(null);
+      setActiveDragItem(null);
       return;
+    }
+
+    if (!over) {
+      // dropped outside
+      if (activeData.source === 'PROGRAM') {
+        removeInstruction(activeData.instructionId);
+      }
+      setInsertPreview(null);
+      setActiveDragItem(null);
+      setLayoutVersion((v) => v + 1);
+      return;
+    }
+
+    const overData = over.data.current as
+      | { source: 'PROGRAM'; instructionId: string }
+      | { source: 'IF_BODY'; instructionId: string; parentIfId: string }
+      | undefined;
+
+    /* ─────────────────────────────────────────────
+       PALETTE → IF_BODY
+    ───────────────────────────────────────────── */
+    if (activeData.source === 'PALETTE' && overData?.source === 'IF_BODY') {
+      const parentIf = playerInstructions.find((i) => i.id === overData.parentIfId);
+      if (!parentIf || !('body' in parentIf)) return;
+
+      if (!isAllowedInIfBody(activeData.instructionType)) return;
+
+      const rects = ifBodyRects.current.get(overData.parentIfId) ?? new Map();
+
+      const insertIndex = getInsertIndex(
+        event,
+        overData.instructionId,
+        parentIf.body,
+        rects
+      );
+
+      const newInstruction = createInstructionFromPaletteDrop(
+        activeData.instructionType,
+        activeData.pointer,
+        playerInstructions
+      );
+
+      const newBody = [...parentIf.body];
+      newBody.splice(insertIndex, 0, newInstruction);
+
+      updateInstruction(parentIf.id, { ...parentIf, body: newBody });
+
+      setInsertPreview(null);
+      setActiveDragItem(null);
+      setLayoutVersion((v) => v + 1);
+      return;
+    }
+
+    /* ─────────────────────────────────────────────
+       PALETTE → PROGRAM
+    ───────────────────────────────────────────── */
+    if (activeData.source === 'PALETTE') {
+      if (over.id === 'PROGRAM_DROPZONE') {
+        const inst = createInstructionFromPaletteDrop(
+          activeData.instructionType,
+          activeData.pointer,
+          playerInstructions
+        );
+        addInstruction(inst);
+        setInsertPreview(null);
+        setActiveDragItem(null);
+        setLayoutVersion((v) => v + 1);
+        return;
+      }
+
+      if (overData?.source === 'PROGRAM') {
+        const insertIndex = getInsertIndex(
+          event,
+          overData.instructionId,
+          playerInstructions,
+          programRects.current
+        );
+
+        const inst = createInstructionFromPaletteDrop(
+          activeData.instructionType,
+          activeData.pointer,
+          playerInstructions
+        );
+
+        addInstruction(inst, insertIndex);
+        setInsertPreview(null);
+        setActiveDragItem(null);
+        setLayoutVersion((v) => v + 1);
+        return;
+      }
+    }
+
+    /* ─────────────────────────────────────────────
+       PROGRAM → IF_BODY
+    ───────────────────────────────────────────── */
+    if (activeData.source === 'PROGRAM' && overData?.source === 'IF_BODY') {
+      const parentIf = playerInstructions.find((i) => i.id === overData.parentIfId);
+      if (!parentIf || !('body' in parentIf)) return;
+
+      const inst = playerInstructions.find((i) => i.id === activeData.instructionId);
+      if (!inst) return;
+
+      if (!isAllowedInIfBody(inst)) return;
+
+      removeInstruction(inst.id);
+
+      const rects = ifBodyRects.current.get(overData.parentIfId) ?? new Map();
+      const insertIndex = getInsertIndex(event, overData.instructionId, parentIf.body, rects);
+
+      const newBody = [...parentIf.body];
+      newBody.splice(insertIndex, 0, inst);
+
+      updateInstruction(parentIf.id, { ...parentIf, body: newBody });
+
+      setInsertPreview(null);
+      setActiveDragItem(null);
+      setLayoutVersion((v) => v + 1);
+      return;
+    }
+
+    /* ─────────────────────────────────────────────
+       IF_BODY → PROGRAM
+    ───────────────────────────────────────────── */
+    if (
+      activeData.source === 'IF_BODY' &&
+      (over.id === 'PROGRAM_DROPZONE' || overData?.source === 'PROGRAM')
+    ) {
+      const parentIf = playerInstructions.find((i) => i.id === activeData.parentIfId);
+      if (!parentIf || !('body' in parentIf)) return;
+
+      const inst = parentIf.body.find((i) => i.id === activeData.instructionId);
+      if (!inst) return;
+
+      // remove from IF body
+      updateInstruction(parentIf.id, {
+        ...parentIf,
+        body: parentIf.body.filter((i) => i.id !== inst.id),
+      });
+
+      const insertIndex =
+        overData?.source === 'PROGRAM'
+          ? getInsertIndex(event, overData.instructionId, playerInstructions, programRects.current)
+          : playerInstructions.length;
+
+      addInstruction(inst, insertIndex);
+
+      setInsertPreview(null);
+      setActiveDragItem(null);
+      setLayoutVersion((v) => v + 1);
+      return;
+    }
+
+    /* ─────────────────────────────────────────────
+       IF_BODY → IF_BODY (same parent reorder)
+    ───────────────────────────────────────────── */
+    if (
+      activeData.source === 'IF_BODY' &&
+      overData?.source === 'IF_BODY' &&
+      activeData.parentIfId === overData.parentIfId
+    ) {
+      const parentIf = playerInstructions.find((i) => i.id === activeData.parentIfId);
+      if (!parentIf || !('body' in parentIf)) return;
+
+      const from = parentIf.body.findIndex((i) => i.id === activeData.instructionId);
+      const to = parentIf.body.findIndex((i) => i.id === overData.instructionId);
+
+      if (from !== to) {
+        const newBody = [...parentIf.body];
+        const [moved] = newBody.splice(from, 1);
+        newBody.splice(to, 0, moved);
+
+        updateInstruction(parentIf.id, { ...parentIf, body: newBody });
+      }
+
+      setInsertPreview(null);
+      setActiveDragItem(null);
+      setLayoutVersion((v) => v + 1);
+      return;
+    }
+
+    /* ─────────────────────────────────────────────
+       PROGRAM → PROGRAM reorder
+    ───────────────────────────────────────────── */
+    if (activeData.source === 'PROGRAM' && overData?.source === 'PROGRAM') {
+      const from = playerInstructions.findIndex((i) => i.id === activeData.instructionId);
+      const to = playerInstructions.findIndex((i) => i.id === overData.instructionId);
+
+      if (from !== to) reorderInstructions(from, to);
+
+      setInsertPreview(null);
+      setActiveDragItem(null);
+      setLayoutVersion((v) => v + 1);
+      return;
+    }
+
+    /* ─────────────────────────────────────────────
+       PROGRAM → outside → delete
+    ───────────────────────────────────────────── */
+    if (activeData.source === 'PROGRAM') {
+      const droppedInsideProgram =
+        over.id === 'PROGRAM_DROPZONE' ||
+        overData?.source === 'PROGRAM' ||
+        overData?.source === 'IF_BODY';
+
+      if (!droppedInsideProgram) {
+        removeInstruction(activeData.instructionId);
+      }
     }
 
     setInsertPreview(null);
-  };
-
-  const onDragEnd = (e: DragEndEvent) => {
-    const item = activeDragItem;
     setActiveDragItem(null);
-
-    if (!item || !e.over) {
-      setInsertPreview(null);
-      return;
-    }
-
-    const overId = String(e.over.id);
-
-    // drop into IF body
-    if (overId.startsWith('IF_BODY_')) {
-      const parentIfId = overId.replace('IF_BODY_', '');
-      const parentIf = instructions.find((i) => i.id === parentIfId);
-
-      if (!parentIf || !isIfContainer(parentIf)) {
-        setInsertPreview(null);
-        return;
-      }
-
-      if (item.source === 'PALETTE') {
-        if (!isAllowedInIfBody(item.instructionType)) return;
-
-        const newInst = createInstruction(item.instructionType, item.pointer);
-        updateInstruction(parentIfId, { ...parentIf, body: [...parentIf.body, newInst] });
-        setLayoutVersion((v) => v + 1);
-        setInsertPreview(null);
-        return;
-      }
-
-      setInsertPreview(null);
-      return;
-    }
-
-    // drop on instruction line
-    if (overId !== 'PROGRAM_DROPZONE') {
-      const overIndex = instructionIndexById.get(overId);
-      if (overIndex == null) return;
-
-      const pos = insertPreview?.id === overId ? insertPreview.position : 'below';
-      const insertIndex = pos === 'above' ? overIndex : overIndex + 1;
-
-      if (item.source === 'PALETTE') {
-        const newInst = createInstruction(item.instructionType, item.pointer);
-        addInstruction(newInst, insertIndex);
-        setLayoutVersion((v) => v + 1);
-        setInsertPreview(null);
-        return;
-      }
-
-      if (item.source === 'PROGRAM') {
-        const fromIndex = instructionIndexById.get(item.instructionId);
-        if (fromIndex == null) return;
-
-        const toIndex = insertIndex > fromIndex ? insertIndex - 1 : insertIndex;
-        const next = arrayMove(instructions, fromIndex, Math.max(0, Math.min(toIndex, instructions.length - 1)));
-        setPlayerInstructions(next);
-        setLayoutVersion((v) => v + 1);
-        setInsertPreview(null);
-        return;
-      }
-    }
-
-    // drop at end
-    if (overId === 'PROGRAM_DROPZONE') {
-      if (item.source === 'PALETTE') {
-        const newInst = createInstruction(item.instructionType, item.pointer);
-        addInstruction(newInst);
-        setLayoutVersion((v) => v + 1);
-        setInsertPreview(null);
-        return;
-      }
-    }
-
-    setInsertPreview(null);
+    setLayoutVersion((v) => v + 1);
   };
+
+  const onDragCancel = () => {
+    setInsertPreview(null);
+    setActiveDragItem(null);
+    setLayoutVersion((v) => v + 1);
+  };
+
   
   const isDesktop = useMediaQuery('(min-width: 640px)');
   
@@ -406,10 +690,11 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
   >
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={collisionDetection}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
+      onDragCancel={onDragCancel}
     >
     <div className="h-full w-full overflow-y-auto bg-gray-900 text-white">
       {/* ================= SUCCESS OVERLAY ================= */}
@@ -510,7 +795,7 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
         </div>
 
         {/* ===== Program Container (1/3) ===== */}
-        <div className="w-1/3 border-l border-gray-700 bg-gray-850 p-3">
+        <div ref={programContainerRef} className="w-1/3 border-l border-gray-700 bg-gray-850 p-3">
           <TutorialOverlay />
           {/* Program instructions live here */}
           <div className="flex-1 overflow-y-auto">
@@ -518,6 +803,8 @@ const computeAboveBelow = (e: DragOverEvent): 'above' | 'below' => {
                 insertPreview={insertPreview}
                 activeDragItem={activeDragItem}
                 layoutVersion={layoutVersion}
+                programRects={programRects}
+                ifBodyRects={ifBodyRects}
               />
           </div>
         </div>

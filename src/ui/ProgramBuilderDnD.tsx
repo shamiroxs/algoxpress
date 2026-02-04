@@ -22,6 +22,13 @@ import { createInstruction } from '../engine/instructions/factory';
 import type { Instruction } from '../engine/instructions/types';
 import { InstructionType } from '../engine/instructions/types';
 
+import {
+  createLabel,
+  createJump,
+  createIfEnd,
+  createIfMeet,
+} from '../engine/instructions/factory';
+
 /**
  * Must match payload used by palette + sortable lines
  * (this is the same union I used in the ProgramContainer earlier)
@@ -83,6 +90,58 @@ function isIfContainerInstruction(inst: Instruction) {
 function isAllowedInIfBody(type: InstructionType) {
   // Keep same old rule: LABEL not allowed inside IF body
   return type !== InstructionType.LABEL;
+}
+
+function collectAllLabelNames(instructions: Instruction[]): Set<string> {
+  const labels = new Set<string>();
+
+  const walk = (list: Instruction[]) => {
+    for (const inst of list) {
+      if (inst.type === InstructionType.LABEL && 'labelName' in inst) {
+        labels.add(inst.labelName);
+      }
+      // walk IF bodies too
+      if ('body' in inst && Array.isArray(inst.body)) {
+        walk(inst.body);
+      }
+    }
+  };
+
+  walk(instructions);
+  return labels;
+}
+
+function generateUniqueLabelName(instructions: Instruction[]): string {
+  const existing = collectAllLabelNames(instructions);
+
+  let n = 1;
+  while (existing.has(`label${n}`)) n++;
+  return `label${n}`;
+}
+
+export function createInstructionFromPaletteDrop(
+  instructionType: InstructionType,
+  pointer: 'MOCO' | 'CHOCO',
+  instructions: Instruction[]
+): Instruction {
+  const labelName = generateUniqueLabelName(instructions);
+
+  switch (instructionType) {
+    case InstructionType.LABEL:
+      return createLabel(labelName);
+
+    case InstructionType.JUMP:
+      return createJump(labelName);
+
+    case InstructionType.IF_END:
+      return createIfEnd(pointer, labelName);
+
+    case InstructionType.IF_MEET:
+      return createIfMeet(labelName);
+
+    default:
+      return createInstruction(instructionType, pointer);
+  }
 }
 
 export function ProgramBuilderDnD() {
@@ -226,8 +285,12 @@ export function ProgramBuilderDnD() {
           return;
         }
 
-        const newInst = createInstruction(item.instructionType, item.pointer);
-
+        const newInst = createInstructionFromPaletteDrop(
+          item.instructionType,
+          item.pointer,
+          playerInstructions
+        );
+        
         updateInstruction(parentIfId, {
           ...parentIf,
           body: [...parentIf.body, newInst],
@@ -344,7 +407,11 @@ export function ProgramBuilderDnD() {
 
       // Palette → insert at index
       if (item.source === 'PALETTE') {
-        const newInst = createInstruction(item.instructionType, item.pointer);
+        const newInst = createInstructionFromPaletteDrop(
+          item.instructionType,
+          item.pointer,
+          playerInstructions
+        );
         addInstruction(newInst, insertIndex);
         setLayoutVersion((v) => v + 1);
         setInsertPreview(null);
@@ -383,7 +450,11 @@ export function ProgramBuilderDnD() {
     // ---------- Drop at end of program ----------
     if (overId === 'PROGRAM_DROPZONE') {
       if (item.source === 'PALETTE') {
-        const newInst = createInstruction(item.instructionType, item.pointer);
+        const newInst = createInstructionFromPaletteDrop(
+          item.instructionType,
+          item.pointer,
+          playerInstructions
+        );
         addInstruction(newInst);
         setLayoutVersion((v) => v + 1);
         setInsertPreview(null);

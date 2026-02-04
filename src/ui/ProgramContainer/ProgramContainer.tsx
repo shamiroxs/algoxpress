@@ -115,16 +115,43 @@ function formatInstruction(inst: Instruction): string {
  * IMPORTANT:
  * - programContainerRef / rect maps are internal and identical to old file.
  */
+
+function useIsPhone() {
+  const [isPhone, setIsPhone] = useState(() => window.innerWidth < 640);
+
+  React.useEffect(() => {
+    const onResize = () => {
+      const next = window.innerWidth < 640;
+      setIsPhone((prev) => (prev === next ? prev : next));
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  return isPhone;
+}
+
+type InsertPreview = { id: string; position: 'above' | 'below' } | null;
+
+export type ProgramRectsRef = React.RefObject<Map<string, DOMRect>>;
+export type IfBodyRectsRef = React.RefObject<Map<string, Map<string, DOMRect>>>;
+
+
 export function ProgramContainer({
   insertPreview,
   activeDragItem,
   highlightProgram,
   layoutVersion,
+  programRects,
+  ifBodyRects,
 }: {
-  insertPreview: { id: string; position: 'above' | 'below' } | null;
+  insertPreview: InsertPreview;
   activeDragItem: DragItem | null;
   highlightProgram?: boolean;
   layoutVersion: number;
+  programRects: ProgramRectsRef;
+  ifBodyRects: IfBodyRectsRef;
 }) {
   const {
     playerInstructions,
@@ -139,10 +166,14 @@ export function ProgramContainer({
 
   // container ref for arrows overlay
   const programContainerRef = useRef<HTMLDivElement | null>(null);
+  const isPhone = useIsPhone();
 
-  // instructionId → DOMRect (relative to program container)
-  const programRects = useRef<Map<string, DOMRect>>(new Map());
-  const ifBodyRects = useRef<Map<string, Map<string, DOMRect>>>(new Map());
+  useLayoutEffect(() => {
+    if (activeDragItem) return;
+    if (insertPreview) return;
+    measureAllInstructions();
+  }, [layoutVersion]);
+  
 
   function ProgramDropzone({
     children,
@@ -205,7 +236,7 @@ export function ProgramContainer({
           flex items-center justify-between
           px-1.5 py-0.4
           sm:px-5 sm:py-0.5
-          rounded
+          rounded-md
           sm:rounded-lg
           border
           shadow-md
@@ -267,6 +298,57 @@ export function ProgramContainer({
     }
     return set;
   }
+  function measureAllInstructions() {
+    const container = programContainerRef.current;
+    if (!container) return;
+  
+    programRects.current.clear();
+    ifBodyRects.current.clear();
+  
+    const containerRect = container.getBoundingClientRect();
+  
+    const nodes = container.querySelectorAll<HTMLElement>('[data-instruction-id]');
+  
+    nodes.forEach((node) => {
+      if (node.style.transform) return;
+      const id = node.dataset.instructionId!;
+      const parentIfId = node.dataset.parentIf || undefined;
+  
+      const rect = node.getBoundingClientRect();
+  
+      const relativeRect = {
+        top: rect.top - containerRect.top,
+        left: rect.left - containerRect.left,
+        right: rect.right - containerRect.left,
+        height: rect.height,
+        width: rect.width,
+      } as DOMRect;
+  
+      if (!parentIfId) {
+        programRects.current.set(id, relativeRect);
+      } else {
+        if (!ifBodyRects.current.has(parentIfId)) {
+          ifBodyRects.current.set(parentIfId, new Map());
+        }
+        ifBodyRects.current.get(parentIfId)!.set(id, relativeRect);
+      }
+    });
+  }  
+
+  const instructionOrderSignature = useMemo(
+    () => playerInstructions.map((i) => i.id).join('|'),
+    [playerInstructions]
+  );
+
+  useLayoutEffect(() => {
+    if (!programContainerRef.current) return;
+  
+    if (activeDragItem) return;
+    if (insertPreview) return;
+  
+    measureAllInstructions();
+  }, [instructionOrderSignature, activeDragItem, insertPreview]);
+  
 
   function SortableInstructionLine({
     instruction,
@@ -283,7 +365,11 @@ export function ProgramContainer({
   }) {
     const { setNodeRef: setDropRef } = useDroppable({
       id: instruction.id,
+      data: parentIfId
+        ? { source: 'IF_BODY', instructionId: instruction.id, parentIfId }
+        : { source: 'PROGRAM', instructionId: instruction.id },
     });
+    
 
     const showGapAbove =
       insertPreview?.id === instruction.id && insertPreview.position === 'above';
@@ -307,8 +393,15 @@ export function ProgramContainer({
             },
       });
 
+/*
     useLayoutEffect(() => {
+
+      if (activeDragItem) return;
+      if (transform) return;
       if (!rowRef.current || !programContainerRef.current) return;
+
+      programRects.current.clear();
+      ifBodyRects.current.clear();
 
       const rowRect = rowRef.current.getBoundingClientRect();
       const containerRect = programContainerRef.current.getBoundingClientRect();
@@ -335,7 +428,7 @@ export function ProgramContainer({
         else ifBodyRects.current.get(parentIfId)?.delete(instruction.id);
       };
     }, [instruction.id, parentIfId]);
-
+*/
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -452,6 +545,8 @@ export function ProgramContainer({
     return (
       <div
         id={instruction.id}
+        data-instruction-id={instruction.id}
+        data-parent-if={parentIfId ?? ''}
         ref={(node) => {
           setNodeRef(node);
           setDropRef(node);
@@ -614,16 +709,15 @@ export function ProgramContainer({
     return results;
   }, [playerInstructions, labelMap]);
 
-  function ProgramArrowsOverlay() {
+  function ProgramArrowsOverlay({ isPhone }: { isPhone: boolean }) {
     const container = programContainerRef.current;
     if (!container) return null;
 
-  const isPhone = window.innerWidth < 640;
-  const strokeW = isPhone ? 2.5 : 4;
-  const markerSize = isPhone ? 8 : 8;
+    const strokeW = isPhone ? 2.5 : 4;
+    const markerSize = isPhone ? 8 : 8;
 
     return (
-      <svg className="absolute insert-0 w-full h-full pointer-events-none">
+      <svg className="absolute inset-0 w-full h-full pointer-events-none">
         <defs>
           <marker
             id="arrowhead"
@@ -702,17 +796,22 @@ export function ProgramContainer({
   }
 
   // same signature trick from old file
-  const instructionOrderSignature = useMemo(
-    () => playerInstructions.map((i) => i.id).join('|'),
-    [playerInstructions]
-  );
+
 
   // We must re-measure after reorder, but NOT while dragging
-  const [internalLayoutVersion, setInternalLayoutVersion] = useState(0);
+  const needsRemeasureRef = useRef(false);
+
   useLayoutEffect(() => {
-    if (activeDragItem) return;
-    setInternalLayoutVersion((v) => v + 1);
-  }, [instructionOrderSignature, activeDragItem]);
+    if (activeDragItem) {
+      needsRemeasureRef.current = true;
+      return;
+    }
+
+    if (needsRemeasureRef.current) {
+      needsRemeasureRef.current = false;
+      measureAllInstructions();
+    }
+  }, [activeDragItem]);
 
   return (
     <div
@@ -743,7 +842,7 @@ export function ProgramContainer({
       </div>
 
       {/* Arrow overlay */}
-      <ProgramArrowsOverlay key={`${layoutVersion}-${internalLayoutVersion}`} />
+      <ProgramArrowsOverlay isPhone={isPhone}/>
 
       <ProgramDropzone highlight={highlightProgram}>
         <SortableContext
