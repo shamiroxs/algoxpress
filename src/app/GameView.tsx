@@ -399,9 +399,67 @@ const sensors = useSensors(
   const onDragOver = (event: DragOverEvent) => {
     const activeData = event.active.data.current as DragItem | undefined;
     const over = event.over;
-    if (!activeData || !over) return;
+    if (!activeData) return;
 
-    if (over.id === 'PROGRAM_DROPZONE') return;
+    const pointerY = getPointerClientY(event);
+
+    if (!over) {
+      if (playerInstructions.length === 0) {
+        if (insertPreview !== null) setInsertPreview(null);
+        return;
+      }
+  
+      const firstId = playerInstructions[0].id;
+      const lastId = playerInstructions[playerInstructions.length - 1].id;
+  
+      const firstRect = programRects.current.get(firstId);
+      const lastRect = programRects.current.get(lastId);
+  
+      if (firstRect && pointerY < firstRect.top) {
+        setInsertPreview({ id: firstId, position: 'above' });
+        return;
+      }
+  
+      if (lastRect && pointerY > lastRect.bottom) {
+        setInsertPreview({ id: lastId, position: 'below' });
+        return;
+      }
+  
+      // if not clearly above first or below last, do nothing
+      return;
+    }
+
+    if (over.id === 'PROGRAM_DROPZONE') {
+      // no preview if empty
+      if (playerInstructions.length === 0) {
+        if (insertPreview !== null) setInsertPreview(null);
+        return;
+      }
+    
+      
+    
+      const firstId = playerInstructions[0].id;
+      const lastId = playerInstructions[playerInstructions.length - 1].id;
+    
+      const firstRect = programRects.current.get(firstId);
+      const lastRect = programRects.current.get(lastId);
+    
+      // If pointer is above first instruction => insert at start
+      if (firstRect && pointerY < firstRect.top) {
+        setInsertPreview({ id: firstId, position: 'above' });
+        return;
+      }
+    
+      // If pointer is below last instruction => insert at end
+      if (lastRect && pointerY > lastRect.bottom) {
+        setInsertPreview({ id: lastId, position: 'below' });
+        return;
+      }
+    
+      // Otherwise default to end (feels natural)
+      setInsertPreview({ id: lastId, position: 'below' });
+      return;
+    }    
 
     const overData = over.data.current as
       | { source: 'PROGRAM'; instructionId: string }
@@ -432,7 +490,6 @@ const sensors = useSensors(
 
     if (!rect) return;
 
-    const pointerY = getPointerClientY(event);
     const position = pointerY > rect.top + rect.height / 2 + 1 ? 'below' : 'above';
 
     if (
@@ -457,6 +514,35 @@ const sensors = useSensors(
     }
 
     if (!over) {
+      // PALETTE → PROGRAM using preview even when over=null
+      if (activeData.source === 'PALETTE' && insertPreview) {
+        const inst = createInstructionFromPaletteDrop(
+          activeData.instructionType,
+          activeData.pointer,
+          playerInstructions
+        );
+
+        if (playerInstructions.length === 0) {
+          addInstruction(inst);
+        } else {
+          const hoverIndex = playerInstructions.findIndex(
+            (i) => i.id === insertPreview.id
+          );
+
+          let insertIndex =
+            insertPreview.position === 'below' ? hoverIndex + 1 : hoverIndex;
+
+          insertIndex = Math.max(0, Math.min(insertIndex, playerInstructions.length));
+
+          addInstruction(inst, insertIndex);
+        }
+
+        setInsertPreview(null);
+        setActiveDragItem(null);
+        setLayoutVersion((v) => v + 1);
+        return;
+      }
+
       // dropped outside
       if (activeData.source === 'PROGRAM') {
         removeInstruction(activeData.instructionId);
@@ -517,7 +603,27 @@ const sensors = useSensors(
           activeData.pointer,
           playerInstructions
         );
-        addInstruction(inst);
+        // If list empty, just append
+        if (playerInstructions.length === 0) {
+          addInstruction(inst);
+        } else if (insertPreview) {
+          // Use preview to compute index
+          const hoverIndex = playerInstructions.findIndex(
+            (i) => i.id === insertPreview.id
+          );
+
+          let insertIndex =
+            insertPreview.position === 'below' ? hoverIndex + 1 : hoverIndex;
+
+          // clamp safety
+          insertIndex = Math.max(0, Math.min(insertIndex, playerInstructions.length));
+
+          addInstruction(inst, insertIndex);
+        } else {
+          // fallback: append
+          addInstruction(inst);
+        }
+
         setInsertPreview(null);
         setActiveDragItem(null);
         setLayoutVersion((v) => v + 1);

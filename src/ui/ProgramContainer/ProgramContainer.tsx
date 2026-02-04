@@ -189,7 +189,7 @@ export function ProgramContainer({
     return (
       <div
         ref={setNodeRef}
-        className={`flex flex-col min-h-0 space-y-1 flex-1 overflow-y-auto rounded p-1 scrollbar-transparent
+        className={`flex flex-col min-h-[80px] pb-12 space-y-1 flex-1 overflow-y-auto rounded p-1 scrollbar-transparent
           ${
             highlight
               ? 'ring-2 ring-yellow-400'
@@ -816,7 +816,7 @@ export function ProgramContainer({
   return (
     <div
       ref={programContainerRef}
-      className="w-full h-full flex flex-col min-h-[300px] sm:min-h-[40vh] max-h-[126vh] relative"
+      className="w-full h-full flex flex-col min-h-[800px] sm:min-h-[140vh] max-h-[126vh] relative"
     >
       {/* Header */}
       <div className="flex items-center mb-2">
@@ -867,6 +867,8 @@ export function ProgramContainer({
             ))
           )}
         </SortableContext>
+        {/* bottom drop padding zone */}
+        <div className="h-14 shrink-0" />
       </ProgramDropzone>
     </div>
   );
