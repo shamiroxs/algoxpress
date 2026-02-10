@@ -334,20 +334,6 @@ export function ProgramContainer({
       }
     });
   }  
-  /*
-  const instructionOrderSignature = useMemo(
-    () => playerInstructions.map((i) => i.id).join('|'),
-    [playerInstructions]
-  );
-  useLayoutEffect(() => {
-    if (!programContainerRef.current) return;
-  
-    if (activeDragItem) return;
-    if (insertPreview) return;
-  
-    measureAllInstructions();
-  }, [instructionOrderSignature, activeDragItem, insertPreview]);
-  */
 
   function SortableInstructionLine({
     instruction,
@@ -392,42 +378,6 @@ export function ProgramContainer({
             },
       });
 
-/*
-    useLayoutEffect(() => {
-
-      if (activeDragItem) return;
-      if (transform) return;
-      if (!rowRef.current || !programContainerRef.current) return;
-
-      programRects.current.clear();
-      ifBodyRects.current.clear();
-
-      const rowRect = rowRef.current.getBoundingClientRect();
-      const containerRect = programContainerRef.current.getBoundingClientRect();
-
-      const relativeRect = {
-        top: rowRect.top - containerRect.top,
-        left: rowRect.left - containerRect.left,
-        right: rowRect.right - containerRect.left,
-        height: rowRect.height,
-        width: rowRect.width,
-      };
-
-      if (!parentIfId) {
-        programRects.current.set(instruction.id, relativeRect as DOMRect);
-      } else {
-        if (!ifBodyRects.current.has(parentIfId)) {
-          ifBodyRects.current.set(parentIfId, new Map());
-        }
-        ifBodyRects.current.get(parentIfId)!.set(instruction.id, relativeRect as DOMRect);
-      }
-
-      return () => {
-        if (!parentIfId) programRects.current.delete(instruction.id);
-        else ifBodyRects.current.get(parentIfId)?.delete(instruction.id);
-      };
-    }, [instruction.id, parentIfId]);
-*/
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -798,20 +748,6 @@ export function ProgramContainer({
 
 
   // We must re-measure after reorder, but NOT while dragging
-  /*
-  const needsRemeasureRef = useRef(false);
-
-  useLayoutEffect(() => {
-    if (activeDragItem) {
-      needsRemeasureRef.current = true;
-      return;
-    }
-
-    if (needsRemeasureRef.current) {
-      needsRemeasureRef.current = false;
-      measureAllInstructions();
-    }
-  }, [activeDragItem]);*/
 
   return (
     <div
@@ -842,7 +778,7 @@ export function ProgramContainer({
       </div>
 
       {/* Arrow overlay */}
-      <ProgramArrowsOverlay key={layoutVersion} isPhone={isPhone}/>
+      <ProgramArrowsOverlay isPhone={isPhone}/>
 
       <ProgramDropzone highlight={highlightProgram}>
         <SortableContext
