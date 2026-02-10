@@ -778,7 +778,7 @@ export function ProgramContainer({
       </div>
 
       {/* Arrow overlay */}
-      <ProgramArrowsOverlay isPhone={isPhone}/>
+      <ProgramArrowsOverlay key={layoutVersion} isPhone={isPhone}/>
 
       <ProgramDropzone highlight={highlightProgram}>
         <SortableContext
