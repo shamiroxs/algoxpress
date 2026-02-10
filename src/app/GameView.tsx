@@ -802,7 +802,7 @@ const sensors = useSensors(
       onDragEnd={onDragEnd}
       onDragCancel={onDragCancel}
     >
-    <div className="h-full w-full overflow-y-auto bg-gray-900 text-white">
+    <div className="h-full w-full overflow-hidden bg-gray-900 text-white">
       {/* ================= SUCCESS OVERLAY ================= */}
       {validationResult?.success && 
         !successHintDismissed && 

@@ -334,12 +334,11 @@ export function ProgramContainer({
       }
     });
   }  
-
+  /*
   const instructionOrderSignature = useMemo(
     () => playerInstructions.map((i) => i.id).join('|'),
     [playerInstructions]
   );
-
   useLayoutEffect(() => {
     if (!programContainerRef.current) return;
   
@@ -348,7 +347,7 @@ export function ProgramContainer({
   
     measureAllInstructions();
   }, [instructionOrderSignature, activeDragItem, insertPreview]);
-  
+  */
 
   function SortableInstructionLine({
     instruction,
@@ -799,6 +798,7 @@ export function ProgramContainer({
 
 
   // We must re-measure after reorder, but NOT while dragging
+  /*
   const needsRemeasureRef = useRef(false);
 
   useLayoutEffect(() => {
@@ -811,7 +811,7 @@ export function ProgramContainer({
       needsRemeasureRef.current = false;
       measureAllInstructions();
     }
-  }, [activeDragItem]);
+  }, [activeDragItem]);*/
 
   return (
     <div
@@ -842,7 +842,7 @@ export function ProgramContainer({
       </div>
 
       {/* Arrow overlay */}
-      <ProgramArrowsOverlay isPhone={isPhone}/>
+      <ProgramArrowsOverlay key={layoutVersion} isPhone={isPhone}/>
 
       <ProgramDropzone highlight={highlightProgram}>
         <SortableContext
@@ -850,8 +850,8 @@ export function ProgramContainer({
           strategy={verticalListSortingStrategy}
         >
           {playerInstructions.length === 0 ? (
-            <div className="flex flex-1 items-center justify-center h-full">
-              <div className="text-xs sm:text-base text-gray-500 italic select-none pointer-events-none">
+            <div className="flex flex-1 justify-center h-full">
+              <div className="mt-44 text-xs sm:text-base text-gray-500 italic select-none pointer-events-none">
                 Drag &amp; drop ↓
               </div>
             </div>
