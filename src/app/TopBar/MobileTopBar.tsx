@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
 import { InstructionPalette } from "../../ui/InstructionPalette/InstructionPalette";
 
+import { useTutorialHighlight } from '../../tutorial/selectors';
+import { useGameStore } from '../../orchestrator/store';
+
 type Props = {
     challengeTitle: string;
-    mode: 'PLAY' | 'READ';
+    mode: 'PLAY' | 'READ'; 
     onToggleChallenge: () => void;
     onBack: () => void;
   };
@@ -14,6 +17,10 @@ type Props = {
     onToggleChallenge,
     onBack,
   }: Props) {
+
+    const highlightChallenge = useTutorialHighlight('CHALLENGE_PANEL');
+    const maybeCompleteTutorial = useGameStore(s => s.maybeCompleteTutorial);
+
     return (
       <div className="relative bg-gray-800 border-b border-gray-700 z-20">
         <div className="relative min-h-[3rem] flex items-center px-4">
@@ -26,8 +33,14 @@ type Props = {
   
           <div className="absolute left-0 right-0 flex justify-center pointer-events-none">
             <div
-              className="pointer-events-auto flex items-center gap-2 cursor-pointer select-none"
-              onClick={onToggleChallenge}
+              className={`pointer-events-auto flex items-center gap-2 cursor-pointer select-none
+                ${highlightChallenge ? 'ring-2 ring-yellow-400 rounded-lg' : ''}
+              `}
+              onClick={() => {
+                onToggleChallenge();
+            
+                maybeCompleteTutorial('ANY_CONTROL');
+              }}
             >
               <span className="font-semibold text-sm">
                 {challengeTitle}

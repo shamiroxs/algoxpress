@@ -14,6 +14,11 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
     text: 'You`re the train conductor',
   },
   {
+    id: TutorialStepId.CHALLENGE_PANEL,
+    title: 'See job',
+    text: 'Click here to see your job',
+  },
+  {
     id: TutorialStepId.CHALLENGE_EXPLAINED,
     title: 'Your job',
     text: 'This panel describes the request',

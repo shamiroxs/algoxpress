@@ -189,7 +189,7 @@ export function ProgramContainer({
     return (
       <div
         ref={setNodeRef}
-        className={`flex flex-col min-h-[80px] pb-12 space-y-1 flex-1 overflow-y-auto rounded p-1 scrollbar-transparent
+        className={`flex flex-col min-h-0 space-y-1 flex-1 overflow-y-auto rounded p-1 scrollbar-transparent
           ${
             highlight
               ? 'ring-2 ring-yellow-400'

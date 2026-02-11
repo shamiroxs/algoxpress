@@ -4,7 +4,7 @@
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -70,6 +70,9 @@ import {
 } from '@dnd-kit/core';
 import type { CollisionDetection } from '@dnd-kit/core';
 
+import { useTutorialStepId } from '../tutorial/selectors';
+import { TutorialStepId } from '../tutorial/types';
+
 type DragItem =
   | {
       source: 'PALETTE';
@@ -104,6 +107,15 @@ const collisionDetection: CollisionDetection = (args) => {
   });
 
   if (ifBodyHits.length > 0) return ifBodyHits;
+
+  const programHits = rectIntersection({
+    ...args,
+    droppableContainers: args.droppableContainers.filter(
+      (c) => c.id === 'PROGRAM_DROPZONE'
+    ),
+  });
+
+  if (programHits.length > 0) return programHits;
 
   // 3️⃣ Final fallback
   return closestCenter(args);
@@ -282,7 +294,6 @@ export function GameView() {
   const successHintDismissed = useGameStore((s) => s.successHintDismissed);
 
   const isTutorialActive = useIsTutorialActive();
-  const highlightTimeline = useTutorialHighlight('TIMELINE');
 
   /** ---------- LOCAL UI STATE ---------- */
   const [mode, setMode] = useState<'PLAY' | 'READ'>('PLAY');
@@ -350,6 +361,7 @@ const addInstruction = useGameStore((s) => s.addInstruction);
 const removeInstruction = useGameStore((s) => s.removeInstruction);
 const updateInstruction = useGameStore((s) => s.updateInstruction);
 const reorderInstructions = useGameStore((s) => s.reorderInstructions);
+const tutorialStep = useTutorialStepId();
 
 const instructionOrderSignature = useMemo(
   () => playerInstructions.map((i) => i.id).join('|'),
@@ -360,6 +372,15 @@ useLayoutEffect(() => {
   if (activeDragItem) return;
   setLayoutVersion((v) => v + 1);
 }, [instructionOrderSignature]); // after render, before paint
+
+useEffect(() => {
+  if (
+    tutorialStep === TutorialStepId.VISUALIZATION_EXPLAINED &&
+    mode === 'READ'
+  ) {
+    setMode('PLAY');
+  }
+}, [tutorialStep, mode]);
 
 /** program rects for accurate insert preview */
 const programContainerRef = useRef<HTMLDivElement | null>(null);
@@ -834,9 +855,15 @@ const sensors = useSensors(
         <div
           className={`w-2/3 px-2 py-4 sm:p-6 transition-opacity duration-200 
             ${mode === 'READ' ? 'opacity-30 pointer-events-none' : ''}
-            ${highlightTimeline ? 'ring-2 ring-yellow-400' : ''}
           `}
         >
+          <div
+            className={
+              useTutorialHighlight('TIMELINE')
+                ? 'ring-2 ring-yellow-400 rounded-lg'
+                : ''
+            }
+          >
           <h3 className="text-white font-semibold  text-sm sm:text-base mb-3 sm:mb-4">
                 Workspace
           </h3>
@@ -897,6 +924,7 @@ const sensors = useSensors(
           {/* Controls */}
           <div className="flex justify-center mt-3">
             <ControlBar />
+          </div>
           </div>
         </div>
 

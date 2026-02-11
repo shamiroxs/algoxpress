@@ -6,6 +6,7 @@ import { InstructionType } from '../engine/instructions/types';
 export const TutorialStepId = {
     WELCOME: 'WELCOME',
     CHALLENGE_EXPLAINED: 'CHALLENGE_EXPLAINED',
+    CHALLENGE_PANEL: 'CHALLENGE_PANEL',
     VISUALIZATION_EXPLAINED: 'VISUALIZATION_EXPLAINED',
 
     PALETTE_EXPLAINED: 'PALETTE_EXPLAINED',
@@ -25,6 +26,7 @@ export const TutorialStepId = {
   /** Where the tutorial is visually focused */
   export type TutorialScope =
     | 'WELCOME'
+    | 'CHALLENGE_PANEL'
     | 'CONTROL_BAR'
     | 'INSTRUCTION_PALETTE'
     | 'TIMELINE'

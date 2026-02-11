@@ -14,9 +14,15 @@ import { InstructionType } from '../engine/instructions/types';
     blocksUI: true,
     completesOn: 'AUTO',
   },
+  [TutorialStepId.CHALLENGE_PANEL]: {
+    highlight: {
+      scope: 'CHALLENGE_PANEL',
+    },
+    completesOn: 'ANY_CONTROL',
+  },
   [TutorialStepId.CHALLENGE_EXPLAINED]: {
     highlight: {
-      scope: 'WELCOME', // or new scope if you prefer
+      scope: 'WELCOME',
     },
     completesOn: 'ANY_CONTROL',
   },

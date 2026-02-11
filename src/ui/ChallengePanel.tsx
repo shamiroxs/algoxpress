@@ -6,6 +6,7 @@
 import { useCurrentChallenge, useValidationResult } from '../orchestrator/selectors';
 import { ArrayView } from '../renderer/ArrayView';
 import { motion } from 'framer-motion';
+import { useTutorialHighlight } from '../tutorial/selectors';
 export function ChallengePanel() {
   const challenge = useCurrentChallenge();
   const validationResult = useValidationResult();
@@ -17,9 +18,15 @@ export function ChallengePanel() {
       </div>
     );
   }
+
+  const highlightChallenge = useTutorialHighlight('WELCOME')
   
   return (
-    <div className="challenge-panel bg-gray-800 rounded-lg p-4">
+    <div className={`challenge-panel bg-gray-800 rounded-lg p-4
+      ${highlightChallenge ? 'ring-2 ring-yellow-400 rounded-lg' : ''}
+              
+      `}
+    >
       <div className="mb-4">
         <h2 className="text-white text-xl font-bold mb-2">{challenge.title}</h2>
         <p className="text-gray-300 text-sm mb-2 whitespace-pre-line">
