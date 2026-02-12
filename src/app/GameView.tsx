@@ -853,7 +853,7 @@ const blurTargets = {
 
       {/* ================= TOP BAR (HUD) — DESKTOP ================= */}
       <div className={`transition-all duration-500 ${
-        blurTargets.isFullBlur || blurTargets.isTopBarBlur ? 'blur-md pointer-events-none' : ''
+        (blurTargets.isFullBlur || blurTargets.isTopBarBlur) && isTutorialActive ? 'blur-md pointer-events-none' : ''
       }`}>
       {isDesktop ? (
         <DesktopTopBar
@@ -874,7 +874,7 @@ const blurTargets = {
 
       {/* ================= MAIN AREA ================= */}
       <div className={`relative h-[calc(100vh-12rem)] flex transition-all duration-500 ${
-        blurTargets.isFullBlur || blurTargets.isMainAreaBlur ? 'blur-md pointer-events-none' : ''
+        (blurTargets.isFullBlur || blurTargets.isMainAreaBlur) && isTutorialActive ? 'blur-md pointer-events-none' : ''
       }`}>
         {/* ===== Visualization (2/3) ===== */}
         <div
