@@ -13,18 +13,21 @@ import { InstructionType } from '../engine/instructions/types';
   [TutorialStepId.WELCOME]: {
     blocksUI: true,
     completesOn: 'AUTO',
+    position: 'CENTER',
   },
   [TutorialStepId.CHALLENGE_PANEL]: {
     highlight: {
       scope: 'CHALLENGE_PANEL',
     },
     completesOn: 'ANY_CONTROL',
+    position: 'BOTTOM',
   },
   [TutorialStepId.CHALLENGE_EXPLAINED]: {
     highlight: {
       scope: 'WELCOME',
     },
     completesOn: 'ANY_CONTROL',
+    position: 'TOP',
   },
   
   [TutorialStepId.VISUALIZATION_EXPLAINED]: {
@@ -32,12 +35,14 @@ import { InstructionType } from '../engine/instructions/types';
       scope: 'TIMELINE',
     },
     completesOn: 'ANY_CONTROL',
+    position: 'TOP',
   },
   [TutorialStepId.PALETTE_EXPLAINED]: {
     highlight: {
       scope: 'INSTRUCTION_PALETTE',
     },
     completesOn: 'ANY_CONTROL',
+    position: 'BOTTOM',
   },
   
   [TutorialStepId.PALETTE_HELP_EXPLAINED]: {
@@ -46,6 +51,7 @@ import { InstructionType } from '../engine/instructions/types';
       control: 'HELP',
     },
     completesOn: 'ANY_CONTROL',
+    position: 'BOTTOM',
   },
   
   [TutorialStepId.PROGRAM_AREA_EXPLAINED]: {
@@ -54,6 +60,7 @@ import { InstructionType } from '../engine/instructions/types';
       control: 'PROGRAM',
     },
     completesOn: 'ANY_CONTROL',
+    position: 'TOP',
   },
   
   [TutorialStepId.PICK_EXPLAINED]: {
@@ -62,6 +69,7 @@ import { InstructionType } from '../engine/instructions/types';
       instructionType: InstructionType.PICK,
     },
     completesOn: 'AUTO',
+    position: 'BOTTOM',
   },
 
   [TutorialStepId.HAND_EXPLAINED]: {
@@ -71,6 +79,7 @@ import { InstructionType } from '../engine/instructions/types';
       scope: 'HAND',
     },
     completesOn: 'AUTO',
+    position: 'BOTTOM',
   },
 
   [TutorialStepId.MOVE_EXPLAINED]: {
@@ -80,6 +89,7 @@ import { InstructionType } from '../engine/instructions/types';
       instructionType: InstructionType.MOVE_RIGHT,
     },
     completesOn: 'AUTO',
+    position: 'BOTTOM',
   },
 
   [TutorialStepId.PUT_EXPLAINED]: {
@@ -89,6 +99,7 @@ import { InstructionType } from '../engine/instructions/types';
       instructionType: InstructionType.PUT,
     },
     completesOn: 'AUTO',
+    position: 'BOTTOM',
   },
 
   [TutorialStepId.RUN_EXECUTION]: {
@@ -97,6 +108,7 @@ import { InstructionType } from '../engine/instructions/types';
       control: 'RUN',
     },
     completesOn: 'RUN_CLICK',
+    position: 'TOP',
   },
 };
 

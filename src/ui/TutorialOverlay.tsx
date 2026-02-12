@@ -8,6 +8,7 @@ import {
   useTutorialStepContent,
   useTutorialBlocksUI,
   useTutorialBehavior,
+  useTutorialOverlayPosition,
 } from '../tutorial/selectors';
 import { TutorialStepId } from '../tutorial/types';
 
@@ -28,7 +29,8 @@ export function TutorialOverlay() {
     maybeCompleteTutorial, 
   } = useGameStore();
 
-  const [isBottom, setIsBottom] = useState(true);
+  const position = useTutorialOverlayPosition();
+
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -63,25 +65,6 @@ export function TutorialOverlay() {
 
     prevInstructionsRef.current = instructions;
   }, [instructions, behavior?.autoRun, isTutorialActive]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const viewportMiddle = window.innerHeight / 2;
-
-      // No scroll OR above middle → bottom
-      if (scrollY === 0 || scrollY <= viewportMiddle) {
-        setIsBottom(true);
-      } else {
-        setIsBottom(false);
-      }
-    };
-
-    handleScroll(); // run once on mount (handles "no scroll")
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   if (!isTutorialActive || isExecuting || !isVisible) return null;
 
@@ -132,8 +115,15 @@ export function TutorialOverlay() {
           rounded-2xl
           
           shadow-2xl
-          animate-in fade-in slide-in-from-bottom-4 duration-300
-          ${isBottom ? 'bottom-6 border-t' : 'top-6 border-b'}
+          duration-300
+          ${
+            position === 'BOTTOM'
+              ? 'bottom-6 border-t animate-in fade-in slide-in-from-bottom-4'
+              : position === 'TOP'
+              ? 'top-14 border-b animate-in fade-in slide-in-from-top-4'
+              : 'top-1/2 -translate-y-1/2 animate-in fade-in zoom-in-95'
+          }
+          
         `}
       >
         {/* Speaker */}

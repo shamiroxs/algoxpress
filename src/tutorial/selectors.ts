@@ -9,6 +9,9 @@ import type {
 } from './types';
 import { InstructionType } from '../engine/instructions/types';
 
+export const useTutorialOverlayPosition = () =>
+  useTutorialBehavior()?.position ?? 'CENTER';
+
 /** Current tutorial step ID */
 export const useTutorialStepId = () =>
   useGameStore((s) => s.tutorial.currentStep);

@@ -16,6 +16,7 @@ import { useExecutionErrorContext } from '../../orchestrator/selectors';
 
 import { InstructionType } from '../../engine/instructions/types';
 import type { Instruction } from '../../engine/instructions/types';
+import { useTutorialHighlight } from '../../tutorial/selectors';
 
 /** Must match palette drag payload */
 export type DragItem =
@@ -141,14 +142,12 @@ export type IfBodyRectsRef = React.RefObject<Map<string, Map<string, DOMRect>>>;
 export function ProgramContainer({
   insertPreview,
   activeDragItem,
-  highlightProgram,
   layoutVersion,
   programRects,
   ifBodyRects,
 }: {
   insertPreview: InsertPreview;
   activeDragItem: DragItem | null;
-  highlightProgram?: boolean;
   layoutVersion: number;
   programRects: ProgramRectsRef;
   ifBodyRects: IfBodyRectsRef;
@@ -744,10 +743,10 @@ export function ProgramContainer({
     );
   }
 
-  // same signature trick from old file
-
-
-  // We must re-measure after reorder, but NOT while dragging
+  const highlightProgram = useTutorialHighlight(
+    'INSTRUCTION_PALETTE',
+    { control: 'PROGRAM' }
+  );
 
   return (
     <div

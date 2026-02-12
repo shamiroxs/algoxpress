@@ -49,12 +49,18 @@ export const TutorialStepId = {
     targetIndex?: number; // for array-level tutorials later
   }
   
+  export type TutorialOverlayPosition =
+  | 'CENTER'
+  | 'TOP'
+  | 'BOTTOM';
+  
   /** Behavior configuration per tutorial step */
   export interface TutorialStepBehavior {
     autoRun?: boolean;
     blocksUI?: boolean;
     highlight?: TutorialHighlight;
     completesOn?: TutorialTrigger;
+    position?: TutorialOverlayPosition; 
   }
   
   /** Content shown in TutorialOverlay */

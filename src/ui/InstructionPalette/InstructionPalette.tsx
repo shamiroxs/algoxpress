@@ -544,7 +544,7 @@ export function InstructionPalette() {
         {allowedPointers.includes('MOCO') && (
           <div className={`
             flex justify-center
-            ${highlightPalette ? 'ring-2 ring-yellow-400' : ''}
+            ${highlightPalette ? 'ring-2 ring-yellow-400 rounded-lg' : ''}
             `}>
             <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
 
