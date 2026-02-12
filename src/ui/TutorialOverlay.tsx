@@ -1,5 +1,5 @@
 import { useGameStore } from '../orchestrator/store';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { runExecution } from '../orchestrator/controller';
 import { usePlayerInstructions } from '../orchestrator/selectors';
 
@@ -31,17 +31,8 @@ export function TutorialOverlay() {
 
   const position = useTutorialOverlayPosition();
 
-  const [isVisible, setIsVisible] = useState(true);
-
   useEffect(() => {
     if (!isTutorialActive || !blocksUI) return;
-  
-    setIsVisible(false);
-  
-    // Hide step 2 seconds before auto-complete
-    const hideTimeoutId = setTimeout(() => {
-      setIsVisible(true);
-    }, 1500); 
   
     // Auto-complete tutorial
     const completeTimeoutId = setTimeout(() => {
@@ -49,7 +40,6 @@ export function TutorialOverlay() {
     }, 4500);
   
     return () => {
-      clearTimeout(hideTimeoutId);
       clearTimeout(completeTimeoutId);
     };
   }, [isTutorialActive, blocksUI, maybeCompleteTutorial]);
@@ -66,7 +56,7 @@ export function TutorialOverlay() {
     prevInstructionsRef.current = instructions;
   }, [instructions, behavior?.autoRun, isTutorialActive]);
 
-  if (!isTutorialActive || isExecuting || !isVisible) return null;
+  if (!isTutorialActive || isExecuting) return null;
 
   const stepId = step?.id;
 
@@ -95,8 +85,8 @@ export function TutorialOverlay() {
           transition-all duration-300
           ${
             isWelcome
-              ? 'bg-black/50 backdrop-blur-sm'
-              : 'bg-black/25'
+              ? 'bg-black/50'
+              : 'bg-transparent'
           }
         `}
       />

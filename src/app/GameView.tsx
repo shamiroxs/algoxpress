@@ -394,6 +394,26 @@ const sensors = useSensors(
   })
 );
 
+// Helper to check what should be blurred
+const blurTargets = {
+  // WELCOME: entire background blurred
+  isFullBlur: tutorialStep === TutorialStepId.WELCOME,
+  
+  // CHALLENGE_PANEL, PALETTE_EXPLAINED, PALETTE_HELP_EXPLAINED: main area blurred
+  isMainAreaBlur: [
+    TutorialStepId.CHALLENGE_PANEL,
+    TutorialStepId.PALETTE_EXPLAINED,
+    TutorialStepId.PALETTE_HELP_EXPLAINED
+  ].includes(tutorialStep as any),
+
+  // VISUALIZATION_EXPLAINED, PROGRAM_AREA_EXPLAINED: top bar blurred
+  isTopBarBlur: [
+    TutorialStepId.VISUALIZATION_EXPLAINED,
+    TutorialStepId.PROGRAM_AREA_EXPLAINED,
+    TutorialStepId.CHALLENGE_EXPLAINED
+  ].includes(tutorialStep as any)
+};
+
   function getInsertIndex(
     event: DragEndEvent | DragOverEvent,
     overInstructionId: string,
@@ -832,6 +852,9 @@ const sensors = useSensors(
       )}
 
       {/* ================= TOP BAR (HUD) — DESKTOP ================= */}
+      <div className={`transition-all duration-500 ${
+        blurTargets.isFullBlur || blurTargets.isTopBarBlur ? 'blur-md pointer-events-none' : ''
+      }`}>
       {isDesktop ? (
         <DesktopTopBar
           challengeTitle={challenge.title}
@@ -847,10 +870,12 @@ const sensors = useSensors(
           onBack={() => navigate('/')}
         />
       )}
-
+      </div>
 
       {/* ================= MAIN AREA ================= */}
-      <div className="relative h-[calc(100vh-12rem)] flex">
+      <div className={`relative h-[calc(100vh-12rem)] flex transition-all duration-500 ${
+        blurTargets.isFullBlur || blurTargets.isMainAreaBlur ? 'blur-md pointer-events-none' : ''
+      }`}>
         {/* ===== Visualization (2/3) ===== */}
         <div
           className={`w-2/3 px-2 py-4 sm:p-6 transition-opacity duration-200 
@@ -930,7 +955,7 @@ const sensors = useSensors(
 
         {/* ===== Program Container (1/3) ===== */}
         <div ref={programContainerRef} className="w-1/3 border-l border-gray-700 bg-gray-850 p-3">
-          <TutorialOverlay />
+          
           {/* Program instructions live here */}
           <div className="flex-1 overflow-y-auto">
             <ProgramContainer
@@ -942,7 +967,7 @@ const sensors = useSensors(
               />
           </div>
         </div>
-
+        
         {/* ================= CHALLENGE PANEL OVERLAY ================= */}
         <AnimatePresence>
           {mode === 'READ' && (
@@ -960,6 +985,7 @@ const sensors = useSensors(
           )}
         </AnimatePresence>
       </div>
+      <TutorialOverlay />
       <DragOverlay>
         {activeDragItem?.source === 'PALETTE' ? (
           <div className="pointer-events-none">
