@@ -269,7 +269,6 @@ export function ProgramContainer({
           onClick={() => {
             if (!parentIfId) {
               removeInstruction(instruction.id);
-              bumpLayout();
               return;
             }
 
@@ -666,7 +665,7 @@ export function ProgramContainer({
 
       results.push({ from: inst, to: target, color });
     }
-
+    bumpLayout();
     return results;
   }, [playerInstructions, labelMap]);
 
