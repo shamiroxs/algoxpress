@@ -214,6 +214,7 @@ export function ProgramContainer({
     onEdit?: () => void;
   }) {
     const style = getInstructionStyle(instruction);
+    const isNested = !!parentIfId;
 
     const hasEditableParameter =
       instruction.type === InstructionType.SET_POINTER ||
@@ -233,10 +234,8 @@ export function ProgramContainer({
           relative
           max-w-sm
           flex items-center justify-between
-          px-1.5 py-0.4
-          sm:px-5 sm:py-0.5
-          rounded-md
-          sm:rounded-lg
+          ${isNested ? 'px-0.5 sm:px-3 py-0 sm:py-0.4' : 'px-1.5 py-0.4 sm:px-5 sm:py-0.5'}
+          ${isNested ? 'rounded sm:rounded-md' : 'rounded-md sm:rounded-lg'}
           border
           shadow-md
           transition
@@ -254,8 +253,7 @@ export function ProgramContainer({
           className={`
             flex-1
             text-center
-            text-[10px]
-            sm:text-base
+            ${isNested ? 'text-[8px] sm:text-sm' : 'text-[10px] sm:text-base'}
             select-none
             ${hasEditableParameter ? 'cursor-pointer hover:opacity-90' : ''}
           `}
@@ -503,7 +501,7 @@ export function ProgramContainer({
         style={style}
         {...attributes}
         {...listeners}
-        className={`flex justify-center relative mt-2 sm:mt-4`}
+        className={`flex justify-center relative ${parentIfId ? 'mt-0.5 sm:mt-1.5' : 'mt-2 sm:mt-4'}`}
       >
         <div className="flex flex-col items-center">
           {/* GAP ABOVE */}
@@ -619,7 +617,11 @@ export function ProgramContainer({
             }
 
             return index < container.length - 1 ? (
-              <div className="text-gray-400 text-[10px] sm:text-sm leading-none sm:mt-0.5 select-none">↓</div>
+              <div className={`
+                text-gray-400
+                ${parentIfId ? 'text-[8px] sm:text-[11px]' : 'text-[10px] sm:text-sm'}
+                leading-none sm:mt-0.5 select-none
+                `}>↓</div>
             ) : null;
           })()}
         </div>
