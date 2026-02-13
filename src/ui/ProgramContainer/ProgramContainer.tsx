@@ -234,7 +234,7 @@ export function ProgramContainer({
           relative
           max-w-sm
           flex items-center justify-between
-          ${isNested ? 'px-1.5 sm:px-3 py-0.3 sm:py-0.4' : 'px-1.5 py-0.4 sm:px-5 sm:py-0.5'}
+          ${isNested ? 'px-1.5 sm:px-3 py-0.4 sm:py-0.5' : 'px-1.5 py-0.4 sm:px-5 sm:py-0.5'}
           ${isNested ? 'rounded sm:rounded-md' : 'rounded-md sm:rounded-lg'}
           border
           shadow-md
@@ -501,7 +501,7 @@ export function ProgramContainer({
         style={style}
         {...attributes}
         {...listeners}
-        className={`flex justify-center relative ${parentIfId ? 'mt-0.5 sm:mt-1.5' : 'mt-2 sm:mt-4'}`}
+        className={`flex justify-center relative ${parentIfId ? 'mt-1 sm:mt-1.5' : 'mt-2 sm:mt-4'}`}
       >
         <div className="flex flex-col items-center">
           {/* GAP ABOVE */}
@@ -576,10 +576,10 @@ export function ProgramContainer({
                   isDraggingInsideIf ? { minHeight: instruction.body.length * 44 } : undefined
                 }
                 className={`
-                  ml-1 mt-1 mb-1 p-2
+                  -ml-3 mt-0.5 mb-0.5 p-1
                   border-l-4 border-dashed
                   rounded bg-gray-900
-                  min-h-[40px] w-full
+                  min-h-[40px]
                   ${isOver ? 'border-green-400' : 'border-gray-500'}
                 `}
               >
@@ -597,6 +597,13 @@ export function ProgramContainer({
                       parentIfId={instruction.id}
                     />
                   ))}
+                  <div
+                    className={`
+                      transition-all duration-150
+                      ${isOver ? 'h-8' : 'h-0'}
+                    `}
+                  />
+
                 </SortableContext>
               </div>
             </div>
