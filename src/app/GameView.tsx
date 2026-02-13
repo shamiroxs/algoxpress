@@ -98,6 +98,16 @@ const collisionDetection: CollisionDetection = (args) => {
 
   if (childHits.length > 0) return childHits;
 
+   // 2️⃣ Then allow IF_BODY container as fallback
+   const ifBodyHits = rectIntersection({
+    ...args,
+    droppableContainers: args.droppableContainers.filter((c) =>
+      c.id.toString().startsWith('IF_BODY_')
+    ),
+  });
+
+  if (ifBodyHits.length > 0) return ifBodyHits;
+
   // 2️⃣ Prefer PROGRAM instructions
   const programInstructionHits = rectIntersection({
     ...args,
@@ -108,16 +118,6 @@ const collisionDetection: CollisionDetection = (args) => {
   });
 
   if (programInstructionHits.length > 0) return programInstructionHits;
-
-  // 2️⃣ Then allow IF_BODY container as fallback
-  const ifBodyHits = rectIntersection({
-    ...args,
-    droppableContainers: args.droppableContainers.filter((c) =>
-      c.id.toString().startsWith('IF_BODY_')
-    ),
-  });
-
-  if (ifBodyHits.length > 0) return ifBodyHits;
 
   const programHits = rectIntersection({
     ...args,
