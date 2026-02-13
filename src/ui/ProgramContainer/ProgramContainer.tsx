@@ -280,6 +280,7 @@ export function ProgramContainer({
               ...parentIf,
               body: parentIf.body.filter((child) => child.id !== instruction.id),
             });
+            bumpLayout();
           }}
           className="absolute right-2 text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
         >
@@ -579,7 +580,7 @@ export function ProgramContainer({
                   isDraggingInsideIf ? { minHeight: instruction.body.length * 44 } : undefined
                 }
                 className={`
-                  -ml-3 mt-0.5 mb-0.5 p-1
+                  -ml-4 mt-0.5 mb-0.5 p-1
                   border-l-4 border-dashed
                   rounded bg-gray-900
                   min-h-[40px]
