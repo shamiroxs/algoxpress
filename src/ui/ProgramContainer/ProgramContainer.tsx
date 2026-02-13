@@ -145,12 +145,14 @@ export function ProgramContainer({
   layoutVersion,
   programRects,
   ifBodyRects,
+  bumpLayout,
 }: {
   insertPreview: InsertPreview;
   activeDragItem: DragItem | null;
   layoutVersion: number;
   programRects: ProgramRectsRef;
   ifBodyRects: IfBodyRectsRef;
+  bumpLayout: () => void;
 }) {
   const {
     playerInstructions,
@@ -267,6 +269,7 @@ export function ProgramContainer({
           onClick={() => {
             if (!parentIfId) {
               removeInstruction(instruction.id);
+              bumpLayout();
               return;
             }
 
@@ -770,6 +773,7 @@ export function ProgramContainer({
           onClick={() => {
             if (playerInstructions.length === 0) return;
             clearPlayerInstructions();
+            bumpLayout();
           }}
           title="Clear program"
           className="

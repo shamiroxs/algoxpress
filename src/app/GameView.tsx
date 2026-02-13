@@ -98,6 +98,17 @@ const collisionDetection: CollisionDetection = (args) => {
 
   if (childHits.length > 0) return childHits;
 
+  // 2️⃣ Prefer PROGRAM instructions
+  const programInstructionHits = rectIntersection({
+    ...args,
+    droppableContainers: args.droppableContainers.filter(
+      (c) =>
+        c.data.current?.source === 'PROGRAM'
+    ),
+  });
+
+  if (programInstructionHits.length > 0) return programInstructionHits;
+
   // 2️⃣ Then allow IF_BODY container as fallback
   const ifBodyHits = rectIntersection({
     ...args,
@@ -356,6 +367,8 @@ export function GameView() {
   const [insertPreview, setInsertPreview] = useState<InsertPreview>(null);
 const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
 const [layoutVersion, setLayoutVersion] = useState(0);
+const bumpLayout = () => setLayoutVersion(v => v + 1);
+
 
 const addInstruction = useGameStore((s) => s.addInstruction);
 const removeInstruction = useGameStore((s) => s.removeInstruction);
@@ -964,6 +977,7 @@ const blurTargets = {
                 layoutVersion={layoutVersion}
                 programRects={programRects}
                 ifBodyRects={ifBodyRects}
+                bumpLayout={bumpLayout}
               />
           </div>
         </div>
