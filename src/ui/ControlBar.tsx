@@ -177,7 +177,8 @@ export function ControlBar() {
             <button
               onClick={onPause}
               className="
-                w-12 h-12
+                w-12 h-12w-10 h-10
+                sm:w-12 sm:h-12
                 rounded-full
                 flex items-center justify-center
                 bg-yellow-500 hover:bg-yellow-400
