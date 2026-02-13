@@ -234,7 +234,7 @@ export function ProgramContainer({
           relative
           max-w-sm
           flex items-center justify-between
-          ${isNested ? 'px-0.5 sm:px-3 py-0 sm:py-0.4' : 'px-1.5 py-0.4 sm:px-5 sm:py-0.5'}
+          ${isNested ? 'px-1.5 sm:px-3 py-0.3 sm:py-0.4' : 'px-1.5 py-0.4 sm:px-5 sm:py-0.5'}
           ${isNested ? 'rounded sm:rounded-md' : 'rounded-md sm:rounded-lg'}
           border
           shadow-md
