@@ -94,7 +94,7 @@ function formatInstruction(inst: Instruction): string {
     case InstructionType.SWAP:
       return 'Swap ⇄';
     case InstructionType.SWAP_WITH_NEXT:
-      return 'SwapNext →←';
+      return 'SwapNext';
     case InstructionType.INCREMENT_VALUE:
       return 'Value +';
     case InstructionType.DECREMENT_VALUE:
@@ -485,6 +485,14 @@ export function ProgramContainer({
     const isDraggingInsideIf =
       activeDragItem?.source === 'IF_BODY' && activeDragItem.parentIfId === instruction.id;
 
+    const isDraggingOverThisIf =
+      !!activeDragItem &&
+      (
+        activeDragItem.source === 'PALETTE' ||
+        activeDragItem.source === 'PROGRAM' ||
+        activeDragItem.parentIfId === instruction.id
+      );
+
     const isBlockIf =
       instruction.type === InstructionType.IF_GREATER ||
       instruction.type === InstructionType.IF_LESS ||
@@ -584,6 +592,7 @@ export function ProgramContainer({
                   rounded bg-gray-900
                   min-h-[40px]
                   ${isOver ? 'border-green-400' : 'border-gray-500'}
+                  ${isDraggingOverThisIf ? 'pb-4 sm:pb-6' : ''}
                 `}
               >
                 <SortableContext
