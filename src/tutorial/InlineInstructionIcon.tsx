@@ -17,6 +17,7 @@ const ICON_LABELS: Record<InstructionType, string> = {
   IF_NOT_EQUAL: 'IF_NOT_EQUAL',
   IF_END: 'IF_END',
   IF_MEET: 'IF_MEET',
+  IF_EVEN: 'IF_EVEN',
 
   JUMP: 'JUMP',
   LABEL: 'LABEL',
