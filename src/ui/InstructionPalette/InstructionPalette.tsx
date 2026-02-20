@@ -36,6 +36,7 @@ import {
   createDecrementValue,
   createWait,
   createSetValue,
+  createIfEven,
 } from '../../engine/instructions/factory';
 
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -72,6 +73,7 @@ const instructionTemplates = [
     label: 'IFEnd',
     description: 'If pointer == length - 1, jump to label',
   },
+  { type: InstructionType.IF_EVEN, label: 'IFEven', description: 'If current value % 2 === 0' },
   { type: InstructionType.SET_POINTER, label: 'GotoSeat', description: 'Set pointer to index' },
   { type: InstructionType.SET_VALUE, label: 'SetValue', description: 'Set value at pointer' },
   { type: InstructionType.JUMP, label: 'Jump', description: 'Jump to label' },
@@ -98,6 +100,7 @@ const INSTRUCTION_ICONS: Record<InstructionType, string> = {
   [InstructionType.IF_NOT_EQUAL]: '!=',
   [InstructionType.IF_END]: '🏁',
   [InstructionType.IF_MEET]: '🤝',
+  [InstructionType.IF_EVEN]: '☯',
   [InstructionType.JUMP]: '↰',
   [InstructionType.LABEL]: '🏷️',
   [InstructionType.SWAP]: '⇄',
@@ -454,6 +457,9 @@ export function InstructionPalette() {
         break;
       case InstructionType.IF_MEET:
         instruction = createIfMeet(generateUniqueLabelName());
+        break;
+      case InstructionType.IF_EVEN:
+        instruction = createIfEven(pointer);
         break;
       case InstructionType.JUMP:
         instruction = createJump(generateUniqueLabelName());

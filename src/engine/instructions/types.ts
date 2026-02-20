@@ -21,6 +21,7 @@ export const InstructionType = {
   IF_NOT_EQUAL: 'IF_NOT_EQUAL',
   IF_END: 'IF_END',
   IF_MEET: 'IF_MEET',
+  IF_EVEN: 'IF_EVEN',
 
   JUMP: 'JUMP',
   LABEL: 'LABEL',
@@ -115,6 +116,11 @@ export interface IfMeetInstruction extends BaseInstruction {
   label: string; // jump if moco === choco
 }
 
+export interface IfEvenInstruction extends IfBaseInstruction {
+  type: 'IF_EVEN'; // if hand IS EVEN
+  target: PointerTarget;
+}
+
 export interface JumpInstruction extends BaseInstruction {
   type: 'JUMP';
   label: string;
@@ -162,6 +168,7 @@ export type Instruction =
   | IfNotEqualInstruction
   | IfEndInstruction
   | IfMeetInstruction
+  | IfEvenInstruction
   | JumpInstruction
   | LabelInstruction
   | SwapInstruction

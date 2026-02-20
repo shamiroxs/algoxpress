@@ -141,6 +141,7 @@ const INSTRUCTION_ICONS: Record<InstructionType, string> = {
   [InstructionType.IF_NOT_EQUAL]: '!=',
   [InstructionType.IF_END]: '🏁',
   [InstructionType.IF_MEET]: '🤝',
+  [InstructionType.IF_EVEN]: '☯',
   [InstructionType.JUMP]: '↰',
   [InstructionType.LABEL]: '🏷️',
   [InstructionType.SWAP]: '⇄',

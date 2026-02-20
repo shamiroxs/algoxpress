@@ -41,6 +41,7 @@ export interface Challenge {
     MOCO?: number;
     CHOCO?: number;
   };
+  clipboard?: boolean ;
   initialHand?: number | null;
   instructions: Instruction[]; // Starting instructions (can be empty)
   unlocked: boolean;

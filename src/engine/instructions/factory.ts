@@ -37,6 +37,8 @@ export function createInstruction(
       return createIfEnd(pointer, 'label');
     case InstructionType.IF_MEET:
       return createIfMeet('label');
+    case InstructionType.IF_EVEN:
+      return createIfEven(pointer);
     case InstructionType.JUMP:
       return createJump('label');
     case InstructionType.LABEL:
@@ -220,6 +222,19 @@ export function createIfMeet(
     id: `ifmeet-${Date.now()}-${Math.random()}`,
     type: InstructionType.IF_MEET,
     label,
+    
+  };
+}
+
+export function createIfEven(
+  target: PointerTarget,
+  
+): Instruction {
+  return {
+    id: `ifeven-${Date.now()}-${Math.random()}`,
+    type: InstructionType.IF_EVEN,
+    target,
+    body: [],
     
   };
 }

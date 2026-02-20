@@ -264,7 +264,28 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         }
         break;
       }
-      
+
+      case InstructionType.IF_EVEN: {
+
+        const ptr = getPointer(newState, instruction.target);
+
+        if (ptr < 0 || ptr >= newState.array.length) {
+          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+        }
+
+        const value = newState.array[ptr];
+
+        if (value === null || value === undefined) {
+          return instructionError(newState, instruction, 'Cannot check even. Seat is empty.');
+        }
+
+        if (value % 2 === 0) {
+          stack.push({ instructions: instruction.body, line: 0 });
+        } else {
+          frame.line++;
+        }
+        break;
+      }
 
       /* ─────────────── JUMP / LABEL ─────────────── */
 

@@ -87,6 +87,8 @@ function formatInstruction(inst: Instruction): string {
       return `IFEnd ${inst.label}`;
     case InstructionType.IF_MEET:
       return `IFMeet ${inst.label}`;
+    case InstructionType.IF_EVEN:
+      return 'IFEven';
     case InstructionType.JUMP:
       return `Jump ${inst.label}`;
     case InstructionType.LABEL:
@@ -228,6 +230,7 @@ export function ProgramContainer({
       instruction.type === InstructionType.IF_NOT_EQUAL ||
       instruction.type === InstructionType.IF_END ||
       instruction.type === InstructionType.IF_MEET ||
+      instruction.type === InstructionType.IF_EVEN ||
       instruction.type === InstructionType.JUMP;
 
     return (
@@ -400,6 +403,7 @@ export function ProgramContainer({
       instruction.type === InstructionType.IF_NOT_EQUAL ||
       instruction.type === InstructionType.IF_END ||
       instruction.type === InstructionType.IF_MEET ||
+      instruction.type === InstructionType.IF_EVEN ||
       instruction.type === InstructionType.JUMP;
 
     const handleEdit = () => {
@@ -497,7 +501,8 @@ export function ProgramContainer({
       instruction.type === InstructionType.IF_GREATER ||
       instruction.type === InstructionType.IF_LESS ||
       instruction.type === InstructionType.IF_EQUAL ||
-      instruction.type === InstructionType.IF_NOT_EQUAL;
+      instruction.type === InstructionType.IF_NOT_EQUAL ||
+      instruction.type === InstructionType.IF_EVEN;
 
     return (
       <div

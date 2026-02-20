@@ -135,6 +135,44 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-4',
+    title: 'Group Boarding',
+    description: `Even tickets must board before odd tickets.`,
+    hints: ['Move even tickets numbers left', 'Move odd tickets numbers right.'],
+    difficulty: Difficulty.EASY,
+    initialArray: [1, 2, 3, 4, 5, 6],
+    targetArray: [2, 4, 6, 1, 5, 3],
+    maxSteps: 37,
+    clipboard: false,
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'if-even',
+        type: InstructionType.IF_EVEN,
+        target: "CHOCO",
+        body: [],
+      },   
+
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      }, 
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+      ],
+    },
+  },
+  {
+    id: 'challenge-5',
     title: 'Backwards Tickets',
     description: `The compartment was filled from the wrong direction.`,
     hints: ['Reverse the order of all ticket values.'],
@@ -177,7 +215,7 @@ export const challenges: Challenge[] = [
     
   },
   {
-    id: 'challenge-5',
+    id: 'challenge-6',
     title: 'VIP Seat',
     description: `A VIP is already seated somewhere. Seat 0 is also reserved by them.`,
     hints: ['Copy the highest ticket value into Seat 0.'
@@ -230,7 +268,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-6',
+    id: 'challenge-7',
     title: 'Duplicate Ticket',
     description: 'Only one ticket per passenger is allowed.',
     hints: ['If any duplicate ticket exists, copy that value into Seat 0.', 'Assume no passenger at seat 0'],
@@ -289,7 +327,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-7',
+    id: 'challenge-8',
     title: 'Clear the Aisle',
     description: `Passengers without tickets must step aside without disturbing valid ones.`,
     hints: [
@@ -341,7 +379,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-8',
+    id: 'challenge-9',
     title: 'Inspection Check',
     description: `An inspector checks ticket order before departure.`,
     hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
@@ -391,6 +429,7 @@ export const challenges: Challenge[] = [
       ],
     },
   },  
+  
 ];
 
 /*
@@ -404,7 +443,7 @@ Input:
 [1, 2, 3, 4, 5, 6]
 
 Output:
-[2, 4, 6, 1, 3, 5]
+[2, 4, 6, 1, 5, 3]
 
 ------------------------------
 Move All Negative Numbers to Beginning

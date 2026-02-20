@@ -211,6 +211,7 @@ const INSTRUCTION_ICONS: Record<InstructionType, string> = {
   [InstructionType.IF_NOT_EQUAL]: '!=',
   [InstructionType.IF_END]: '🏁',
   [InstructionType.IF_MEET]: '🤝',
+  [InstructionType.IF_EVEN]: '☯',
   [InstructionType.JUMP]: '↰',
   [InstructionType.LABEL]: '🏷️',
   [InstructionType.SWAP]: '⇄',
@@ -235,6 +236,7 @@ const instructionTemplates = [
     label: 'IFEnd', 
     description: 'If pointer == length - 1, jump to label' 
   },  
+  { type: InstructionType.IF_EVEN, label: 'IFEven', description: 'If current value % 2 === 0' },
   { type: InstructionType.SET_POINTER, label: 'GotoSeat', description: 'Set pointer to index' },
   { type: InstructionType.SET_VALUE, label: 'SetValue', description: 'Set pointer to index' },
   { type: InstructionType.JUMP, label: 'Jump', description: 'Jump to label' },
@@ -342,6 +344,7 @@ export function GameView() {
     currentInstruction?.type === InstructionType.IF_LESS ||
     currentInstruction?.type === InstructionType.IF_GREATER ||
     currentInstruction?.type === InstructionType.IF_EQUAL ||
+    currentInstruction?.type === InstructionType.IF_EVEN ||
     currentInstruction?.type === InstructionType.IF_NOT_EQUAL;
 
   const isSwap = currentInstruction?.type === InstructionType.SWAP;
@@ -902,18 +905,28 @@ const blurTargets = {
                 : ''
             }
           >
-          <h3 className="text-white font-semibold  text-sm sm:text-base mb-3 sm:mb-4">
+          <h3 className={`text-white font-semibold  text-sm sm:text-base 
+            ${
+              challenge.clipboard === false ? 'mb-4 sm:mb-6' : 'mb-2 sm:mb-3'
+            }
+          `}>
                 Workspace
           </h3>
           {/* Hand */}
-          <div className="mb-2 sm:mb-3 flex justify-center">
-            <HandView
-              value={hand}
-              isActive={isHandActive}
-              arrayLength={array.length}
-            />
-          </div>
-
+          {challenge.clipboard !== false && (
+            <div className="rounded">
+              <div className="mb-0.5 sm:mb-1.5 flex justify-center">
+                <HandView
+                  value={hand}
+                  isActive={isHandActive}
+                  arrayLength={array.length}
+                />
+              </div>
+              <div className="mb-3 sm:mb-4 text-[10px] sm:text-xs text-gray-400">
+                Clipboard
+              </div>
+            </div>
+          )}
           {/* Pointers */}
           {array.length > 0 && (
             <PointerView
