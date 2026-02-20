@@ -151,7 +151,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
 
-        if (newState.hand < newState.array[ptr]) {
+        if (newState.hand > newState.array[ptr]) {
           stack.push({ instructions: instruction.body, line: 0 });
         } else {
           frame.line++;
@@ -170,7 +170,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
 
-        if (newState.hand > newState.array[ptr]) {
+        if (newState.hand < newState.array[ptr]) {
           stack.push({ instructions: instruction.body, line: 0 });
         } else {
           frame.line++;

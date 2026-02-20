@@ -173,6 +173,44 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-5',
+    title: 'Penalty Boarding',
+    description: `Passengers with penalty tickets (negative) must board before regular ones.`,
+    hints: [
+      'Move all negative values to the left end, preserving relative order of others.',
+      'You begin with a zero in hand.'
+    ],
+    difficulty: Difficulty.EASY,
+    initialArray: [1, -2, 3, -4, 5, -6],
+    targetArray: [-2, -4, -6, 1, 5, 3],
+    maxSteps: 31,
+    initialHand: 0,
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+        InstructionType.IF_LESS
+      ],
+      suggestedInstructions: [
+        InstructionType.IF_GREATER,
+      ],
+    }
+  },
+  {
+    id: 'challenge-6',
     title: 'Backwards Tickets',
     description: `The compartment was filled from the wrong direction.`,
     hints: ['Reverse the order of all ticket values.'],
@@ -199,7 +237,11 @@ export const challenges: Challenge[] = [
         type: InstructionType.JUMP,
         label: 'loop',
       },  
-        
+      {
+        id: 'loop-exit',
+        type: InstructionType.LABEL,
+        labelName: 'exit',
+      },
     ],
     
     unlocked: true,
@@ -214,8 +256,9 @@ export const challenges: Challenge[] = [
     }
     
   },
+  
   {
-    id: 'challenge-6',
+    id: 'challenge-7',
     title: 'VIP Seat',
     description: `A VIP is already seated somewhere. Seat 0 is also reserved by them.`,
     hints: ['Copy the highest ticket value into Seat 0.'
@@ -241,8 +284,8 @@ export const challenges: Challenge[] = [
         target: 'MOCO',
       },
       {
-        id: 'if-less',
-        type: InstructionType.IF_LESS,
+        id: 'if-great',
+        type: InstructionType.IF_GREATER,
         target: "MOCO",
         body: [],
       },    
@@ -268,7 +311,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-7',
+    id: 'challenge-8',
     title: 'Duplicate Ticket',
     description: 'Only one ticket per passenger is allowed.',
     hints: ['If any duplicate ticket exists, copy that value into Seat 0.', 'Assume no passenger at seat 0'],
@@ -321,13 +364,13 @@ export const challenges: Challenge[] = [
         InstructionType.LABEL,
       ],
       suggestedInstructions: [
-        InstructionType.IF_LESS,
+        InstructionType.IF_GREATER,
         InstructionType.IF_EQUAL,
       ],
     }
   },
   {
-    id: 'challenge-8',
+    id: 'challenge-9',
     title: 'Clear the Aisle',
     description: `Passengers without tickets must step aside without disturbing valid ones.`,
     hints: [
@@ -379,7 +422,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-9',
+    id: 'challenge-10',
     title: 'Inspection Check',
     description: `An inspector checks ticket order before departure.`,
     hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
@@ -406,8 +449,8 @@ export const challenges: Challenge[] = [
         target: 'MOCO',
       }, 
       {
-        id: 'if-great',
-        type: InstructionType.IF_GREATER,
+        id: 'if-less',
+        type: InstructionType.IF_LESS,
         target: "MOCO",
         body: [],
       },   
@@ -434,29 +477,6 @@ export const challenges: Challenge[] = [
 
 /*
 ------------------------------
-Segregate Even and Odd Numbers
-
-Problem:
-Move all even numbers before odd numbers.
-
-Input:
-[1, 2, 3, 4, 5, 6]
-
-Output:
-[2, 4, 6, 1, 5, 3]
-
-------------------------------
-Move All Negative Numbers to Beginning
-
-Problem:
-Rearrange array so that all negative numbers appear before positive numbers.
-
-Input:
-[1, -2, 3, -4, 5, -6]
-
-Output (one possible answer):
-[-2, -4, -6, 1, 3, 5]
-
 ------------------------------
 Sort Array of 0s, 1s and 2s (Dutch National Flag)
 
