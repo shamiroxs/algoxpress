@@ -307,6 +307,7 @@ export function GameView() {
   const successHintDismissed = useGameStore((s) => s.successHintDismissed);
 
   const isTutorialActive = useIsTutorialActive();
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
 
   /** ---------- LOCAL UI STATE ---------- */
   const [mode, setMode] = useState<'PLAY' | 'READ'>('PLAY');
@@ -397,6 +398,23 @@ useEffect(() => {
     setMode('PLAY');
   }
 }, [tutorialStep, mode]);
+
+useEffect(() => {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  if (validationResult?.success && !successHintDismissed && !isTutorialActive) {
+    timer = setTimeout(() => {
+      setShowSuccessOverlay(true);
+    }, 3000); // 3 seconds
+  } else {
+    // reset if success disappears or conditions change
+    setShowSuccessOverlay(false);
+  }
+
+  return () => {
+    if (timer) clearTimeout(timer);
+  };
+}, [validationResult?.success, successHintDismissed, isTutorialActive]);
 
 /** program rects for accurate insert preview */
 const programContainerRef = useRef<HTMLDivElement | null>(null);
@@ -861,11 +879,7 @@ const blurTargets = {
     >
     <div className="h-full w-full overflow-y-auto bg-gray-900 text-white">
       {/* ================= SUCCESS OVERLAY ================= */}
-      {validationResult?.success && 
-        !successHintDismissed && 
-        !isTutorialActive && (
-        <SuccessOverlay />
-      )}
+      {showSuccessOverlay && <SuccessOverlay />}
 
       {/* ================= TOP BAR (HUD) — DESKTOP ================= */}
       <div className={`transition-all duration-500 ${
