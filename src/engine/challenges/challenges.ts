@@ -417,7 +417,7 @@ export const challenges: Challenge[] = [
         labelName: 'exit',
       },
     ],
-    unlocked: true,
+    unlocked: false,
     capabilities: {
       allowedPointers: ['MOCO', 'CHOCO', 'LOCO'],
       allowedInstructions: [
