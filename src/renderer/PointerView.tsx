@@ -13,6 +13,7 @@ interface PointerViewProps {
 
   mocoPointer?: number;
   chocoPointer?: number;
+  locoPointer?: number;
 
   cellWidth?: number;
   spacing?: number;
@@ -27,13 +28,14 @@ interface PointerViewProps {
   isMoveActive?: boolean;
   isSwapActive?: boolean;
 
-  activePointer?: 'MOCO' | 'CHOCO' | null;
+  activePointer?: 'MOCO' | 'CHOCO' | 'LOCO' | null;
 }
 
 export function PointerView({
   arrayLength,
   mocoPointer,
   chocoPointer,
+  locoPointer,
   cellWidth = 60,
   spacing = 10,
   errorContext,
@@ -50,7 +52,7 @@ export function PointerView({
 
   function renderCharacter(
     index: number,
-    type: 'MOCO' | 'CHOCO',
+    type: 'MOCO' | 'CHOCO' | 'LOCO',
     yOffset: number,
     isError?: boolean,
     isHandActive?: boolean
@@ -85,11 +87,20 @@ export function PointerView({
   const chocoError =
     errorContext?.kind === 'POINTER' &&
     errorContext.target === 'CHOCO';
+  const locoError =
+    errorContext?.kind === 'POINTER' &&
+    errorContext.target === 'LOCO';
 
   const sameIndex =
-    mocoPointer !== undefined &&
-    chocoPointer !== undefined &&
-    mocoPointer === chocoPointer;
+    (mocoPointer !== undefined &&
+      chocoPointer !== undefined &&
+      mocoPointer === chocoPointer) ||
+    (mocoPointer !== undefined &&
+      locoPointer !== undefined &&
+      mocoPointer === locoPointer) ||
+    (chocoPointer !== undefined &&
+      locoPointer !== undefined &&
+      chocoPointer === locoPointer);
 
   return (
     <svg
@@ -114,6 +125,16 @@ export function PointerView({
           'CHOCO',
           sameIndex ? 26 : 10,
           chocoError,
+          isHandActive
+        )}
+
+      {/* LOCO */}
+      {locoPointer !== undefined &&
+        renderCharacter(
+          locoPointer,
+          'LOCO',
+          sameIndex ? 26 : 10,
+          locoError,
           isHandActive
         )}
 

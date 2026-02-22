@@ -15,6 +15,7 @@ export interface ExecutionState {
   // Single pointer (index position in array)
   mocoPointer: number;
   chocoPointer: number;
+  locoPointer: number;
   
   // Hand register (temporary storage - like holding a value)
   hand: number | null;
@@ -37,7 +38,7 @@ export function createInitialState(
   initialArray: number[],
   instructions: any[],
   challenge?: { 
-    initialPointers?: { MOCO?: number; CHOCO?: number } 
+    initialPointers?: { MOCO?: number; CHOCO?: number; LOCO?: number; } 
     initialHand?: number | null;
   }
 ): ExecutionState {
@@ -54,6 +55,7 @@ export function createInitialState(
     mocoPointer: challenge?.initialPointers?.MOCO ?? 0,
     chocoPointer:
       challenge?.initialPointers?.CHOCO ?? 0,
+    locoPointer: challenge?.initialPointers?.LOCO ?? 0,
     hand: challenge?.initialHand ?? null,
     executionStack: [
       {
@@ -75,6 +77,7 @@ export function cloneState(state: ExecutionState): ExecutionState {
     array: [...state.array],
     mocoPointer: state.mocoPointer,
     chocoPointer: state.chocoPointer,
+    locoPointer: state.locoPointer,
     hand: state.hand,
     executionStack: state.executionStack.map(frame => ({
       instructions: frame.instructions,

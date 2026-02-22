@@ -8,7 +8,7 @@ import { InstructionType } from './types';
 
 export function createInstruction(
   type: InstructionType,
-  pointer: 'MOCO' | 'CHOCO'
+  pointer: 'MOCO' | 'CHOCO' | 'LOCO'
 ): Instruction {
   switch (type) {
     case InstructionType.MOVE_LEFT:

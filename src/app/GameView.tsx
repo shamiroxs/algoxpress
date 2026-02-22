@@ -19,6 +19,7 @@ import {
   useStepCount,
   useCurrentInstruction,
   useExecutionErrorContext,
+  useLocoPointer,
 } from '../orchestrator/selectors';
 
 import { useGameStore } from '../orchestrator/store';
@@ -77,7 +78,7 @@ type DragItem =
   | {
       source: 'PALETTE';
       instructionType: InstructionType;
-      pointer: 'MOCO' | 'CHOCO';
+      pointer: 'MOCO' | 'CHOCO' | 'LOCO';
       isGlobal?: boolean;
     }
   | { source: 'PROGRAM'; instructionId: string }
@@ -160,7 +161,7 @@ function generateUniqueLabelName(instructions: Instruction[]): string {
 
 function createInstructionFromPaletteDrop(
   instructionType: InstructionType,
-  pointer: 'MOCO' | 'CHOCO',
+  pointer: 'MOCO' | 'CHOCO' | 'LOCO',
   instructions: Instruction[]
 ): Instruction {
   const labelName = generateUniqueLabelName(instructions);
@@ -261,14 +262,15 @@ function PaletteDragPreview({
   isGlobal,
 }: {
   instructionType: InstructionType;
-  pointer: 'MOCO' | 'CHOCO';
+  pointer: 'MOCO' | 'CHOCO' | 'LOCO';
   isGlobal?: boolean;
 }) {
   const skin = isGlobal
     ? 'bg-purple-900 border-purple-400'
     : pointer === 'MOCO'
     ? 'bg-blue-900 border-blue-400'
-    : 'bg-red-900 border-red-400';
+    : pointer === 'CHOCO'? 'bg-red-900 border-red-400'
+    : 'bg-yellow-900 border-yellow-400';
 
   return (
     <div
@@ -316,6 +318,7 @@ export function GameView() {
   const array = useArrayState();
   const rawMocoPointer = useMocoPointer();
   const rawChocoPointer = useChocoPointer();
+  const rawLocoPointer = useLocoPointer();
   const hand = useHand();
   const currentLine = useCurrentLine();
   const stepCount = useStepCount();
@@ -326,6 +329,7 @@ export function GameView() {
   const allowedPointers = challenge.capabilities.allowedPointers;
   const mocoPointer = allowedPointers.includes('MOCO') ? rawMocoPointer : undefined;
   const chocoPointer = allowedPointers.includes('CHOCO') ? rawChocoPointer : undefined;
+  const locoPointer = allowedPointers.includes('LOCO') ? rawLocoPointer : undefined;
 
   /** ---------- INSTRUCTION FLAGS ---------- */
   const isHandActive =
@@ -947,6 +951,7 @@ const blurTargets = {
               arrayLength={array.length}
               mocoPointer={mocoPointer}
               chocoPointer={chocoPointer}
+              locoPointer={locoPointer}
               errorContext={executionErrorContext ?? undefined}
               isHandActive={isHandActive}
               handAction={handAction}
@@ -964,6 +969,7 @@ const blurTargets = {
               array={array}
               mocoPointer={mocoPointer}
               chocoPointer={chocoPointer}
+              locoPointer={locoPointer}
               errorContext={executionErrorContext ?? undefined}
             />
           </div>

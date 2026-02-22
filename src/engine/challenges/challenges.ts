@@ -177,7 +177,7 @@ export const challenges: Challenge[] = [
     description: `Passengers with penalty tickets (negative) must board before regular ones.`,
     hints: [
       'Move all negative values to the left end, preserving relative order of others.',
-      'You begin with a zero in hand.'
+      'You begin with a zero in clipboard.'
     ],
     difficulty: Difficulty.EASY,
     initialArray: [1, -2, 3, -4, 5, -6],
@@ -371,11 +371,81 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-9',
+    title: 'Ticket Classes',
+    description: `Passengers of classes: 0 = Economy, 1 = Business, 2 = First Class. 
+    Board them in order.`,
+    hints: [
+      'All 0`s at first, then 1`s and then 2`s',
+      'You begin with a 1 in clipboard.',
+    ],
+    difficulty: Difficulty.MEDIUM,
+    initialArray: [2, 0, 2, 1, 1, 0],
+    targetArray: [0, 0, 1, 1, 2, 2],
+    maxSteps: 40,
+    initialHand: 1,
+    initialPointers: {
+      MOCO: 0,   // left boundary (next 0 slot)
+      LOCO: 0,   // current scanner
+      CHOCO: 5,  // right boundary (next 2 slot)
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'if-equal-zero',
+        type: InstructionType.IF_EQUAL,
+        target: 'MOCO', //LOCO
+        body: [],
+      },
+      {
+        id: 'if-equal-two',
+        type: InstructionType.IF_EQUAL,
+        target: 'MOCO',//LOCO
+        body: [],
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+      {
+        id: 'loop-exit',
+        type: InstructionType.LABEL,
+        labelName: 'exit',
+      },
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO', 'LOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_LEFT,
+        InstructionType.MOVE_RIGHT,
+  
+        InstructionType.SWAP,
+  
+        InstructionType.IF_EQUAL,
+        InstructionType.IF_MEET,
+  
+        InstructionType.JUMP,
+        InstructionType.LABEL,
+      ],
+      suggestedInstructions: [
+        InstructionType.SWAP,
+        InstructionType.IF_EQUAL,
+        InstructionType.IF_MEET,
+      ],
+    },
+  },
+  {
+    id: 'challenge-11',
     title: 'Clear the Aisle',
     description: `Passengers without tickets must step aside without disturbing valid ones.`,
     hints: [
       'Move all zero values to the right end, preserving order of others.',
-      'You begin with a zero in hand.'
+      'You begin with a zero in clipboard.'
     ],
     
     difficulty: Difficulty.MEDIUM,
@@ -422,7 +492,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-10',
+    id: 'challenge-12',
     title: 'Inspection Check',
     description: `An inspector checks ticket order before departure.`,
     hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
@@ -489,7 +559,7 @@ Input:
 Output:
 [0, 0, 1, 1, 2, 2]
 
-(Use 3 pointers — classic interview question.)
+(hint: You begin with a one in hand.)
 ------------------------------
 Rearrange Sorted Array in Max-Min Form
 

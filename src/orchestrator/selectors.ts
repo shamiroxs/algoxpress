@@ -71,3 +71,6 @@ export const useMocoPointer = (): number =>
 
 export const useChocoPointer = (): number =>
   useGameStore((state) => state.executionState?.chocoPointer ?? 0);
+
+export const useLocoPointer = (): number =>
+  useGameStore((state) => state.executionState?.locoPointer ?? 0);

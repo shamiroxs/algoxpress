@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-export type CharacterType = 'MOCO' | 'CHOCO';
+export type CharacterType = 'MOCO' | 'CHOCO' | 'LOCO';
 
 interface CharacterProps {
   type: CharacterType;
@@ -31,6 +31,13 @@ const CHARACTER_COLORS = {
     darker: '#7f1d1d',
     light: '#f87171',
     eye: '#fee2e2',
+  },
+  LOCO: {
+    primary: '#eab308',  
+    dark: '#ca8a04',     
+    darker: '#a16207',  
+    light: '#facc15',    
+    eye: '#fef9c3',      
   },
 };
 

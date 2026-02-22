@@ -23,7 +23,7 @@ export type DragItem =
   | {
       source: 'PALETTE';
       instructionType: InstructionType;
-      pointer: 'MOCO' | 'CHOCO';
+      pointer: 'MOCO' | 'CHOCO' | 'LOCO';
       isGlobal?: boolean;
     }
   | { source: 'PROGRAM'; instructionId: string }
@@ -40,6 +40,11 @@ const OWNER_STYLE_MAP = {
     border: 'border-red-400',
     text: 'text-white',
   },
+  LOCO: {
+    bg: 'bg-yellow-600',
+    border: 'border-yellow-300',
+    text: 'text-white',
+  },
   BOTH: {
     bg: 'bg-purple-700',
     border: 'border-purple-400',
@@ -47,7 +52,7 @@ const OWNER_STYLE_MAP = {
   },
 } as const;
 
-type InstructionOwner = 'MOCO' | 'CHOCO' | 'BOTH';
+type InstructionOwner = 'MOCO' | 'CHOCO' | 'LOCO' | 'BOTH';
 
 function getInstructionOwner(inst: Instruction): InstructionOwner {
   if (!('target' in inst) || inst.target === undefined) return 'BOTH';
@@ -675,7 +680,10 @@ export function ProgramContainer({
 
       const owner = getInstructionOwner(inst);
       const color =
-        owner === 'MOCO' ? '#3b82f6' : owner === 'CHOCO' ? '#ef4444' : '#a855f7';
+        owner === 'MOCO' ? '#3b82f6' 
+        : owner === 'CHOCO' ? '#ef4444' 
+        : owner === 'LOCO' ? '#eab308'
+        : '#a855f7';
 
       results.push({ from: inst, to: target, color });
     }

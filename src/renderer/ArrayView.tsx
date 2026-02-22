@@ -13,6 +13,7 @@ interface ArrayViewProps {
   /** Pointer positions */
   mocoPointer?: number;
   chocoPointer?: number;
+  locoPointer?: number;
 
   cellWidth?: number;
   cellHeight?: number;
@@ -24,6 +25,7 @@ export function ArrayView({
   array,
   mocoPointer,
   chocoPointer,
+  locoPointer,
   cellWidth = 60,
   cellHeight = 60,
   errorContext
@@ -46,6 +48,7 @@ export function ArrayView({
 
         const hasMoco = mocoPointer === index;
         const hasChoco = chocoPointer === index;
+        const hasLoco = locoPointer === index;
         const both = hasMoco && hasChoco;
 
         const isErrorCell =
@@ -58,6 +61,8 @@ export function ArrayView({
           ? '#2563eb' // blue
           : hasChoco
           ? '#dc2626' // red
+          : hasLoco
+          ? '#eab308' //yellow
           : '#1f2937';
 
         const stroke = both
@@ -66,6 +71,8 @@ export function ArrayView({
           ? '#60a5fa'
           : hasChoco
           ? '#f87171'
+          : hasLoco
+          ? '#fef08a'
           : '#374151';
 
         return (
@@ -135,6 +142,26 @@ export function ArrayView({
                 fontWeight="600"
               >
                 CHOCO
+              </text>
+            )}
+
+            {hasLoco && (
+              <text
+                x={x + cellWidth / 2}
+                y={
+                  cellHeight +
+                  (hasMoco && hasChoco
+                    ? 74
+                    : hasMoco || hasChoco
+                    ? 62
+                    : 50)
+                }
+                textAnchor="middle"
+                fill="#fde047" // yellow
+                fontSize="11"
+                fontWeight="600"
+              >
+                LOCO
               </text>
             )}
           </g>

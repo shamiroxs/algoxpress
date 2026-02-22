@@ -5,7 +5,7 @@ export interface PaletteInstructionConfig {
   type: InstructionType;
   label: string;
   description?: string;
-  pointer?: 'MOCO' | 'CHOCO';
+  pointer?: 'MOCO' | 'CHOCO' | 'LOCO';
   category: 'Movement' | 'Action' | 'Control' | 'Value' | 'Misc';
 }
 

@@ -11,7 +11,7 @@ import { cloneState } from './executionModel';
 
 export type ExecutionErrorContext =
   | { kind: 'INSTRUCTION'; instructionId: string }
-  | { kind: 'POINTER'; target: 'MOCO' | 'CHOCO' }
+  | { kind: 'POINTER'; target: 'MOCO' | 'CHOCO' | 'LOCO' }
   | { kind: 'ARRAY_INDEX'; index: number }
   | { kind: 'ARRAY_RANGE'; from: number; to: number };
 
@@ -23,30 +23,35 @@ export interface ExecutionResult {
   completed: boolean;
 }
 
-function getPointer(state: ExecutionState, target: 'MOCO' | 'CHOCO'): number {
-  return target === 'MOCO' ? state.mocoPointer : state.chocoPointer;
+function getPointer(state: ExecutionState, target: 'MOCO' | 'CHOCO' | 'LOCO'): number {
+  return target === 'MOCO' ? state.mocoPointer 
+    : target === 'CHOCO'? state.chocoPointer 
+    : state.locoPointer;
 }
 
 function setPointer(
   state: ExecutionState,
-  target: 'MOCO' | 'CHOCO',
+  target: 'MOCO' | 'CHOCO' | 'LOCO',
   value: number
 ): void {
   if (target === 'MOCO') {
     state.mocoPointer = value;
-  } else {
+  } else if (target === 'CHOCO') {
     state.chocoPointer = value;
+  } else {
+    state.locoPointer = value;
   }
 }
 //copied form setPointer
 function setValue(
   state: ExecutionState,
-  target: 'MOCO' | 'CHOCO',
+  target: 'MOCO' | 'CHOCO' | 'LOCO',
   value: number
 ): void {
   const ptr = target === 'MOCO'
     ? state.mocoPointer
-    : state.chocoPointer;
+    : target === 'CHOCO'? state.chocoPointer 
+    : state.locoPointer;
 
   state.array[ptr] = value;
 }
@@ -71,7 +76,7 @@ function instructionError(
 
 function pointerError(
   state: ExecutionState,
-  target: 'MOCO' | 'CHOCO',
+  target: 'MOCO' | 'CHOCO' | 'LOCO',
   message: string
 ): ExecutionResult {
   return {

@@ -3,7 +3,7 @@
  * Intuitive, game-like instruction set for array manipulation
  */
 
-export type PointerTarget = 'MOCO' | 'CHOCO';
+export type PointerTarget = 'MOCO' | 'CHOCO' | 'LOCO';
 
 export const InstructionType = {
   MOVE_LEFT: 'MOVE_LEFT',

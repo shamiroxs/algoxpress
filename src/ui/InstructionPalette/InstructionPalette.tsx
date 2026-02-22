@@ -50,7 +50,7 @@ export type DragItem =
   | {
       source: 'PALETTE';
       instructionType: InstructionType;
-      pointer: 'MOCO' | 'CHOCO';
+      pointer: 'MOCO' | 'CHOCO' | 'LOCO';
       isGlobal?: boolean;
     }
   | { source: 'PROGRAM'; instructionId: string }
@@ -133,11 +133,11 @@ function DraggablePaletteItem({
   onClickAdd,
 }: {
   template: { type: InstructionType; label: string; description: string };
-  pointer: 'MOCO' | 'CHOCO';
+  pointer: 'MOCO' | 'CHOCO' | 'LOCO';
   isGlobal?: boolean;
   restrictToSingleInstruction: boolean;
   tutorialInstruction: InstructionType | null;
-  onClickAdd: (type: InstructionType, pointer: 'MOCO' | 'CHOCO') => void;
+  onClickAdd: (type: InstructionType, pointer: 'MOCO' | 'CHOCO' | 'LOCO') => void;
 }) {
   const isAllowedByTutorial =
     !restrictToSingleInstruction || template.type === tutorialInstruction;
@@ -166,7 +166,9 @@ function DraggablePaletteItem({
     ? 'bg-purple-700 hover:bg-purple-600 text-white'
     : pointer === 'MOCO'
     ? 'bg-blue-700 hover:bg-blue-600 text-white'
-    : 'bg-red-700 hover:bg-red-600 text-white';
+    : pointer === 'CHOCO'
+    ? 'bg-red-700 hover:bg-red-600 text-white'
+    : 'bg-yellow-600 hover:bg-yellow-500 text-white';
 
   const disabledClass = !isAllowedByTutorial ? 'opacity-30 cursor-not-allowed' : '';
 
@@ -287,7 +289,7 @@ function InstructionHelpModal({
                       }
                     `}
                   >
-                    {globalInstructionTypes.includes(inst.type) ? 'SHARED' : 'MOCO/CHOCO'}
+                    {globalInstructionTypes.includes(inst.type) ? 'SHARED' : 'MOCO/CHOCO/LOCO'}
                   </span>
                 </div>
 
@@ -338,7 +340,7 @@ export function InstructionPalette() {
   const [showHelp, setShowHelp] = useState(false);
 
   const capabilities = currentChallenge?.capabilities;
-  const allowedPointers = capabilities?.allowedPointers ?? ['MOCO', 'CHOCO'];
+  const allowedPointers = capabilities?.allowedPointers ?? ['MOCO', 'CHOCO', 'LOCO'];
   const allowedInstructions = useMemo(
     () => new Set(capabilities?.allowedInstructions ?? Object.values(InstructionType)),
     [capabilities?.allowedInstructions]
@@ -413,7 +415,7 @@ export function InstructionPalette() {
     return labelName;
   };
 
-  const handleAddInstruction = (type: InstructionType, pointer: 'MOCO' | 'CHOCO') => {
+  const handleAddInstruction = (type: InstructionType, pointer: 'MOCO' | 'CHOCO' | 'LOCO') => {
     if (!allowedInstructions.has(type)) return;
 
     let instruction: Instruction;
@@ -598,6 +600,36 @@ export function InstructionPalette() {
                       key={`choco-${template.type}`}
                       template={template}
                       pointer="CHOCO"
+                      restrictToSingleInstruction={restrictToSingleInstruction}
+                      tutorialInstruction={tutorialInstruction}
+                      onClickAdd={handleAddInstruction}
+                    />
+                  ))}
+
+                </div>
+              </SortableContext>
+            </div>
+          </div>
+        )}
+
+        {/* LOCO */}
+        {allowedPointers.includes('LOCO') && (
+          <div className="flex justify-center">
+            <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
+              <h4 className="text-yellow-400 text-sm font-semibold mb-1 sm:mb-2 text-xs sm:text-base text-center tracking-widest">
+                LOCO
+              </h4>
+
+              <SortableContext
+                items={pointerInstructionTemplates.map((t) => `palette-LOCO-${t.type}`)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="flex flex-row gap-1 sm:gap-2">
+                  {pointerInstructionTemplates.map((template) => (
+                    <DraggablePaletteItem
+                      key={`loco-${template.type}`}
+                      template={template}
+                      pointer="LOCO"
                       restrictToSingleInstruction={restrictToSingleInstruction}
                       tutorialInstruction={tutorialInstruction}
                       onClickAdd={handleAddInstruction}

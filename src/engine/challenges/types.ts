@@ -40,6 +40,7 @@ export interface Challenge {
   initialPointers?: {
     MOCO?: number;
     CHOCO?: number;
+    LOCO?: number;
   };
   clipboard?: boolean ;
   initialHand?: number | null;
