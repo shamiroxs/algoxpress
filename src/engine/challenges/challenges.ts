@@ -371,6 +371,110 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-9',
+    title: 'Inspection Check',
+    description: `An inspector checks ticket order before departure.`,
+    hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
+      'Otherwise, no change needed (Seat 0 starts as 1)',
+    ],
+    difficulty: Difficulty.MEDIUM,
+    initialArray: [1, 3, 5, 7, 6],
+    targetArray: [0, 3, 5, 7, 6],
+    maxSteps: 26,
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'pick',
+        type: InstructionType.PICK,
+        target: 'MOCO',
+      },
+      {
+        id: 'move-right',
+        type: InstructionType.MOVE_RIGHT,
+        target: 'MOCO',
+      }, 
+      {
+        id: 'if-less',
+        type: InstructionType.IF_LESS,
+        target: "MOCO",
+        body: [],
+      },   
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      }, 
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO'],
+      allowedInstructions: [
+        InstructionType.SET_POINTER,
+        InstructionType.SET_VALUE,
+  
+        InstructionType.JUMP,
+        InstructionType.LABEL,
+      ],
+    },
+  },  
+  {
+    id: 'challenge-10',
+    title: 'Clear the Aisle',
+    description: `Passengers without tickets must step aside without disturbing valid ones.`,
+    hints: [
+      'Move all zero values to the right end, preserving order of others.',
+      'You begin with a zero in clipboard.'
+    ],
+    
+    difficulty: Difficulty.HARD,
+    initialArray: [0, 1, 0, 3, 12, 0],
+    targetArray: [1, 3, 12, 0, 0, 0],
+    maxSteps: 28,
+    initialHand: 0,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 1, 
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'if-equal',
+        type: InstructionType.IF_EQUAL,
+        target: "CHOCO",
+        body: [],
+      },   
+  
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },  
+
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.MOVE_LEFT,
+
+        InstructionType.SWAP,
+      ],
+      suggestedInstructions: [
+        InstructionType.IF_EQUAL,
+      ],
+    }
+  },
+  
+  {
+    id: 'challenge-11',
     title: 'Ticket Classes',
     description: `Passengers of classes: 0 = Economy, 1 = Business, 2 = First Class. 
     Board them in order.`,
@@ -378,7 +482,7 @@ export const challenges: Challenge[] = [
       'All 0`s at first, then 1`s and then 2`s',
       'You begin with a 1 in clipboard.',
     ],
-    difficulty: Difficulty.MEDIUM,
+    difficulty: Difficulty.HARD,
     initialArray: [2, 0, 2, 1, 1, 0],
     targetArray: [0, 0, 1, 1, 2, 2],
     maxSteps: 40,
@@ -442,110 +546,6 @@ export const challenges: Challenge[] = [
       ],
     },
   },
-  {
-    id: 'challenge-11',
-    title: 'Clear the Aisle',
-    description: `Passengers without tickets must step aside without disturbing valid ones.`,
-    hints: [
-      'Move all zero values to the right end, preserving order of others.',
-      'You begin with a zero in clipboard.'
-    ],
-    
-    difficulty: Difficulty.MEDIUM,
-    initialArray: [0, 1, 0, 3, 12, 0],
-    targetArray: [1, 3, 12, 0, 0, 0],
-    maxSteps: 28,
-    initialHand: 0,
-    initialPointers: {
-      MOCO: 0,
-      CHOCO: 1, 
-    },
-    instructions: [
-      {
-        id: 'loop-start',
-        type: InstructionType.LABEL,
-        labelName: 'loop',
-      },
-      {
-        id: 'if-equal',
-        type: InstructionType.IF_EQUAL,
-        target: "CHOCO",
-        body: [],
-      },   
-  
-      {
-        id: 'jump-loop',
-        type: InstructionType.JUMP,
-        label: 'loop',
-      },  
-
-    ],
-    unlocked: true,
-    capabilities: {
-      allowedPointers: ['MOCO', 'CHOCO'],
-      allowedInstructions: [
-        InstructionType.MOVE_RIGHT,
-        InstructionType.MOVE_LEFT,
-
-        InstructionType.SWAP,
-      ],
-      suggestedInstructions: [
-        InstructionType.IF_EQUAL,
-      ],
-    }
-  },
-  {
-    id: 'challenge-12',
-    title: 'Inspection Check',
-    description: `An inspector checks ticket order before departure.`,
-    hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
-      'Otherwise, no change needed (Seat 0 starts as 1)',
-    ],
-    difficulty: Difficulty.MEDIUM,
-    initialArray: [1, 3, 5, 7, 6],
-    targetArray: [0, 3, 5, 7, 6],
-    maxSteps: 26,
-    instructions: [
-      {
-        id: 'loop-start',
-        type: InstructionType.LABEL,
-        labelName: 'loop',
-      },
-      {
-        id: 'pick',
-        type: InstructionType.PICK,
-        target: 'MOCO',
-      },
-      {
-        id: 'move-right',
-        type: InstructionType.MOVE_RIGHT,
-        target: 'MOCO',
-      }, 
-      {
-        id: 'if-less',
-        type: InstructionType.IF_LESS,
-        target: "MOCO",
-        body: [],
-      },   
-      {
-        id: 'jump-loop',
-        type: InstructionType.JUMP,
-        label: 'loop',
-      }, 
-    ],
-    unlocked: true,
-    capabilities: {
-      allowedPointers: ['MOCO'],
-      allowedInstructions: [
-        InstructionType.SET_POINTER,
-        InstructionType.SET_VALUE,
-  
-        InstructionType.JUMP,
-        InstructionType.LABEL,
-      ],
-    },
-  },  
-  
 ];
 
 /*
