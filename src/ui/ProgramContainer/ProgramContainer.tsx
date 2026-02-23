@@ -102,6 +102,10 @@ function formatInstruction(inst: Instruction): string {
       return 'Swap ⇄';
     case InstructionType.SWAP_WITH_NEXT:
       return 'SwapNext';
+    case InstructionType.SWAP_WITH:
+      return `Swap ${
+        inst.swapTarget === 'MOCO' ? '🔵' : '🔴'
+      }`;
     case InstructionType.INCREMENT_VALUE:
       return 'Value +';
     case InstructionType.DECREMENT_VALUE:
@@ -229,6 +233,7 @@ export function ProgramContainer({
       instruction.type === InstructionType.SET_POINTER ||
       instruction.type === InstructionType.SET_VALUE ||
       instruction.type === InstructionType.LABEL ||
+      instruction.type === InstructionType.SWAP_WITH ||
       instruction.type === InstructionType.IF_GREATER ||
       instruction.type === InstructionType.IF_LESS ||
       instruction.type === InstructionType.IF_EQUAL ||
@@ -270,7 +275,22 @@ export function ProgramContainer({
           onClick={hasEditableParameter ? onEdit : undefined}
           title={hasEditableParameter ? 'Click to edit' : undefined}
         >
-          {formatInstruction(instruction)}
+          {instruction.type === InstructionType.SWAP_WITH ? (
+            <>
+              Swap{' '}
+              <span
+                className={`px-1.5 py-0.5 rounded shadow-sm bg-black/20 font-bold ${
+                  instruction.swapTarget === 'MOCO'
+                    ? 'text-blue-300'
+                    : 'text-red-300'
+                }`}
+              >
+                {instruction.swapTarget === 'MOCO' ? 'Moco' : 'Choco'}
+              </span>
+            </>
+          ) : (
+            formatInstruction(instruction)
+          )}
         </div>
 
         <button
@@ -401,6 +421,7 @@ export function ProgramContainer({
     const hasEditableParameter =
       instruction.type === InstructionType.SET_POINTER ||
       instruction.type === InstructionType.SET_VALUE ||
+      instruction.type === InstructionType.SWAP_WITH ||
       instruction.type === InstructionType.LABEL ||
       instruction.type === InstructionType.IF_GREATER ||
       instruction.type === InstructionType.IF_LESS ||
@@ -420,6 +441,10 @@ export function ProgramContainer({
         setEditValue(instruction.labelName);
       } else if ('label' in instruction) {
         setEditValue(instruction.label);
+      } else if (instruction.type === InstructionType.SWAP_WITH) {
+        setEditValue(instruction.swapTarget);
+        setIsEditing(true);
+        return;
       } else {
         return;
       }
@@ -455,6 +480,13 @@ export function ProgramContainer({
       } else if ('label' in instruction) {
         const label = editValue.trim();
         if (label.length > 0) updatedInstruction = { ...instruction, label };
+      } else if (instruction.type === InstructionType.SWAP_WITH) {
+        if (editValue === 'MOCO' || editValue === 'CHOCO') {
+          updatedInstruction = {
+            ...instruction,
+            swapTarget: editValue,
+          };
+        }
       }
 
       if (!updatedInstruction) return;
@@ -478,6 +510,31 @@ export function ProgramContainer({
     };
 
     const handleCancel = () => {
+      setIsEditing(false);
+      setEditValue('');
+    };
+
+    const handleSwapTargetSelect = (target: 'MOCO' | 'CHOCO') => {
+      const updatedInstruction = {
+        ...instruction,
+        swapTarget: target,
+      };
+
+      if (!parentIfId) {
+        updateInstruction(instruction.id, updatedInstruction as Instruction);
+      } else {
+        const parentIf = playerInstructions.find((i) => i.id === parentIfId);
+        if (!parentIf || !('body' in parentIf)) return;
+
+        updateInstruction(parentIf.id, {
+          ...parentIf,
+          body: parentIf.body.map((child) =>
+            child.id === instruction.id ? (updatedInstruction as Instruction) : child
+          ),
+        });
+      }
+
+      // Instantly close edit mode
       setIsEditing(false);
       setEditValue('');
     };
@@ -551,30 +608,62 @@ export function ProgramContainer({
 
             {isEditing && hasEditableParameter ? (
               <div className="flex items-center gap-1 bg-gray-700 px-1.5 py-1 sm:px-3 sm:py-2 rounded text-xs sm:text-sm w-full max-w-[160px] sm:max-w-[280px]">
-                <span className="text-gray-400 text-[10px] sm:text-xs w-4 sm:w-6">{index + 1}</span>
-                <input
-                  type="text"
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSave();
-                    if (e.key === 'Escape') handleCancel();
-                  }}
-                  autoFocus
-                  className="flex-1 bg-gray-600 text-white max-w-[60px] sm:max-w-[100px] px-1 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded font-mono"
-                />
-                <button
-                  onClick={handleSave}
-                  className="text-green-400 hover:text-green-300 text-xs sm:text-sm"
-                >
-                  ✓
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="text-gray-500 hover:text-gray-300 text-xs sm:text-sm"
-                >
-                  ×
-                </button>
+                {instruction.type !== InstructionType.SWAP_WITH && (
+                  
+                  <span className="text-gray-400 text-[10px] sm:text-xs w-4 sm:w-6">{index + 1}</span>
+                )}
+                {instruction.type === InstructionType.SWAP_WITH ? (
+                  <div className="flex flex-1 gap-1 sm:gap-2">
+                    <button
+                      onClick={() => handleSwapTargetSelect('MOCO')}
+                      className={`flex-1 px-1 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded text-[10px] sm:text-xs font-semibold transition-all ${
+                        editValue === 'MOCO'
+                          ? 'bg-blue-600 text-white shadow-inner ring-1 ring-blue-400'
+                          : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                      }`}
+                    >
+                      🔵 Moco
+                    </button>
+                    <button
+                      onClick={() => handleSwapTargetSelect('CHOCO')}
+                      className={`flex-1 px-1 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded text-[10px] sm:text-xs font-semibold transition-all ${
+                        editValue === 'CHOCO'
+                          ? 'bg-red-600 text-white shadow-inner ring-1 ring-red-400'
+                          : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                      }`}
+                    >
+                      🔴 Choco
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSave();
+                      if (e.key === 'Escape') handleCancel();
+                    }}
+                    autoFocus
+                    className="flex-1 bg-gray-600 text-white max-w-[60px] sm:max-w-[100px] px-1 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded font-mono"
+                  />
+                )}
+                {instruction.type !== InstructionType.SWAP_WITH && (
+                  <button
+                    onClick={handleSave}
+                    className="text-green-400 hover:text-green-300 text-xs sm:text-sm shrink-0"
+                  >
+                    ✓
+                  </button>
+                )}
+                {instruction.type !== InstructionType.SWAP_WITH && (
+                  <button
+                    onClick={handleCancel}
+                    className="text-gray-500 hover:text-gray-300 text-xs sm:text-sm shrink-0"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             ) : (
               <div className={isError ? 'ring-2 ring-red-500 rounded-lg justify-center' : ''}>

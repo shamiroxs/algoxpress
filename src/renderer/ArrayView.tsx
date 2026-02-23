@@ -49,7 +49,7 @@ export function ArrayView({
         const hasMoco = mocoPointer === index;
         const hasChoco = chocoPointer === index;
         const hasLoco = locoPointer === index;
-        const both = hasMoco && hasChoco;
+        const both = hasMoco && hasChoco && hasLoco;
 
         const isErrorCell =
         errorContext?.kind === 'ARRAY_INDEX' &&
@@ -135,7 +135,9 @@ export function ArrayView({
             {hasChoco && (
               <text
                 x={x + cellWidth / 2}
-                y={cellHeight + (hasMoco ? 62 : 50)}
+                y={cellHeight + 
+                  (hasMoco ? 62 : 50)
+                }
                 textAnchor="middle"
                 fill="#fca5a5"
                 fontSize="11"
@@ -170,3 +172,4 @@ export function ArrayView({
     </svg>
   );
 }
+

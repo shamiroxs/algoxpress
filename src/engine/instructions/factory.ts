@@ -47,6 +47,8 @@ export function createInstruction(
       return createSwap();
     case InstructionType.SWAP_WITH_NEXT:
       return createSwapWithNext(pointer);
+    case InstructionType.SWAP_WITH:
+      return createSwapWith(pointer);
     case InstructionType.INCREMENT_VALUE:
       return createIncrementValue(pointer);
     case InstructionType.DECREMENT_VALUE:
@@ -274,6 +276,20 @@ export function createSwapWithNext(target: PointerTarget): Instruction {
   };
 }
 
+export function createSwapWith(
+  target: PointerTarget
+): Instruction {
+  if (target !== 'LOCO') {
+    throw new Error('SWAP_WITH can only be used by LOCO');
+  }
+
+  return {
+    id: `swapwith-${Date.now()}-${Math.random()}`,
+    type: InstructionType.SWAP_WITH,
+    target: 'LOCO',
+    swapTarget: 'MOCO', // default selection (editable in UI)
+  };
+}
 
 export function createIncrementValue(
   target: PointerTarget,

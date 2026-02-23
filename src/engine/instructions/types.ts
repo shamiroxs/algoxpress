@@ -28,6 +28,7 @@ export const InstructionType = {
 
   SWAP: 'SWAP',
   SWAP_WITH_NEXT: 'SWAP_WITH_NEXT',
+  SWAP_WITH: 'SWAP_WITH',
 
   INCREMENT_VALUE: 'INCREMENT_VALUE',
   DECREMENT_VALUE: 'DECREMENT_VALUE',
@@ -140,6 +141,12 @@ export interface SwapWithNextInstruction extends BaseInstruction {
   target: PointerTarget;
 }
 
+export interface SwapWithInstruction extends BaseInstruction {
+  type: 'SWAP_WITH';
+  target: 'LOCO';              // Only LOCO allowed
+  swapTarget: 'MOCO' | 'CHOCO'; // Which pointer to swap with
+}
+
 export interface IncrementValueInstruction extends BaseInstruction {
   type: 'INCREMENT_VALUE'; // array[pointer]++
   target: PointerTarget;
@@ -173,6 +180,7 @@ export type Instruction =
   | LabelInstruction
   | SwapInstruction
   | SwapWithNextInstruction
+  | SwapWithInstruction
   | IncrementValueInstruction
   | DecrementValueInstruction
   | WaitInstruction;

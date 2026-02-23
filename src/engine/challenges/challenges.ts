@@ -395,16 +395,27 @@ export const challenges: Challenge[] = [
         labelName: 'loop',
       },
       {
-        id: 'if-equal-zero',
-        type: InstructionType.IF_EQUAL,
-        target: 'MOCO', //LOCO
+        id: 'if-less',
+        type: InstructionType.IF_LESS,
+        target: 'LOCO', 
         body: [],
       },
       {
-        id: 'if-equal-two',
+        id: 'if-equal',
         type: InstructionType.IF_EQUAL,
-        target: 'MOCO',//LOCO
+        target: 'LOCO',
         body: [],
+      },
+      {
+        id: 'if-great',
+        type: InstructionType.IF_GREATER,
+        target: 'LOCO',
+        body: [],
+      },
+      {
+        id: 'if-meet',
+        type: InstructionType.IF_MEET,
+        label: 'exit'
       },
       {
         id: 'jump-loop',
@@ -417,25 +428,17 @@ export const challenges: Challenge[] = [
         labelName: 'exit',
       },
     ],
-    unlocked: false,
+    unlocked: true,
     capabilities: {
       allowedPointers: ['MOCO', 'CHOCO', 'LOCO'],
       allowedInstructions: [
         InstructionType.MOVE_LEFT,
         InstructionType.MOVE_RIGHT,
   
-        InstructionType.SWAP,
-  
-        InstructionType.IF_EQUAL,
-        InstructionType.IF_MEET,
-  
-        InstructionType.JUMP,
-        InstructionType.LABEL,
+        InstructionType.SWAP_WITH,
       ],
       suggestedInstructions: [
         InstructionType.SWAP,
-        InstructionType.IF_EQUAL,
-        InstructionType.IF_MEET,
       ],
     },
   },

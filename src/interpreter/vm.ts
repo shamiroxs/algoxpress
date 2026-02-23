@@ -248,7 +248,14 @@ export function executeStep(state: ExecutionState): ExecutionResult {
       }
       
       case InstructionType.IF_MEET: {
-        if (newState.mocoPointer === newState.chocoPointer) {
+        const { mocoPointer, chocoPointer, locoPointer } = newState;
+      
+        const anyMeet =
+          mocoPointer === chocoPointer ||
+          mocoPointer === locoPointer ||
+          chocoPointer === locoPointer;
+      
+        if (anyMeet) {
           const targetLine = newState.labelMap[instruction.label];
           if (targetLine === undefined) {
             return instructionError(
@@ -267,6 +274,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         } else {
           frame.line++;
         }
+      
         break;
       }
 
@@ -413,6 +421,34 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         const temp = newState.array[ptr];
         newState.array[ptr] = newState.array[ptr + 1];
         newState.array[ptr + 1] = temp;
+        frame.line++;
+        break;
+      }
+
+      case InstructionType.SWAP_WITH: {
+        const locoPtr = newState.locoPointer;
+      
+        if (locoPtr < 0 || locoPtr >= newState.array.length) {
+          return pointerError(newState, 'LOCO', 'Pointer is not on a valid seat.');
+        }
+      
+        const targetPtr =
+          instruction.swapTarget === 'MOCO'
+            ? newState.mocoPointer
+            : newState.chocoPointer;
+      
+        if (targetPtr < 0 || targetPtr >= newState.array.length) {
+          return pointerError(
+            newState,
+            instruction.swapTarget,
+            'Pointer is not on a valid seat.'
+          );
+        }
+      
+        const temp = newState.array[locoPtr];
+        newState.array[locoPtr] = newState.array[targetPtr];
+        newState.array[targetPtr] = temp;
+      
         frame.line++;
         break;
       }

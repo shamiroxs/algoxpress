@@ -91,16 +91,29 @@ export function PointerView({
     errorContext?.kind === 'POINTER' &&
     errorContext.target === 'LOCO';
 
-  const sameIndex =
+    const mocoSame =
     (mocoPointer !== undefined &&
       chocoPointer !== undefined &&
       mocoPointer === chocoPointer) ||
     (mocoPointer !== undefined &&
       locoPointer !== undefined &&
-      mocoPointer === locoPointer) ||
+      mocoPointer === locoPointer);
+  
+  const chocoSame =
+    (chocoPointer !== undefined &&
+      mocoPointer !== undefined &&
+      chocoPointer === mocoPointer) ||
     (chocoPointer !== undefined &&
       locoPointer !== undefined &&
       chocoPointer === locoPointer);
+  
+  const locoSame =
+    (locoPointer !== undefined &&
+      mocoPointer !== undefined &&
+      locoPointer === mocoPointer) ||
+    (locoPointer !== undefined &&
+      chocoPointer !== undefined &&
+      locoPointer === chocoPointer);
 
   return (
     <svg
@@ -113,7 +126,7 @@ export function PointerView({
         renderCharacter(
           mocoPointer,
           'MOCO',
-          sameIndex ? 0 : 10,
+          mocoSame ? 0 : 10,
           mocoError,
           isHandActive
         )}
@@ -123,7 +136,7 @@ export function PointerView({
         renderCharacter(
           chocoPointer,
           'CHOCO',
-          sameIndex ? 26 : 10,
+          chocoSame ? 16 : 10,
           chocoError,
           isHandActive
         )}
@@ -133,7 +146,7 @@ export function PointerView({
         renderCharacter(
           locoPointer,
           'LOCO',
-          sameIndex ? 26 : 10,
+          locoSame ? 32 : 10,
           locoError,
           isHandActive
         )}

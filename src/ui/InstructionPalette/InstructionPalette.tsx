@@ -80,6 +80,7 @@ const instructionTemplates = [
   { type: InstructionType.LABEL, label: 'Label', description: 'Define a label' },
   { type: InstructionType.SWAP, label: 'Swap', description: 'Swap moco and choco value' },
   { type: InstructionType.SWAP_WITH_NEXT, label: 'SwapNxt', description: 'Swap current with next element' },
+  { type: InstructionType.SWAP_WITH, label: 'Swap*', description: 'Swap loco value with moco or choco' },
   { type: InstructionType.IF_MEET, label: 'IFMeet', description: 'Jump if moco == choco' },
   { type: InstructionType.INCREMENT_VALUE, label: 'Value +', description: 'Increment value at pointer' },
   { type: InstructionType.DECREMENT_VALUE, label: 'Value -', description: 'Decrement value at pointer' },
@@ -105,6 +106,7 @@ const INSTRUCTION_ICONS: Record<InstructionType, string> = {
   [InstructionType.LABEL]: '🏷️',
   [InstructionType.SWAP]: '⇄',
   [InstructionType.SWAP_WITH_NEXT]: '→←',
+  [InstructionType.SWAP_WITH]: '⇄',
   [InstructionType.INCREMENT_VALUE]: '➕',
   [InstructionType.DECREMENT_VALUE]: '➖',
   [InstructionType.WAIT]: '⏳',
@@ -565,7 +567,9 @@ export function InstructionPalette() {
                 strategy={verticalListSortingStrategy}
               >
                 <div className="flex flex-row gap-1 sm:gap-2">
-                  {pointerInstructionTemplates.map((template) => (
+                  {pointerInstructionTemplates
+                  .filter((t) => t.type !== InstructionType.SWAP_WITH)
+                  .map((template) => (
                     <DraggablePaletteItem
                       key={`moco-${template.type}`}
                       template={template}
@@ -595,7 +599,9 @@ export function InstructionPalette() {
                 strategy={verticalListSortingStrategy}
               >
                 <div className="flex flex-row gap-1 sm:gap-2">
-                  {pointerInstructionTemplates.map((template) => (
+                  {pointerInstructionTemplates
+                  .filter((t) => t.type !== InstructionType.SWAP_WITH)
+                  .map((template) => (
                     <DraggablePaletteItem
                       key={`choco-${template.type}`}
                       template={template}
