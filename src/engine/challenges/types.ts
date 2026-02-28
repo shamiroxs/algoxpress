@@ -36,6 +36,7 @@ export interface Challenge {
   difficulty: Difficulty;
   initialArray: number[];
   targetArray: number[];
+  extraArray?: number[];
   maxSteps?: number; // Optional optimization goal
   initialPointers?: {
     MOCO?: number;

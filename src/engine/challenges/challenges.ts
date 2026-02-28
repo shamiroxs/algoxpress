@@ -546,23 +546,75 @@ export const challenges: Challenge[] = [
       ],
     },
   },
+  {
+    id: 'challenge-12',
+    title: 'Alternate Boarding',
+    description: `Tickets are sorted. Board the highest and lowest alternatingly.`,
+    hints: [
+      'Rearrange so seats alternate: max, min, second max, second min...',
+      'MOCO starts at the left (min), CHOCO starts at the right (max).',
+      'LOCO writes to a new position each step.',
+    ],
+    difficulty: Difficulty.HARD,
+    initialArray: [1, 2, 3, 4, 5, 6],
+    targetArray: [6, 1, 5, 2, 4, 3],
+    extraArray: [1, 2, 3, 4, 5, 6],
+    maxSteps: 30,
+    initialPointers: {
+      MOCO: 0,   // left pointer (min side)
+      CHOCO: 5,  // right pointer (max side)
+      LOCO: 0,   // write head
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'move-left',
+        type: InstructionType.MOVE_LEFT,
+        target: 'CHOCO',
+      }, 
+      {
+        id: 'move-right-loco',
+        type: InstructionType.MOVE_RIGHT,
+        target: 'LOCO',
+      }, 
+      {
+        id: 'move-right',
+        type: InstructionType.MOVE_RIGHT,
+        target: 'MOCO',
+      }, 
+      {
+        id: 'move-right-loco2',
+        type: InstructionType.MOVE_RIGHT,
+        target: 'LOCO',
+      }, 
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO', 'LOCO'],
+      allowedInstructions: [
+        InstructionType.PICK,
+        InstructionType.PUT,
+      ],
+      suggestedInstructions: [
+        InstructionType.SWAP_WITH,
+        InstructionType.IF_MEET,
+      ],
+    },
+  },
 ];
 
 /*
 ------------------------------
 ------------------------------
-Sort Array of 0s, 1s and 2s (Dutch National Flag)
-
-Problem:
-Given an array containing only 0, 1, and 2, sort it in-place.
-
-Input:
-[2, 0, 2, 1, 1, 0]
-
-Output:
-[0, 0, 1, 1, 2, 2]
-
-(hint: You begin with a one in hand.)
 ------------------------------
 Rearrange Sorted Array in Max-Min Form
 

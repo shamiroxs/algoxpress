@@ -11,6 +11,7 @@ export interface ExecutionFrame {
 export interface ExecutionState {
   // Array state
   array: number[];
+  extraArray?: number[];  
   
   // Single pointer (index position in array)
   mocoPointer: number;
@@ -40,6 +41,7 @@ export function createInitialState(
   challenge?: { 
     initialPointers?: { MOCO?: number; CHOCO?: number; LOCO?: number; } 
     initialHand?: number | null;
+    extraArray?: number[];
   }
 ): ExecutionState {
   // Build label map from LABEL instructions
@@ -52,6 +54,9 @@ export function createInitialState(
   
   return {
     array: [...initialArray],
+    extraArray: challenge?.extraArray
+    ? [...challenge.extraArray]
+    : undefined,
     mocoPointer: challenge?.initialPointers?.MOCO ?? 0,
     chocoPointer:
       challenge?.initialPointers?.CHOCO ?? 0,
@@ -75,6 +80,7 @@ export function createInitialState(
 export function cloneState(state: ExecutionState): ExecutionState {
   return {
     array: [...state.array],
+    extraArray: state.extraArray ? [...state.extraArray] : undefined,
     mocoPointer: state.mocoPointer,
     chocoPointer: state.chocoPointer,
     locoPointer: state.locoPointer,

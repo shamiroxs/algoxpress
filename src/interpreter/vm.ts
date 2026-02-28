@@ -42,18 +42,39 @@ function setPointer(
     state.locoPointer = value;
   }
 }
+
+function getArrayForPointer(
+  state: ExecutionState,
+  target: 'MOCO' | 'CHOCO' | 'LOCO'
+): number[] {
+  // If challenge has extraArray:
+  if (state.extraArray) {
+    if (target === 'MOCO' || target === 'CHOCO') {
+      return state.extraArray;
+    }
+    return state.array; // LOCO writes to main array
+  }
+
+  // Default behavior (all other challenges)
+  return state.array;
+}
+
+function getArrayLengthForPointer(
+  state: ExecutionState,
+  target: 'MOCO' | 'CHOCO' | 'LOCO'
+): number {
+  return getArrayForPointer(state, target).length;
+}
+
 //copied form setPointer
 function setValue(
   state: ExecutionState,
   target: 'MOCO' | 'CHOCO' | 'LOCO',
   value: number
 ): void {
-  const ptr = target === 'MOCO'
-    ? state.mocoPointer
-    : target === 'CHOCO'? state.chocoPointer 
-    : state.locoPointer;
-
-  state.array[ptr] = value;
+  const ptr = getPointer(state, target);
+  const arr = getArrayForPointer(state, target);
+  arr[ptr] = value;
 }
 
 
@@ -151,12 +172,13 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         }
 
         const ptr = getPointer(newState, instruction.target);
+        const arr = getArrayForPointer(newState, instruction.target);
 
-        if (ptr < 0 || ptr >= newState.array.length) {
+        if (ptr < 0 || ptr >= arr.length) {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
 
-        if (newState.hand > newState.array[ptr]) {
+        if (newState.hand > arr[ptr]) {
           stack.push({ instructions: instruction.body, line: 0 });
         } else {
           frame.line++;
@@ -170,12 +192,12 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         }
 
         const ptr = getPointer(newState, instruction.target);
-
-        if (ptr < 0 || ptr >= newState.array.length) {
+        const arr = getArrayForPointer(newState, instruction.target);
+        if (ptr < 0 || ptr >= arr.length) {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
 
-        if (newState.hand < newState.array[ptr]) {
+        if (newState.hand < arr[ptr]) {
           stack.push({ instructions: instruction.body, line: 0 });
         } else {
           frame.line++;
@@ -189,12 +211,13 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         }
 
         const ptr = getPointer(newState, instruction.target);
+        const arr = getArrayForPointer(newState, instruction.target);
 
-        if (ptr < 0 || ptr >= newState.array.length) {
+        if (ptr < 0 || ptr >= arr.length) {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
 
-        if (newState.hand === newState.array[ptr]) {
+        if (newState.hand === arr[ptr]) {
           stack.push({ instructions: instruction.body, line: 0 });
         } else {
           frame.line++;
@@ -208,12 +231,13 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         }
 
         const ptr = getPointer(newState, instruction.target);
+        const arr = getArrayForPointer(newState, instruction.target);
 
-        if (ptr < 0 || ptr >= newState.array.length) {
+        if (ptr < 0 || ptr >= arr.length) {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
 
-        if (newState.hand !== newState.array[ptr]) {
+        if (newState.hand !== arr[ptr]) {
           stack.push({ instructions: instruction.body, line: 0 });
         } else {
           frame.line++;
@@ -223,8 +247,9 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.IF_END: {
         const ptr = getPointer(newState, instruction.target);
-      
-        if (ptr === newState.array.length - 1) {
+        const arr = getArrayForPointer(newState, instruction.target);
+
+        if (ptr === arr.length - 1) {
           const targetLine = newState.labelMap[instruction.label];
           if (targetLine === undefined) {
             return instructionError(
@@ -281,12 +306,13 @@ export function executeStep(state: ExecutionState): ExecutionResult {
       case InstructionType.IF_EVEN: {
 
         const ptr = getPointer(newState, instruction.target);
+        const arr = getArrayForPointer(newState, instruction.target);
 
-        if (ptr < 0 || ptr >= newState.array.length) {
+        if (ptr < 0 || ptr >= arr.length) {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
 
-        const value = newState.array[ptr];
+        const value = arr[ptr];
 
         if (value === null || value === undefined) {
           return instructionError(newState, instruction, 'Cannot check even. Seat is empty.');
@@ -340,7 +366,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.MOVE_RIGHT: {
         const ptr = getPointer(newState, instruction.target);
-        if (ptr >= newState.array.length - 1) {
+        if (ptr >= getArrayLengthForPointer(newState, instruction.target) - 1) {
           return pointerError(newState, instruction.target, 'Cannot move right. This is the last seat.');
         }
         setPointer(newState, instruction.target, ptr + 1);
@@ -349,14 +375,14 @@ export function executeStep(state: ExecutionState): ExecutionResult {
       }
 
       case InstructionType.MOVE_TO_END:
-        setPointer(newState, instruction.target, newState.array.length - 1);
+        setPointer(newState, instruction.target, getArrayLengthForPointer(newState, instruction.target) - 1);
         frame.line++;
         break;
 
       case InstructionType.SET_POINTER:
         if (
           instruction.index < 0 ||
-          instruction.index >= newState.array.length
+          instruction.index >= getArrayLengthForPointer(newState, instruction.target)
         ) {
           return instructionError(newState, instruction, 'That seat does not exist in this compartment.');
         }
@@ -374,28 +400,35 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         frame.line++;
         break;
 
-      case InstructionType.PICK: {
-        const ptr = getPointer(newState, instruction.target);
-        if (ptr < 0 || ptr >= newState.array.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+        case InstructionType.PICK: {
+          const ptr = getPointer(newState, instruction.target);
+          const arr = getArrayForPointer(newState, instruction.target);
+        
+          if (ptr < 0 || ptr >= arr.length) {
+            return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          }
+        
+          newState.hand = arr[ptr];
+          frame.line++;
+          break;
         }
-        newState.hand = newState.array[ptr];
-        frame.line++;
-        break;
-      }
 
-      case InstructionType.PUT: {
-        const ptr = getPointer(newState, instruction.target);
-        if (ptr < 0 || ptr >= newState.array.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+        case InstructionType.PUT: {
+          const ptr = getPointer(newState, instruction.target);
+          const arr = getArrayForPointer(newState, instruction.target);
+        
+          if (ptr < 0 || ptr >= arr.length) {
+            return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          }
+        
+          if (newState.hand === null) {
+            return instructionError(newState, instruction, 'No ticket in clipboard. Pick up a ticket before using this instruction.');
+          }
+        
+          arr[ptr] = newState.hand;
+          frame.line++;
+          break;
         }
-        if (newState.hand === null) {
-          return instructionError(newState, instruction, 'No ticket in clipboard. Pick up a ticket before using this instruction.');
-        }
-        newState.array[ptr] = newState.hand;
-        frame.line++;
-        break;
-      }
 
       case InstructionType.SWAP: {
         const m = newState.mocoPointer;
@@ -415,7 +448,9 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.SWAP_WITH_NEXT: {
         const ptr = getPointer(newState, instruction.target);
-        if (ptr < 0 || ptr >= newState.array.length - 1) {
+        const arr = getArrayForPointer(newState, instruction.target);
+
+        if (ptr < 0 || ptr >= arr.length - 1) {
           return pointerError(newState, instruction.target, 'Cannot swap seats here. There is no adjacent seat.');
         }
         const temp = newState.array[ptr];
@@ -458,7 +493,8 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         if (ptr < 0 || ptr >= newState.array.length) {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
-        newState.array[ptr]++;
+        const arr = getArrayForPointer(newState, instruction.target);
+        arr[ptr]++;
         frame.line++;
         break;
       }
@@ -468,7 +504,8 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         if (ptr < 0 || ptr >= newState.array.length) {
           return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
         }
-        newState.array[ptr]--;
+        const arr = getArrayForPointer(newState, instruction.target);
+        arr[ptr]--;
         frame.line++;
         break;
       }

@@ -55,6 +55,9 @@ const EMPTY_ARRAY: number[] = [];
 export const useArrayState = (): number[] =>
   useGameStore((state) => state.executionState?.array ?? EMPTY_ARRAY);
 
+export const useExtraArrayState = (): number[] | undefined =>
+  useGameStore((state) => state.executionState?.extraArray);
+
 export const useHand = (): number | null =>
   useGameStore((state) => state.executionState?.hand ?? null);
 

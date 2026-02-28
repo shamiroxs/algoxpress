@@ -20,6 +20,7 @@ import {
   useCurrentInstruction,
   useExecutionErrorContext,
   useLocoPointer,
+  useExtraArrayState,
 } from '../orchestrator/selectors';
 
 import { useGameStore } from '../orchestrator/store';
@@ -318,6 +319,7 @@ export function GameView() {
 
   /** ---------- GAME DATA ---------- */
   const array = useArrayState();
+  const extraArray = useExtraArrayState();
   const rawMocoPointer = useMocoPointer();
   const rawChocoPointer = useChocoPointer();
   const rawLocoPointer = useLocoPointer();
@@ -332,6 +334,7 @@ export function GameView() {
   const mocoPointer = allowedPointers.includes('MOCO') ? rawMocoPointer : undefined;
   const chocoPointer = allowedPointers.includes('CHOCO') ? rawChocoPointer : undefined;
   const locoPointer = allowedPointers.includes('LOCO') ? rawLocoPointer : undefined;
+  const hasExtraArray = !!extraArray;
 
   /** ---------- INSTRUCTION FLAGS ---------- */
   const isHandActive =
@@ -947,12 +950,44 @@ const blurTargets = {
               </div>
             </div>
           )}
+          {/* EXTRA ARRAY (Source Array) */}
+          {extraArray && (
+            <>
+              <div className="text-xs sm:text-sm text-gray-400 mb-1">
+                Tickets
+              </div>
+              <PointerView
+                arrayLength={array.length}
+                mocoPointer={mocoPointer}
+                chocoPointer={chocoPointer}
+                errorContext={executionErrorContext ?? undefined}
+                isHandActive={isHandActive}
+                handAction={handAction}
+                moveAction={moveAction}
+                isIfActive={isIfInstruction}
+                isMoveActive={isMove}
+                isSwapActive={isSwap}
+                activePointer={activePointer}
+              />
+              
+              <ArrayView
+                array={extraArray}
+                mocoPointer={mocoPointer}
+                chocoPointer={chocoPointer}
+                // 👈 LOCO not here
+                errorContext={executionErrorContext ?? undefined}
+              />
+            <div className="text-xs sm:text-sm text-gray-400 mb-1">
+              Boarding Order
+            </div>
+          </>
+          )}
           {/* Pointers */}
           {array.length > 0 && (
             <PointerView
               arrayLength={array.length}
-              mocoPointer={mocoPointer}
-              chocoPointer={chocoPointer}
+              mocoPointer={hasExtraArray ? undefined : mocoPointer}
+              chocoPointer={hasExtraArray ? undefined : chocoPointer}
               locoPointer={locoPointer}
               errorContext={executionErrorContext ?? undefined}
               isHandActive={isHandActive}
@@ -969,8 +1004,8 @@ const blurTargets = {
           <div className="flex justify-center my-2">
             <ArrayView
               array={array}
-              mocoPointer={mocoPointer}
-              chocoPointer={chocoPointer}
+              mocoPointer={hasExtraArray ? undefined : mocoPointer}
+              chocoPointer={hasExtraArray ? undefined : chocoPointer}
               locoPointer={locoPointer}
               errorContext={executionErrorContext ?? undefined}
             />
