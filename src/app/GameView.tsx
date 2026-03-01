@@ -279,8 +279,8 @@ function PaletteDragPreview({
     <div
       className={`
         relative aspect-square 
-        w-14 sm:w-16
-        rounded-xl border-2
+        w-12 sm:w-16
+        rounded-lg sm:rounded-xl border-2
         flex flex-col items-center justify-center
         text-white
         scale-110 rotate-3
@@ -289,10 +289,10 @@ function PaletteDragPreview({
         ${skin}
       `}
     >
-      <div className="text-xl sm:text-3xl">
+      <div className="text-lg sm:text-3xl">
         {INSTRUCTION_ICONS[instructionType]}
       </div>
-      <div className="mt-1 text-xs font-semibold">
+      <div className="mt-1 text-[10px] sm:text-xs font-semibold">
         {getInstructionLabel(instructionType)}
       </div>
     </div>

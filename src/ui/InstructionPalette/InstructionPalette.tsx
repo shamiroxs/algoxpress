@@ -186,9 +186,9 @@ function DraggablePaletteItem({
       }}
       className={`
         relative
-        w-14 sm:w-16
+        w-12 sm:w-16
         aspect-square
-        rounded-xl border-2
+        rounded-lg sm:rounded-xl border-2
         flex flex-col items-center justify-center
         text-center
         transition-all duration-200
@@ -201,9 +201,9 @@ function DraggablePaletteItem({
       `}
       title={template.description}
     >
-      <div className="text-lg sm:text-3xl">{INSTRUCTION_ICONS[template.type]}</div>
-      <div className="text-xs font-semibold tracking-wide">{template.label}</div>
-      <div className="absolute inset-0 rounded-xl pointer-events-none bg-white/5" />
+      <div className="text-base sm:text-3xl">{INSTRUCTION_ICONS[template.type]}</div>
+      <div className="text-[10px] sm:text-xs font-semibold tracking-wide">{template.label}</div>
+      <div className="absolute inset-0 rounded sm:rounded-xl pointer-events-none bg-white/5" />
     </div>
   );
 }
@@ -518,11 +518,11 @@ export function InstructionPalette() {
         </h3>
       </div>
 
-      <div className="flex gap-1 sm:gap-3 justify-end">
+      <div className="flex gap-0.5 sm:gap-3 justify-end">
         {/* Shared instructions */}
         {globalInstructionTemplates.length > 0 && (
           <div className="flex justify-center">
-            <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
+            <div className="bg-gray-700/60 rounded-lg px-1.5 py-3 sm:p-3 w-full max-w-md">
               <h4 className="text-sm text-gray-400 font-semibold mb-1 sm:mb-2 text-xs sm:text-base text-center tracking-widest">
                 SHARED
               </h4>
@@ -556,7 +556,7 @@ export function InstructionPalette() {
             flex justify-center
             ${highlightPalette ? 'ring-2 ring-yellow-400 rounded-lg' : ''}
             `}>
-            <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
+            <div className="bg-gray-700/60 rounded-lg px-1.5 py-3 sm:p-3 w-full max-w-md">
 
               <h4 className="text-blue-400 text-sm font-semibold mb-1 sm:mb-2 text-xs sm:text-base text-center tracking-widest">
                 MOCO
@@ -589,7 +589,7 @@ export function InstructionPalette() {
         {/* CHOCO */}
         {allowedPointers.includes('CHOCO') && (
           <div className="flex justify-center">
-            <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
+            <div className="bg-gray-700/60 rounded-lg px-1.5 py-3 sm:p-3 w-full max-w-md">
               <h4 className="text-red-400 text-sm font-semibold mb-1 sm:mb-2 text-xs sm:text-base text-center tracking-widest">
                 CHOCO
               </h4>
@@ -621,7 +621,7 @@ export function InstructionPalette() {
         {/* LOCO */}
         {allowedPointers.includes('LOCO') && (
           <div className="flex justify-center">
-            <div className="bg-gray-700/60 rounded-lg px-2 py-3 sm:p-3 w-full max-w-md">
+            <div className="bg-gray-700/60 rounded-lg px-1.5 py-3 sm:p-3 w-full max-w-md">
               <h4 className="text-yellow-400 text-sm font-semibold mb-1 sm:mb-2 text-xs sm:text-base text-center tracking-widest">
                 LOCO
               </h4>

@@ -616,18 +616,6 @@ export const challenges: Challenge[] = [
 ------------------------------
 ------------------------------
 ------------------------------
-Rearrange Sorted Array in Max-Min Form
-
-Problem:
-Given sorted array, rearrange as max, min, second max, second min...
-
-Input:
-[1, 2, 3, 4, 5, 6]
-
-Output:
-[6, 1, 5, 2, 4, 3]
-
-(Must be done in-place.)
 ------------------------------
 Next Permutation (In-Place)
 
