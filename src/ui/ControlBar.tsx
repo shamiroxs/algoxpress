@@ -129,7 +129,7 @@ export function ControlBar() {
               px-2 py-0.5
               sm:px-3 sm:py-1
               rounded-full
-              text-xs font-semibold
+              text-[8px] sm:text-xs font-semibold
               bg-gray-900 text-gray-200
               hover:bg-gray-700
               disabled:opacity-40
@@ -200,8 +200,8 @@ export function ControlBar() {
               ${highlightRun ? 'ring-2 ring-green-400 animate-pulse' : ''}
             `}
           >
-            <StepForward size={16} className="sm:block hidden" />
-            <StepForward size={14} className="block sm:hidden" />
+            <StepForward size={18} className="sm:block hidden" />
+            <StepForward size={12} className="block sm:hidden" />
           </button>
         </div>
   
@@ -209,7 +209,7 @@ export function ControlBar() {
         <div className="flex-1 flex justify-end">
           <button onClick={onReset} className={retrySecondaryBtn}>
             <RotateCcw size={16} className="sm:block hidden" />
-            <RotateCcw size={14} className="block sm:hidden" />
+            <RotateCcw size={10} className="block sm:hidden" />
           </button>
         </div>
       </div>
