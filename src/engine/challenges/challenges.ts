@@ -610,6 +610,119 @@ export const challenges: Challenge[] = [
       ],
     },
   },
+  {
+    id: 'challenge-13',
+    title: 'Boarding Order',
+    description: `The conductor mixed up the boarding sequence. Restore it to the next permutation.`,
+    hints: [
+      'Find the rightmost position where a value is smaller than its right neighbor (the "pivot").',
+      'Find the smallest value to the right of the pivot that is still larger than it.',
+      'Swap the pivot with that value, then reverse the suffix to the right of the pivot position.',
+    ],// add a detailed explaination with 3 element example.
+    difficulty: Difficulty.HARD,
+    initialArray: [2, 1, 5, 4, 3, 0, 0],
+    targetArray: [2, 3, 0, 0, 1, 4, 5],
+    maxSteps: 60,
+    initialPointers: {
+      MOCO: 5,   // scans for pivot from right
+      CHOCO: 6,  // scans for swap candidate / reversal right end
+    },
+    instructions: [
+      {
+        id: 'loop1-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop1',
+      },
+      {
+        id: 'pick-compare',
+        type: InstructionType.PICK,
+        target: 'MOCO',
+      },
+      {
+        id: 'if-less-moco',
+        type: InstructionType.IF_LESS,
+        target: 'MOCO',
+        body: [
+          {
+            id: 'jump-pivot',
+            type: InstructionType.JUMP,
+            label: 'pivot',
+          },
+        ],
+      },
+      {
+        id: 'jump-loop1',
+        type: InstructionType.JUMP,
+        label: 'loop1',
+      },
+      {
+        id: 'pivot-label',
+        type: InstructionType.LABEL,
+        labelName: 'pivot',
+      },
+      {
+        id: 'pick-pivot',
+        type: InstructionType.PICK,
+        target: 'MOCO',
+      },
+      {
+        id: 'loop2-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop2',
+      },
+      {
+        id: 'if-greater-choco',
+        type: InstructionType.IF_GREATER,
+        target: 'CHOCO',
+        body: [
+          {
+            id: 'jump-backward',
+            type: InstructionType.JUMP,
+            label: 'backward',
+          },
+        ],
+      },
+      {
+        id: 'jump-loop2',
+        type: InstructionType.JUMP,
+        label: 'loop2',
+      },
+      {
+        id: 'backward-label',
+        type: InstructionType.LABEL,
+        labelName: 'backward',
+      },
+      {
+        id: 'loop3-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop3',
+      },
+      {
+        id: 'if-meet-exit',
+        type: InstructionType.IF_MEET,
+        label: 'exit',
+      },
+      {
+        id: 'jump-loop3',
+        type: InstructionType.JUMP,
+        label: 'loop3',
+      },
+      {
+        id: 'loop-exit',
+        type: InstructionType.LABEL,
+        labelName: 'exit',
+      },
+    ],
+    unlocked: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_LEFT,
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+      ],
+    },
+  },
 ];
 
 /*
