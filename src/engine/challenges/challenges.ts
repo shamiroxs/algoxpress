@@ -618,7 +618,7 @@ export const challenges: Challenge[] = [
       'Find the rightmost position where a value is smaller than its right neighbor (the "pivot").',
       'Find the smallest value to the right of the pivot that is still larger than it.',
       'Swap the pivot with that value, then reverse the suffix to the right of the pivot position.',
-    ],// add a detailed explaination with 3 element example.
+    ],// HERE add a detailed explaination with 3 element example.
     difficulty: Difficulty.HARD,
     initialArray: [2, 1, 5, 4, 3, 0, 0],
     targetArray: [2, 3, 0, 0, 1, 4, 5],
@@ -692,6 +692,13 @@ export const challenges: Challenge[] = [
         type: InstructionType.LABEL,
         labelName: 'backward',
       },
+      //
+      {
+        id: 'to-end',
+        type: InstructionType.SET_POINTER,
+        target: 'CHOCO',
+        index: 6,
+      },
       {
         id: 'loop3-start',
         type: InstructionType.LABEL,
@@ -713,13 +720,15 @@ export const challenges: Challenge[] = [
         labelName: 'exit',
       },
     ],
-    unlocked: false,
+    unlocked: true,
     capabilities: {
       allowedPointers: ['MOCO', 'CHOCO'],
       allowedInstructions: [
         InstructionType.MOVE_LEFT,
         InstructionType.MOVE_RIGHT,
         InstructionType.SWAP,
+
+        //move choco to end
       ],
     },
   },

@@ -5,7 +5,7 @@
  * insert-preview gaps, and editing behavior.
  */
 
-import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 //import type { DragEndEvent, DragOverEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -186,6 +186,62 @@ export function ProgramContainer({
     measureAllInstructions();
   }, [layoutVersion]);
   
+  // ── Loop collapse state ──────────────────────────────────────────────────
+  const [collapsedLoops, setCollapsedLoops] = useState<Set<string>>(new Set());
+
+  const toggleLoop = (labelInstId: string) => {
+    setCollapsedLoops((prev) => {
+      const next = new Set(prev);
+      if (next.has(labelInstId)) next.delete(labelInstId);
+      else next.add(labelInstId);
+      return next;
+    });
+  };
+
+  const loopMap = useMemo(() => {
+    type LoopEntry = { labelInstId: string; jumpInstId: string; bodyIds: string[]; labelName: string };
+    const map = new Map<string, LoopEntry>();
+
+    playerInstructions.forEach((inst, i) => {
+      if (inst.type !== InstructionType.LABEL || !('labelName' in inst)) return;
+      const labelName = inst.labelName;
+      for (let j = i + 1; j < playerInstructions.length; j++) {
+        const candidate = playerInstructions[j];
+        if (candidate.type === InstructionType.JUMP && 'label' in candidate && candidate.label === labelName) {
+          map.set(inst.id, {
+            labelInstId: inst.id,
+            jumpInstId: candidate.id,
+            bodyIds: playerInstructions.slice(i + 1, j).map((b) => b.id),
+            labelName,
+          });
+          break;
+        }
+      }
+    });
+    return map;
+  }, [playerInstructions]);
+
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (initializedRef.current) return;
+    if (loopMap.size < 2) return; // nothing to auto-collapse
+    initializedRef.current = true;
+    const ids = [...loopMap.keys()];
+    setCollapsedLoops(new Set(ids.slice(1))); // keep first expanded, collapse the rest
+  }, [loopMap]);
+
+  const hiddenIds = useMemo(() => {
+    const hidden = new Set<string>();
+    for (const [, entry] of loopMap) {
+      if (collapsedLoops.has(entry.labelInstId)) {
+        entry.bodyIds.forEach((id) => hidden.add(id));
+        hidden.add(entry.jumpInstId);
+      }
+    }
+    return hidden;
+  }, [loopMap, collapsedLoops]);
+  // ─────────────────────────────────────────────────────────────────────────
 
   function ProgramDropzone({
     children,
@@ -220,11 +276,19 @@ export function ProgramContainer({
     instruction,
     onEdit,
     parentIfId,
+    isLoopLabel,       
+    isCollapsed,      
+    onToggleLoop,      
+    collapsedBodyCount,
   }: {
     instruction: Instruction;
     lineNumber: number;
     parentIfId?: string;
     onEdit?: () => void;
+    isLoopLabel?: boolean;        
+    isCollapsed?: boolean;        
+    onToggleLoop?: () => void;    
+    collapsedBodyCount?: number;  
   }) {
     const style = getInstructionStyle(instruction);
     const isNested = !!parentIfId;
@@ -244,6 +308,7 @@ export function ProgramContainer({
       instruction.type === InstructionType.JUMP;
 
     return (
+      <div className="flex flex-col items-center w-full">
       <div
         className={`
           relative
@@ -264,6 +329,28 @@ export function ProgramContainer({
           touch-none
         `}
       >
+         {/* Loop toggle chevron — only on LABEL instructions that head a loop */}
+         {isLoopLabel && onToggleLoop && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleLoop();
+              }}
+              title={isCollapsed ? 'Expand loop' : 'Collapse loop'}
+              className="
+                absolute left-1.5 sm:left-2
+                top-1/2 -translate-y-1/2
+                text-gray-300 hover:text-white
+                transition-transform duration-200
+                text-sm sm:text-2xl
+                z-10
+                pointer-events-auto
+              "
+              style={{ transform: `translateY(-50%) rotate(${isCollapsed ? '-90deg' : '0deg'})` }}
+            >
+              ▾
+            </button>
+          )}
         <div
           className={`
             flex-1
@@ -271,6 +358,7 @@ export function ProgramContainer({
             ${isNested ? 'text-[8px] sm:text-sm' : 'text-[10px] sm:text-base'}
             select-none
             ${hasEditableParameter ? 'cursor-pointer hover:opacity-90' : ''}
+            ${isLoopLabel ? 'pl-2.5 sm:pl-1' : ''}
           `}
           onClick={hasEditableParameter ? onEdit : undefined}
           title={hasEditableParameter ? 'Click to edit' : undefined}
@@ -314,6 +402,38 @@ export function ProgramContainer({
           ×
         </button>
       </div>
+
+      {/* Collapsed loop summary pill */}
+      {isLoopLabel && isCollapsed && collapsedBodyCount !== undefined && (
+        <div
+          onClick={onToggleLoop}
+          className="
+            mt-1 cursor-pointer
+            flex items-center gap-1.5
+            px-0.8 sm:px-3 py-0.4 sm:py-1
+            rounded-full
+            border border-dashed border-gray-500
+            bg-gray-800/80
+            text-gray-400 hover:text-gray-200
+            text-[8px] sm:text-[11px]
+            font-mono
+            select-none
+            transition-colors
+          "
+        >
+          <span className="text-gray-500">⋯</span>
+          <span>
+            <span className="sm:hidden">
+              {collapsedBodyCount} inst hidden
+            </span>
+            <span className="hidden sm:inline">
+              {collapsedBodyCount} instruction{collapsedBodyCount !== 1 ? 's' : ''} hidden
+            </span>
+          </span>
+          <span className="text-gray-500">⋯</span>
+        </div>
+      )}
+    </div>
     );
   }
 
@@ -566,6 +686,12 @@ export function ProgramContainer({
       instruction.type === InstructionType.IF_NOT_EQUAL ||
       instruction.type === InstructionType.IF_EVEN;
 
+    // ── Loop collapse helpers ────────────────────────────────────────────
+    const loopEntry = loopMap.get(instruction.id);
+    const isLoopLabel = !parentIfId && !!loopEntry;
+    const isCollapsed = isLoopLabel && collapsedLoops.has(instruction.id);
+    const collapsedBodyCount = loopEntry ? loopEntry.bodyIds.length + 1 : undefined;
+    // ────────────────────────────────────────────────────────────────────
     return (
       <div
         id={instruction.id}
@@ -672,6 +798,10 @@ export function ProgramContainer({
                   lineNumber={index}
                   parentIfId={parentIfId}
                   onEdit={hasEditableParameter ? handleEdit : undefined}
+                  isLoopLabel={isLoopLabel}
+                  isCollapsed={isCollapsed}
+                  onToggleLoop={isLoopLabel ? () => toggleLoop(instruction.id) : undefined}
+                  collapsedBodyCount={collapsedBodyCount}
                 />
               </div>
             )}
@@ -807,6 +937,9 @@ export function ProgramContainer({
         </defs>
 
         {arrows.map(({ from, to, color }) => {
+
+          if (hiddenIds.has(from.id)) return null;
+
           const fromRect =
             programRects.current.get(from.id) ??
             [...ifBodyRects.current.values()]
@@ -915,14 +1048,16 @@ export function ProgramContainer({
               </div>
             </div>
           ) : (
-            playerInstructions.map((inst, idx) => (
-              <SortableInstructionLine
-                key={inst.id}
-                instruction={inst}
-                index={idx}
-                isActive={currentInstructionId === inst.id}
-                insertPreview={insertPreview}
-              />
+            playerInstructions
+              .filter((inst) => !hiddenIds.has(inst.id))
+              .map((inst, idx) => (
+                <SortableInstructionLine
+                  key={inst.id}
+                  instruction={inst}
+                  index={idx}
+                  isActive={currentInstructionId === inst.id}
+                  insertPreview={insertPreview}
+                />
             ))
           )}
         </SortableContext>
