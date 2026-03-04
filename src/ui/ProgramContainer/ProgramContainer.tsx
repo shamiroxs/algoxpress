@@ -342,7 +342,7 @@ export function ProgramContainer({
                 top-1/2 -translate-y-1/2
                 text-gray-300 hover:text-white
                 transition-transform duration-200
-                text-sm sm:text-2xl
+                text-base sm:text-2xl
                 z-10
                 pointer-events-auto
               "
