@@ -771,7 +771,7 @@ export function ProgramContainer({
                       if (e.key === 'Escape') handleCancel();
                     }}
                     autoFocus
-                    className="flex-1 bg-gray-600 text-white max-w-[60px] sm:max-w-[100px] px-1 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded font-mono"
+                    className="flex-1 bg-gray-600 text-white max-w-[40px] sm:max-w-[100px] px-0.5 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded font-mono"
                   />
                 )}
                 {instruction.type !== InstructionType.SWAP_WITH && (

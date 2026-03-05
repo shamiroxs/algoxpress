@@ -728,7 +728,6 @@ export const challenges: Challenge[] = [
         InstructionType.MOVE_RIGHT,
         InstructionType.SWAP,
 
-        //move choco to end
       ],
     },
   },
