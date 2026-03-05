@@ -777,7 +777,7 @@ export function ProgramContainer({
                 {instruction.type !== InstructionType.SWAP_WITH && (
                   <button
                     onClick={handleSave}
-                    className="text-green-400 hover:text-green-300 text-xs sm:text-sm shrink-0"
+                    className="text-green-400 hover:text-green-300 text-[8px] sm:text-sm shrink-0"
                   >
                     ✓
                   </button>
