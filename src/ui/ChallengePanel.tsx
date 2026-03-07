@@ -3,13 +3,56 @@
  * Shows challenge description, initial/target arrays, and validation results
  */
 
-import { useCurrentChallenge, useValidationResult } from '../orchestrator/selectors';
+import { useState } from 'react';
+import { useCurrentChallenge } from '../orchestrator/selectors';
 import { ArrayView } from '../renderer/ArrayView';
-import { motion } from 'framer-motion';
 import { useTutorialHighlight } from '../tutorial/selectors';
+import { motion } from 'framer-motion';
+
+function HintRevealer({ hints }: { hints: string[] }) {
+  const [revealed, setRevealed] = useState(0);
+
+  return (
+    <div className="mb-4">
+      <div className="flex justify-center items-center gap-2 mb-2">
+      <h3 className="text-gray-400 text-sm">Hints</h3>
+      <span className="px-1.5 py-0.5 rounded-full bg-gray-700 border border-gray-600 text-gray-400 text-xs">
+        {revealed}/{hints.length}
+      </span>
+    </div>
+
+      <div className="space-y-2">
+        {hints.slice(0, revealed).map((hint, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex gap-2.5 p-2.5 rounded-lg bg-gray-700/50 border border-gray-600"
+          >
+            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 text-xs flex items-center justify-center font-bold">
+              {i + 1}
+            </span>
+            <p className="text-gray-300 text-xs leading-relaxed">{hint}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      {revealed < hints.length ? (
+        <button
+          onClick={() => setRevealed(r => r + 1)}
+          className="mt-2 w-full py-1.5 rounded-lg border border-dashed border-gray-600 text-gray-500 text-xs hover:border-yellow-500/50 hover:text-yellow-400 transition-colors"
+        >
+          {revealed === 0 ? 'Show first hint' : `Show next hint (${revealed + 1}/${hints.length})`}
+        </button>
+      ) : (
+        <p className="mt-2 text-center text-xs text-gray-600">All hints revealed</p>
+      )}
+    </div>
+  );
+}
+
 export function ChallengePanel() {
   const challenge = useCurrentChallenge();
-  const validationResult = useValidationResult();
  
   if (!challenge) {
     return (
@@ -48,7 +91,7 @@ export function ChallengePanel() {
           )}
         </div>
       </div>
-      
+
       {/* Initial Array */}
       <div className="mb">
         <h3 className="text-gray-400 text-sm mb-2">Seating Now</h3>
@@ -63,42 +106,15 @@ export function ChallengePanel() {
 
       {/* Hints */}
       {challenge.hints && challenge.hints.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-gray-400 text-sm mb-2">What to do</h3>
-            <ul className="space-y-1 text-sm text-gray-300">
-              {challenge.hints.map((hint, index) => (
-                <li key={index}>{hint}</li>
-              ))}
-            </ul>
-          </div>
-        )} 
-
-      {/* Validation Result (FAILED ONLY) */}
-      {validationResult && !validationResult.success && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-4 p-3 rounded bg-red-900/30 border border-red-500"
-        >
-          <div className="font-semibold text-red-300">
-            ✗ Mismatch Found
-          </div>
-
-          <div className="text-sm text-gray-300 mt-1">
-            {validationResult.message}
-          </div>
-
-          <div className="text-xs text-gray-400 mt-1">
-            Steps: {validationResult.stepCount}
-            {challenge.maxSteps && (
-              <span className={validationResult.optimized ? '' : 'text-yellow-400'}>
-                {' '}({validationResult.optimized ? 'Optimized' : 'Not optimized'})
-              </span>
-            )}
-          </div>
-        </motion.div>
+        <HintRevealer hints={challenge.hints} />
       )}
-
+      {/* Concept explanation */}
+      {challenge.explanation && (
+        <div className="mb-4 p-3 rounded-lg bg-gray-700/50 border border-gray-600">
+          <h3 className="text-gray-400 text-xs font-semibold tracking-wider mb-2">What is this?</h3>
+          <p className="text-gray-300 text-xs leading-relaxed whitespace-pre-line">{challenge.explanation}</p>
+        </div>
+      )}
     </div>
   );
 }

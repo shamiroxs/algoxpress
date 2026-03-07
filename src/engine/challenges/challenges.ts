@@ -618,7 +618,16 @@ export const challenges: Challenge[] = [
       'Find the rightmost position where a value is smaller than its right neighbor (the "pivot").',
       'Find the smallest value to the right of the pivot that is still larger than it.',
       'Swap the pivot with that value, then reverse the suffix to the right of the pivot position.',
-    ],// HERE add a detailed explaination with 3 element example.
+    ],
+    explanation: `A permutation is one possible ordering of values. The "next permutation" is the next ordering in sorted sequence.
+
+      For [1, 2, 3], all orderings in order are:
+      1 2 3  ← here
+      1 3 2  ← next
+      2 1 3
+      2 3 1
+      3 1 2
+      3 2 1`,
     difficulty: Difficulty.HARD,
     initialArray: [2, 1, 5, 4, 3, 0, 0],
     targetArray: [2, 3, 0, 0, 1, 4, 5],

@@ -33,6 +33,7 @@ export interface Challenge {
   title: string;
   description: string;
   hints: string[];
+  explanation?: string; 
   difficulty: Difficulty;
   initialArray: number[];
   targetArray: number[];
