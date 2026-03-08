@@ -32,7 +32,7 @@ function HintRevealer({ hints }: { hints: string[] }) {
             <span className="flex-shrink-0 w-5 h-5 rounded-full bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 text-xs flex items-center justify-center font-bold">
               {i + 1}
             </span>
-            <p className="text-gray-300 text-xs leading-relaxed">{hint}</p>
+            <p className="text-gray-300 text-sm leading-relaxed">{hint}</p>
           </motion.div>
         ))}
       </div>
@@ -45,7 +45,7 @@ function HintRevealer({ hints }: { hints: string[] }) {
           {revealed === 0 ? 'Show first hint' : `Show next hint (${revealed + 1}/${hints.length})`}
         </button>
       ) : (
-        <p className="mt-2 text-center text-xs text-gray-600">All hints revealed</p>
+        <p className="mt-2 text-center text-sm text-gray-600">All hints revealed</p>
       )}
     </div>
   );
@@ -111,8 +111,8 @@ export function ChallengePanel() {
       {/* Concept explanation */}
       {challenge.explanation && (
         <div className="mb-4 p-3 rounded-lg bg-gray-700/50 border border-gray-600">
-          <h3 className="text-gray-400 text-xs font-semibold tracking-wider mb-2">What is this?</h3>
-          <p className="text-gray-300 text-xs leading-relaxed whitespace-pre-line">{challenge.explanation}</p>
+          <h3 className="text-gray-400 text-sm font-semibold tracking-wider mb-2">What is this?</h3>
+          <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">{challenge.explanation}</p>
         </div>
       )}
     </div>
