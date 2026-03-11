@@ -472,9 +472,64 @@ export const challenges: Challenge[] = [
       ],
     }
   },
-  
   {
     id: 'challenge-11',
+    title: 'Wiggle Sort',
+    description: `Passengers must alternate: low, high, low, high...
+    Odd seats must hold higher tickets than their neighbors.`,
+    hints: [
+      'At every odd index, the value should be greater than its neighbors.',
+      'If arr[i] > arr[i+1] at an even index, swap them.',
+      'If arr[i] < arr[i+1] at an odd index, swap them.',
+    ],
+    difficulty: Difficulty.HARD,
+    initialArray: [3, 5, 2, 1, 6, 4],
+    targetArray: [3, 5, 1, 6, 2, 4],
+    maxSteps: 27,
+    initialPointers: {
+      MOCO: 0,  // current scanner
+      CHOCO: 1, // lookahead (always MOCO + 1)
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'if-less',
+        type: InstructionType.IF_LESS,
+        target: 'CHOCO',
+        body: [],
+      },
+      {
+        id: 'if-great',
+        type: InstructionType.IF_GREATER,
+        target: 'CHOCO',
+        body: [],
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+        InstructionType.PICK,
+      
+      ],
+      suggestedInstructions: [
+
+      ],
+    },
+  },
+  {
+    id: 'challenge-12',
     title: 'Ticket Classes',
     description: `Passengers of classes: 0 = Economy, 1 = Business, 2 = First Class. 
     Board them in order.`,
@@ -547,7 +602,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-12',
+    id: 'challenge-13',
     title: 'Alternate Boarding',
     description: `Tickets are sorted. Board the highest and lowest alternatingly.`,
     hints: [
@@ -611,7 +666,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-13',
+    id: 'challenge-14',
     title: 'Boarding Order',
     description: `The conductor mixed up the boarding sequence. Restore it to the next permutation.`,
     hints: [
@@ -747,32 +802,8 @@ export const challenges: Challenge[] = [
 ------------------------------
 ------------------------------
 ------------------------------
-Next Permutation (In-Place)
-
-Problem:
-Rearrange numbers into lexicographically next greater permutation.
-
-Input:
-[1, 2, 3]
-
-Output:
-[1, 3, 2]
-
-1 2 3
-1 3 2
-2 1 3
-2 3 1
-3 1 2
-3 2 1 
-Another example:
-
-Input:
-[2, 1, 5, 4, 3, 0, 0]
-
-Output:
-[2, 3, 0, 0, 1, 4, 5]
 ------------------------------
-Wiggle Sort
+Wiggle Sort (one pass greedy , optimal for wiggle sort i)
 
 Problem:
 Rearrange array such that:
