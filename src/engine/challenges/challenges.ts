@@ -173,6 +173,54 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-5',
+    title: 'Bubble Up',
+    description: 'The highest-value ticket must reach the last seat in a single pass.',
+    hints: [
+      'Compare each seat with its left neighbor.',
+      'Swap if the left ticket is greater than the right.'
+    ],
+    difficulty: Difficulty.EASY,
+    initialArray: [4, 2, 7, 1, 3],
+    targetArray: [2, 4, 1, 3, 7],
+    maxSteps: 28,
+    initialPointers: {
+      MOCO: 0,
+      CHOCO: 1, // last index
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'if-great',
+        type: InstructionType.IF_GREATER,
+        target: "MOCO",
+        body: [],
+      },  
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+        InstructionType.PICK,
+      ],
+      suggestedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+      ],
+    },
+  },
+  {
+    id: 'challenge-6',
     title: 'Penalty Boarding',
     description: `Passengers with penalty tickets (negative) must board before regular ones.`,
     hints: [
@@ -210,7 +258,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-6',
+    id: 'challenge-7',
     title: 'Backwards Tickets',
     description: `The compartment was filled from the wrong direction.`,
     hints: ['Reverse the order of all ticket values.'],
@@ -258,7 +306,7 @@ export const challenges: Challenge[] = [
   },
   
   {
-    id: 'challenge-7',
+    id: 'challenge-8',
     title: 'VIP Seat',
     description: `A VIP is already seated somewhere. Seat 0 is also reserved by them.`,
     hints: ['Copy the highest ticket value into Seat 0.'
@@ -311,7 +359,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-8',
+    id: 'challenge-9',
     title: 'Duplicate Ticket',
     description: 'Only one ticket per passenger is allowed.',
     hints: ['If any duplicate ticket exists, copy that value into Seat 0.', 'Assume no passenger at seat 0'],
@@ -370,7 +418,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-9',
+    id: 'challenge-10',
     title: 'Inspection Check',
     description: `An inspector checks ticket order before departure.`,
     hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
@@ -421,7 +469,7 @@ export const challenges: Challenge[] = [
     },
   },  
   {
-    id: 'challenge-10',
+    id: 'challenge-11',
     title: 'Clear the Aisle',
     description: `Passengers without tickets must step aside without disturbing valid ones.`,
     hints: [
@@ -473,7 +521,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-11',
+    id: 'challenge-12',
     title: 'Wiggle Sort',
     description: `Passengers must alternate: low, high, low, high...
     Odd seats must hold higher tickets than their neighbors.`,
@@ -529,7 +577,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-12',
+    id: 'challenge-13',
     title: 'Ticket Classes',
     description: `Passengers of classes: 0 = Economy, 1 = Business, 2 = First Class. 
     Board them in order.`,
@@ -602,7 +650,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-13',
+    id: 'challenge-14',
     title: 'Alternate Boarding',
     description: `Tickets are sorted. Board the highest and lowest alternatingly.`,
     hints: [
@@ -666,7 +714,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-14',
+    id: 'challenge-15',
     title: 'Boarding Order',
     description: `The conductor mixed up the boarding sequence. Restore it to the next permutation.`,
     hints: [
@@ -803,38 +851,8 @@ export const challenges: Challenge[] = [
 ------------------------------
 ------------------------------
 ------------------------------
-Wiggle Sort (one pass greedy , optimal for wiggle sort i)
-
-Problem:
-Rearrange array such that:
-
-arr[0] < arr[1] > arr[2] < arr[3] > arr[4] ...
-
-Input:
-[3, 5, 2, 1, 6, 4]
-
-Output (one valid):
-[3, 5, 1, 6, 2, 4]
 ------------------------------
-Rearrange So Largest Element Moves to End (Single Pass Bubble Step)
-
-Input:
-[4, 2, 7, 1, 3]
-
-Output (after one pass):
-[2, 4, 1, 3, 7]
 ------------------------------
-????
-Rearrange in Zig-Zag Fashion
-
-Condition:
-a < b > c < d > e
-
-Input:
-[4,3,7,8,6,2,1]
-
-Output:
-[3,7,4,8,2,6,1]
 ------------------------------
 ???
 In-Place Merge of Two Sorted Halves (Same Array)
