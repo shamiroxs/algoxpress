@@ -259,6 +259,48 @@ export const challenges: Challenge[] = [
   },
   {
     id: 'challenge-7',
+    title: 'Balanced Carriage',
+    description: `Something suspicious, some passengers ticket numbers 
+    is the exact average of their neighbors. Shuffle the pairs.`,
+    hints: [
+      'Swap every adjacent pair: positions (0,1), (2,3), (4,5)...',
+      'After swapping each pair, MOCO should skip the already-swapped element.',
+      'CHOCO always stays one step ahead of MOCO.',
+    ],
+    difficulty: Difficulty.EASY,
+    initialArray: [1, 2, 3, 4, 5],
+    targetArray: [2, 1, 4, 3, 5],
+    maxSteps: 12,
+    initialPointers: {
+      MOCO: 0,  // points to left of each pair
+      CHOCO: 1, // points to right of each pair (always MOCO + 1)
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: true,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+      ],
+      suggestedInstructions: [
+        InstructionType.MOVE_RIGHT,
+      ],
+    },
+  },
+  {
+    id: 'challenge-8',
     title: 'Backwards Tickets',
     description: `The compartment was filled from the wrong direction.`,
     hints: ['Reverse the order of all ticket values.'],
@@ -303,12 +345,12 @@ export const challenges: Challenge[] = [
       ],
     }
     
-  },
-  
+  }, 
   {
-    id: 'challenge-8',
+    id: 'challenge-9',
     title: 'VIP Seat',
-    description: `A VIP is already seated somewhere. Seat 0 is also reserved by them.`,
+    description: `A VIP is already seated somewhere. Seat 0 is also reserved by them.
+    (highest ticket number is the VIP)`,
     hints: ['Copy the highest ticket value into Seat 0.'
     ],
     difficulty: Difficulty.MEDIUM,
@@ -359,9 +401,10 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-9',
+    id: 'challenge-10',
     title: 'Duplicate Ticket',
-    description: 'Only one ticket per passenger is allowed.',
+    description: `Only one ticket per passenger is allowed.
+    Report duplicate ticket at seat zero`,
     hints: ['If any duplicate ticket exists, copy that value into Seat 0.', 'Assume no passenger at seat 0'],
     difficulty: Difficulty.MEDIUM,
     initialArray: [0, 3, 4, 2, 2],
@@ -418,7 +461,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-10',
+    id: 'challenge-11',
     title: 'Inspection Check',
     description: `An inspector checks ticket order before departure.`,
     hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
@@ -467,9 +510,9 @@ export const challenges: Challenge[] = [
         InstructionType.LABEL,
       ],
     },
-  },  
+  }, 
   {
-    id: 'challenge-11',
+    id: 'challenge-12',
     title: 'Clear the Aisle',
     description: `Passengers without tickets must step aside without disturbing valid ones.`,
     hints: [
@@ -521,7 +564,7 @@ export const challenges: Challenge[] = [
     }
   },
   {
-    id: 'challenge-12',
+    id: 'challenge-13',
     title: 'Wiggle Sort',
     description: `Passengers must alternate: low, high, low, high...
     Odd seats must hold higher tickets than their neighbors.`,
@@ -577,7 +620,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-13',
+    id: 'challenge-14',
     title: 'Ticket Classes',
     description: `Passengers of classes: 0 = Economy, 1 = Business, 2 = First Class. 
     Board them in order.`,
@@ -650,7 +693,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-14',
+    id: 'challenge-15',
     title: 'Alternate Boarding',
     description: `Tickets are sorted. Board the highest and lowest alternatingly.`,
     hints: [
@@ -714,7 +757,7 @@ export const challenges: Challenge[] = [
     },
   },
   {
-    id: 'challenge-15',
+    id: 'challenge-16',
     title: 'Boarding Order',
     description: `The conductor mixed up the boarding sequence. Restore it to the next permutation.`,
     hints: [
@@ -854,25 +897,14 @@ export const challenges: Challenge[] = [
 ------------------------------
 ------------------------------
 ------------------------------
-???
-In-Place Merge of Two Sorted Halves (Same Array)
-
-Problem:
-Array has two sorted halves. Merge them in-place.
-
-Input:
-[1,3,5,7, 2,4,6,8]
-
-Output:
-[1,2,3,4,5,6,7,8]
 ------------------------------
 Rearrange So No Element Equals Average of Neighbors
 
 Input:
 [1,2,3,4,5]
 
-Output (one valid):
-[1,3,2,5,4]
+Output :
+[2,1,4,3,5]
 ------------------------------
 ------------------------------
 #add index feature
