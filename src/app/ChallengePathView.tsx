@@ -60,6 +60,18 @@ export function ChallengePathView() {
       ? ((lastCompletedIndex + 1) / challenges.length) * 100
       : 0;
 
+  const maxUnlockedBase = 3;
+
+  // Number of completed challenges
+  const completedCount = completedIndexes.length;
+
+  // Sliding window end index
+  const dynamicUnlockLimit = maxUnlockedBase + completedCount - 1;
+
+  const unlockedPercent = Math.min(
+    ((dynamicUnlockLimit + 1) / challenges.length) * 100, 
+    100
+  );
 
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4">
@@ -72,42 +84,69 @@ export function ChallengePathView() {
         </p>
 
         <div className="relative flex flex-col items-center">
-          {/* Base path line */}
-          <div className="absolute top-0 bottom-0 w-0.5 sm:w-1 bg-gray-700 rounded" />
-
-          {/* Completed path overlay */}
+          {/* 1. Base Dashed Line (Visible only for locked nodes) */}
+          <div 
+            className="absolute top-0 bottom-0 border-l-[3px] sm:border-l-[4px] border-dashed border-gray-700" 
+          />
+          
+          {/* 2. Unlocked Path Overlay (Solid Gray covering dashes) */}
           <div
-            className="absolute top-0 w-0.5 sm:w-1 bg-indigo-500 rounded transition-all duration-500"
+            className="absolute top-0 w-[3px] sm:w-[4px] bg-gray-600 transition-all duration-500"
+            style={{ 
+              height: `${unlockedPercent}%`, 
+            }}
+          />
+
+          {/* 3. Completed Path Overlay (Solid Indigo) */}
+          <div
+            className="absolute top-0 w-[3px] sm:w-[4px] bg-indigo-500 transition-all duration-500"
             style={{ 
               height: `${progressPercent}%`,
-              transition: 'height 0.4s ease-out'}}
+              transition: 'height 0.4s ease-out',
+            }}
           />
 
           {challenges.map((challenge, index) => {
-            const completed = isChallengeCompleted(challenge.id);
             const isNext = index === nextChallengeIndex;
+
+            const isCompleted = isChallengeCompleted(challenge.id);
+
+            // Hard lock (never unlock if false)
+            const isHardLocked = !challenge.unlocked;
+
+            // Dynamic unlock window
+            const isWithinWindow = index <= dynamicUnlockLimit;
+
+            // Final unlock state
+            const isUnlocked = !isHardLocked && isWithinWindow;
 
             return (
               <motion.div
                 key={challenge.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
+                initial={{ opacity: 0, scale: 0.5, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ 
+                  type: 'spring', 
+                  stiffness: 200, 
+                  damping: 15, 
+                  delay: index * 0.08 
+                }}
                 className="relative z-10 flex flex-col items-center mb-10 sm:mb-16 overflow-visible"
               >
+                
                 {/* Node */}
                 <motion.button
-                  disabled={!challenge.unlocked}
+                  disabled={!isUnlocked}
                   onClick={() =>
-                    challenge.unlocked && navigate(`/challenge/${challenge.id}`)
+                    isUnlocked && navigate(`/challenge/${challenge.id}`)
                   }
                   animate={
                     isNext
                       ? {
-                          scale: [1, 1.1, 1],
+                          scale: [1, 1.15, 1],
                           boxShadow: [
                             '0 0 0px rgba(99,102,241,0)',
-                            '0 0 16px rgba(99,102,241,0.9)',
+                            '0 0 25px rgba(99,102,241,0.8)',
                             '0 0 0px rgba(99,102,241,0)',
                           ],
                         }
@@ -117,7 +156,7 @@ export function ChallengePathView() {
                     isNext
                       ? {
                           repeat: Infinity,
-                          duration: 1.4,
+                          duration: 1.5,
                           ease: 'easeInOut',
                         }
                       : {}
@@ -125,11 +164,11 @@ export function ChallengePathView() {
                   className={clsx(
                     'w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center',
                     'text-white font-bold shadow-lg',
-                    challenge.unlocked && 'hover:scale-105',
+                    isUnlocked && 'hover:scale-105',
                     getNodeColor(
                       challenge.difficulty,
-                      challenge.unlocked,
-                      completed,
+                      isUnlocked,
+                      isCompleted,
                       index
                     )
                   )}
@@ -143,7 +182,7 @@ export function ChallengePathView() {
                   <p
                     className={clsx(
                       'font-semibold text-sm sm:text-base',
-                      challenge.unlocked
+                      isUnlocked
                         ? 'text-white'
                         : 'text-gray-500'
                     )}
@@ -153,7 +192,7 @@ export function ChallengePathView() {
                 </div>
 
                 {/* Status indicators */}
-                {!challenge.unlocked && (
+                {!isUnlocked && (
                   <div className="absolute -bottom-6 text-gray-500 text-xs">
                     🔒 Locked
                   </div>

@@ -7,21 +7,42 @@ import { ChallengePathView } from './ChallengePathView';
 
 function ChallengeRoute() {
   const { id } = useParams<{ id: string }>();
-  const { selectChallenge, setCurrentChallenge, currentChallenge, setChallenges } = useGameStore();
+  const { selectChallenge, setCurrentChallenge, currentChallenge, setChallenges, isChallengeCompleted } = useGameStore();
 
   useEffect(() => {
     setChallenges(challenges);
   }, [setChallenges]);
 
+  const challengeIndex = challenges.findIndex(c => c.id === id);
+  const challenge = challenges[challengeIndex];
+
+  // Compute completion state
+  const completedIndexes = challenges
+    .map((c, i) => (isChallengeCompleted(c.id) ? i : -1))
+    .filter(i => i !== -1);
+
+  const completedCount = completedIndexes.length;
+  const maxUnlockedBase = 3;
+  const dynamicUnlockLimit = maxUnlockedBase + completedCount - 1;
+
+  const isUnlocked =
+    challenge &&
+    challenge.unlocked &&
+    challengeIndex <= dynamicUnlockLimit;
+
   useEffect(() => {
-    if (id) {
-      selectChallenge(id);
-    }
-  
+    if (!id || !isUnlocked) return;
+
+    selectChallenge(id);
+
     return () => {
       setCurrentChallenge(null);
     };
-  }, [id, selectChallenge, setCurrentChallenge]);
+  }, [id, isUnlocked, selectChallenge, setCurrentChallenge]);
+
+  if (!challenge || !isUnlocked) {
+    return <Navigate to="/" replace />;
+  }
 
   if (!currentChallenge) {
     return <div className="text-white p-4">Loading challenge...</div>;

@@ -11,7 +11,7 @@ export const challenges: Challenge[] = [
   {
     id: 'challenge-0',
     title: 'Start Here',
-    description: `Copy the first value into the second box`,
+    description: `Copy the value in first box to the second box`,
     hints: ['Copy the ticket value from Seat 0 into Seat 1.'],
     difficulty: Difficulty.EASY,
     initialArray: [7, 0, 0, 0],
@@ -356,7 +356,7 @@ export const challenges: Challenge[] = [
     difficulty: Difficulty.MEDIUM,
     initialArray: [0, 7, 2, 9, 1],
     targetArray: [9, 7, 2, 9, 1],
-    maxSteps: 30,
+    maxSteps: 42,
     instructions: [
       {
         id: 'pick',
@@ -520,7 +520,7 @@ export const challenges: Challenge[] = [
       'You begin with a zero in clipboard.'
     ],
     
-    difficulty: Difficulty.HARD,
+    difficulty: Difficulty.MEDIUM,
     initialArray: [0, 1, 0, 3, 12, 0],
     targetArray: [1, 3, 12, 0, 0, 0],
     maxSteps: 28,
@@ -888,76 +888,3 @@ export const challenges: Challenge[] = [
   },
 ];
 
-/*
-------------------------------
-------------------------------
-------------------------------
-------------------------------
-------------------------------
-------------------------------
-------------------------------
-------------------------------
-------------------------------
-Rearrange So No Element Equals Average of Neighbors
-
-Input:
-[1,2,3,4,5]
-
-Output :
-[2,1,4,3,5]
-------------------------------
-------------------------------
-#add index feature
-------------------------------
-Rearrange So That arr[i] = i (If Possible)
-
-Problem:
-Rearrange array so that value at index i becomes i, otherwise -1.
-
-Input:
-[-1, -1, 2, 1, -1, 5]
-
-Output:
-[-1, 1, 2, -1, -1, 5]
-
-(Use swapping until correct position.)
-------------------------------
-Cyclic Sort (1 to N numbers)
-
-Problem:
-Array contains numbers from 1 to N. Place each number at correct index.
-
-Input:
-[3, 1, 5, 4, 2]
-
-Output:
-[1, 2, 3, 4, 5]
-------------------------------
-Find First Missing Positive (Rearrangement Based)
-
-Problem:
-Rearrange so each positive number is placed at index value-1.
-
-Input:
-[3, 4, -1, 1]
-
-Output (after rearrangement):
-[1, -1, 3, 4]
-------------------------------
-Rearrange Such That arr[i] = arr[arr[i]]
-
-Problem:
-Modify array so that each element becomes value at its index.
-
-Input:
-[3, 2, 0, 1]
-
-Output:
-[1, 0, 3, 2]
-
-(Must be done in-place without extra array.)
-------------------------------
-------------------------------
-------------------------------
-------------------------------
-*/
