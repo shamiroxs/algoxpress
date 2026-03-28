@@ -27,7 +27,7 @@ type Props = {
           onClick={onBack}
           className="absolute top-4 left-4 text-gray-400 hover:text-white"
         >
-          ← Back to Station
+          ← Back to Platform
         </button>
   
         <div

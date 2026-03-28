@@ -1,17 +1,21 @@
 import { Routes as RouterRoutes, Route, Navigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { challenges } from '../engine/challenges/challenges';
+//import { challenges } from '../engine/challenges/challenges';
 import { useGameStore } from '../orchestrator/store';
 import { GameView } from './GameView';
+import { TrainSelectionView } from './TrainSelectionView';
 import { ChallengePathView } from './ChallengePathView';
+import { challengesByTrain } from '../engine/challenges';
 
 function ChallengeRoute() {
-  const { id } = useParams<{ id: string }>();
+  const { id, trainId } = useParams<{ id: string; trainId: string }>();
   const { selectChallenge, setCurrentChallenge, currentChallenge, setChallenges, isChallengeCompleted } = useGameStore();
 
   useEffect(() => {
     setChallenges(challenges);
   }, [setChallenges]);
+
+  const challenges = challengesByTrain[trainId || 'array-train'] || [];
 
   const challengeIndex = challenges.findIndex(c => c.id === id);
   const challenge = challenges[challengeIndex];
@@ -41,7 +45,7 @@ function ChallengeRoute() {
   }, [id, isUnlocked, selectChallenge, setCurrentChallenge]);
 
   if (!challenge || !isUnlocked) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={`/train/${trainId}`} replace />;
   }
 
   if (!currentChallenge) {
@@ -54,8 +58,15 @@ function ChallengeRoute() {
 export function Routes() {
   return (
     <RouterRoutes>
-      <Route path="/" element={<ChallengePathView />} />
-      <Route path="/challenge/:id" element={<ChallengeRoute />} />
+      {/* NEW ROOT */}
+      <Route path="/" element={<TrainSelectionView />} />
+
+      {/* TRAIN PATH */}
+      <Route path="/train/:trainId" element={<ChallengePathView />} />
+
+      {/* GAME */}
+      <Route path="/train/:trainId/challenge/:id" element={<ChallengeRoute />} />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </RouterRoutes>
   );

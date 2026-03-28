@@ -3,14 +3,20 @@
  * Level 1 at the top, progressing downward
  */
 
-import { challenges } from '../engine/challenges/challenges';
+//import { challenges } from '../engine/challenges/challenges';
 import { useGameStore } from '../orchestrator/store';
 import { useNavigate } from 'react-router-dom';
 import { Difficulty } from '../engine/challenges/types';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 
+import { useParams } from 'react-router-dom';
+import { challengesByTrain } from '../engine/challenges';
+
 export function ChallengePathView() {
+  const { trainId } = useParams<{ trainId: string }>();
+
+  const challenges = challengesByTrain[trainId || 'array-train'] || [];
   const { isChallengeCompleted } = useGameStore();
 
   const navigate = useNavigate();
@@ -74,7 +80,13 @@ export function ChallengePathView() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-900 py-12 px-4">
+    <div className="min-h-screen bg-gray-900 py-12 px-4 relative">
+      <button
+        onClick={() => navigate('/')}
+        className="absolute top-4 left-4 text-gray-400 hover:text-white"
+        >
+        ← Back to Station
+        </button>
       <div className="max-w-xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-2 text-center">
           Algorithm Express
@@ -138,7 +150,7 @@ export function ChallengePathView() {
                 <motion.button
                   disabled={!isUnlocked}
                   onClick={() =>
-                    isUnlocked && navigate(`/challenge/${challenge.id}`)
+                    isUnlocked && navigate(`/train/${trainId}/challenge/${challenge.id}`)
                   }
                   animate={
                     isNext

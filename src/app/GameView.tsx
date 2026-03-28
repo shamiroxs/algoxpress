@@ -5,7 +5,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import {
   useCurrentChallenge,
@@ -300,6 +300,7 @@ function PaletteDragPreview({
 }
 
 export function GameView() {
+  const { trainId } = useParams<{ trainId: string }>();
   const navigate = useNavigate();
 
   /** ---------- GLOBAL STATE ---------- */
@@ -899,14 +900,14 @@ const blurTargets = {
           challengeTitle={challenge.title}
           mode={mode}
           onToggleChallenge={toggleChallengePanel}
-          onBack={() => navigate('/')}
+          onBack={() => navigate(`/train/${trainId}`)}
         />
       ) : (
         <MobileTopBar
           challengeTitle={challenge.title}
           mode={mode}
           onToggleChallenge={toggleChallengePanel}
-          onBack={() => navigate('/')}
+          onBack={() => navigate(`/train/${trainId}`)}
         />
       )}
       </div>
