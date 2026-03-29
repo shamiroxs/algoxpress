@@ -2,6 +2,7 @@ export type Train = {
     id: string;
     title: string;
     description: string;
+    comingSoon?: boolean;
   };
   
   export const trains: Train[] = [
@@ -13,11 +14,13 @@ export type Train = {
     {
       id: 'linked-train',
       title: 'Linked Line',
-      description: 'Linked list challenges (coming soon)',
+      description: 'Linked list challenges',
+      comingSoon: true,
     },
     {
       id: 'tree-train',
       title: 'Tree Explorer',
-      description: 'Tree & recursion challenges (coming soon)',
+      description: 'Tree & recursion challenges',
+      comingSoon: true,
     },
   ];

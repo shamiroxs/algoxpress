@@ -89,7 +89,7 @@ export function ChallengePathView() {
         </button>
       <div className="max-w-xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-2 text-center">
-          Algorithm Express
+          Array Express
         </h1>
         <p className="text-gray-400 mb-12 text-center">
           Enter into your compartment
