@@ -1021,7 +1021,7 @@ const blurTargets = {
           />
 
           {/* Error */}
-          {executionError && (
+          {executionError && !isTutorialActive && (
             <div className="mt-2 sm:mt-4 bg-red-900/30 border border-red-500 rounded p-2 sm:p-3">
               <div className="text-xs sm:text-sm font-semibold text-red-300">
                 Execution Error
@@ -1031,7 +1031,7 @@ const blurTargets = {
           )}
 
           {/* Validation Result (FAILED ONLY) */}
-          {validationResult && !validationResult.success && (
+          {validationResult && !validationResult.success && !isTutorialActive && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

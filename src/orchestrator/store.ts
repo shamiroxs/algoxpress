@@ -90,6 +90,14 @@ function getNextTutorialStep(
   );
 }
 
+type CheckpointMood = 'smooth' | 'delay' | 'rough';
+
+type CheckpointFeedbackState = {
+  mood: CheckpointMood | null;
+  note: string;
+  submitted: boolean;
+};
+
 interface GameState {
   // Challenge state
   currentChallenge: Challenge | null;
@@ -168,6 +176,10 @@ interface GameState {
   dismissSuccessHint: () => void;
   resetSuccessHint: () => void;
 
+  checkpointFeedback: CheckpointFeedbackState;
+  setCheckpointMood: (mood: CheckpointMood) => void;
+  submitCheckpointFeedback: (note: string) => void;
+
 }
 
 function updateInstructionRecursive(
@@ -199,6 +211,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   validationResult: null,
   engine: new GameEngine(),
   successHintDismissed: false,
+
+  checkpointFeedback: {
+    mood: null,
+    note: '',
+    submitted: false,
+  },
 
   // Tutorial
   tutorial: {
@@ -345,6 +363,23 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   resetSuccessHint: () =>
     set({ successHintDismissed: false }),
+
+  setCheckpointMood: (mood) =>
+    set((state) => ({
+      checkpointFeedback: {
+        ...state.checkpointFeedback,
+        mood,
+      },
+    })),
+  
+  submitCheckpointFeedback: (note) =>
+    set((state) => ({
+      checkpointFeedback: {
+        ...state.checkpointFeedback,
+        note,
+        submitted: true,
+      },
+    })),
   
   reorderInstructions: (fromIndex, toIndex) => {
     const { playerInstructions } = get();

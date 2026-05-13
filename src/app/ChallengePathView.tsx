@@ -13,11 +13,18 @@ import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import { challengesByTrain } from '../engine/challenges';
 
+import { FeedbackCard } from './FeedbackCard';
+
 export function ChallengePathView() {
   const { trainId } = useParams<{ trainId: string }>();
 
   const challenges = challengesByTrain[trainId || 'array-train'] || [];
-  const { isChallengeCompleted } = useGameStore();
+  const {
+    isChallengeCompleted,
+    checkpointFeedback,
+    setCheckpointMood,
+    submitCheckpointFeedback,
+  } = useGameStore();
 
   const navigate = useNavigate();
 
@@ -78,6 +85,10 @@ export function ChallengePathView() {
     ((dynamicUnlockLimit + 1) / challenges.length) * 100, 
     100
   );
+
+  const shouldShowCheckpoint =
+    isChallengeCompleted(challenges[2]?.id) &&
+    !checkpointFeedback.submitted;
 
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 relative">
@@ -188,7 +199,18 @@ export function ChallengePathView() {
                   {index}
                 </motion.button>
 
-
+                {/* Conductor Checkpoint */}
+                {index === 4 && shouldShowCheckpoint && (
+                  <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2">
+                    <FeedbackCard
+                      expanded={!!checkpointFeedback.mood}
+                      submitted={checkpointFeedback.submitted}
+                      selectedMood={checkpointFeedback.mood}
+                      onMoodSelect={setCheckpointMood}
+                      onSubmit={submitCheckpointFeedback}
+                    />
+                  </div>
+                )}
                 {/* Title */}
                 <div className="absolute left-14 sm:left-20 top-1/2 -translate-y-1/2 w-64 text-left whitespace-normal">
                   <p

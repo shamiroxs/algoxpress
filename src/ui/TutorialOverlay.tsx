@@ -34,10 +34,16 @@ export function TutorialOverlay() {
   useEffect(() => {
     if (!isTutorialActive || !blocksUI) return;
   
+    const stepId = step?.id;
+    const timeoutDuration =
+    stepId === TutorialStepId.WELCOME
+      ? 1200 // shorter first step
+      : 3500;
+
     // Auto-complete tutorial
     const completeTimeoutId = setTimeout(() => {
       maybeCompleteTutorial('AUTO');
-    }, 4500);
+    }, timeoutDuration);
   
     return () => {
       clearTimeout(completeTimeoutId);
