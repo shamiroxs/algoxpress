@@ -87,7 +87,7 @@ export function ChallengePathView() {
   );
 
   const shouldShowCheckpoint =
-    isChallengeCompleted(challenges[2]?.id) &&
+    completedCount >= 3 &&
     !checkpointFeedback.submitted;
 
   return (
@@ -200,8 +200,8 @@ export function ChallengePathView() {
                 </motion.button>
 
                 {/* Conductor Checkpoint */}
-                {index === 4 && shouldShowCheckpoint && (
-                  <div className="absolute right-full mr-6 top-1/2 -translate-y-1/2">
+                {index === 5 && shouldShowCheckpoint && (
+                  <div className="absolute right-full mr-4 sm:mr-6 top-1/2 -translate-y-1/2">
                     <FeedbackCard
                       expanded={!!checkpointFeedback.mood}
                       submitted={checkpointFeedback.submitted}
