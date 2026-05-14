@@ -91,7 +91,7 @@ export function ChallengePathView() {
     completedCount >= 3 &&
     !checkpointFeedback.submitted;
   const shouldShowSupportCard =
-    completedCount >= 7;
+    completedCount >= 8;
 
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 relative">

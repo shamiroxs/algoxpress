@@ -1,13 +1,22 @@
 import { motion } from 'framer-motion';
 import QRCode from 'react-qr-code';
+import { useState } from 'react';
+import clsx from 'clsx';
 
 const UPI_LINK =
   'upi://pay?pa=9544123218@ybl&pn=Shamir%20Ashraf&tn=Support%20Development&cu=INR';
 
 export function SupportCard() {
-  const handleClick = () => {
-    window.open(UPI_LINK, '_blank');
-  };
+    const [supported, setSupported] = useState(false);
+
+    const handleClick = () => {
+        setSupported(true);
+    
+        // Small delay so animation/color update is visible
+        setTimeout(() => {
+            window.open(UPI_LINK, '_blank');
+        }, 120);
+      };    
 
   return (
     <motion.button
@@ -18,7 +27,8 @@ export function SupportCard() {
         ease: 'easeOut',
       }}
       onClick={handleClick}
-      className="
+      className={clsx(
+        `
         w-26 sm:w-32
         rounded-xl sm:rounded-2xl
         border border-indigo-500/30
@@ -30,17 +40,24 @@ export function SupportCard() {
         hover:scale-[1.02]
         hover:border-indigo-400
         active:scale-[0.98]
-      "
+      `,
+        supported
+        ? 'border-green-900 hover:border-green-400'
+        : 'border-indigo-500/30 hover:border-indigo-400'
+        )}
     >
       {/* Header */}
       <div className="text-center">
         <p
-          className="
+          className={clsx(
+            `
             text-[8px] sm:text-[10px]
             font-semibold uppercase
             tracking-[0.15em]
             text-indigo-300
-          "
+          `,
+            supported ? 'text-green-300/90' : 'text-indigo-300'
+          )}
         >
           Support Development
         </p>
@@ -76,7 +93,7 @@ export function SupportCard() {
 
       {/* Footer */}
       <div className="mt-3 text-center">
-        <p className="text-[9px] sm:text-[11px] text-gray-300">
+        <p className="text-[8px] sm:text-[11px] text-gray-300">
           Tap to pay via UPI
         </p>
 
