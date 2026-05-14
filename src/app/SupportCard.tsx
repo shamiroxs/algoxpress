@@ -38,7 +38,6 @@ export function SupportCard() {
         backdrop-blur-sm
         transition-all
         hover:scale-[1.02]
-        hover:border-indigo-400
         active:scale-[0.98]
       `,
         supported
