@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom';
 import { challengesByTrain } from '../engine/challenges';
 
 import { FeedbackCard } from './FeedbackCard';
+import { SupportCard } from './SupportCard';
 
 export function ChallengePathView() {
   const { trainId } = useParams<{ trainId: string }>();
@@ -89,6 +90,8 @@ export function ChallengePathView() {
   const shouldShowCheckpoint =
     completedCount >= 3 &&
     !checkpointFeedback.submitted;
+  const shouldShowSupportCard =
+    completedCount >= 7;
 
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 relative">
@@ -209,6 +212,13 @@ export function ChallengePathView() {
                       onMoodSelect={setCheckpointMood}
                       onSubmit={submitCheckpointFeedback}
                     />
+                  </div>
+                )}
+
+                {/* Support Development Card */}
+                {index === 10 && shouldShowSupportCard && (
+                  <div className="absolute right-full mr-4 sm:mr-6 top-1/2 -translate-y-1/2">
+                    <SupportCard />
                   </div>
                 )}
                 {/* Title */}

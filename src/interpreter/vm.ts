@@ -128,7 +128,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
     return {
       state: newState,
       success: false,
-      error: 'Program completed',
+      error: '⟲ Reset to play again',
       completed: true,
     };
   }
