@@ -56,7 +56,7 @@ export function SupportCard() {
             tracking-[0.15em]
             text-indigo-300
           `,
-            !supported ? 'text-green-300/90' : 'text-indigo-300'
+            supported ? 'text-green-500' : 'text-indigo-300'
           )}
         >
           Support Development
