@@ -31,7 +31,7 @@ export function SupportCard() {
         `
         w-26 sm:w-32
         rounded-xl sm:rounded-2xl
-        border border-indigo-500/30
+        border 
         bg-gray-800/95
         p-3 sm:p-4
         shadow-xl
@@ -54,9 +54,8 @@ export function SupportCard() {
             text-[8px] sm:text-[10px]
             font-semibold uppercase
             tracking-[0.15em]
-            text-indigo-300
           `,
-            supported ? 'text-green-500' : 'text-indigo-300'
+            supported ? 'text-green-300/90' : 'text-indigo-300'
           )}
         >
           Support Development
