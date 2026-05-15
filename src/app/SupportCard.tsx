@@ -1,17 +1,28 @@
 import { motion } from 'framer-motion';
 import QRCode from 'react-qr-code';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 
 const UPI_LINK =
   'upi://pay?pa=9544123218@ybl&pn=Shamir%20Ashraf&tn=Support%20Development&cu=INR';
+const STORAGE_KEY = 'support_clicked';
 
 export function SupportCard() {
     const [supported, setSupported] = useState(false);
+    
+    useEffect(() => {
+      const hasSupported = localStorage.getItem(STORAGE_KEY) === 'true';
+  
+      if (hasSupported) {
+        setSupported(true);
+      }
+    }, []);
 
     const handleClick = () => {
         setSupported(true);
     
+        localStorage.setItem(STORAGE_KEY, 'true');
+        
         // Small delay so animation/color update is visible
         setTimeout(() => {
             window.open(UPI_LINK, '_blank');

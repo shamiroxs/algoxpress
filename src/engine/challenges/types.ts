@@ -28,6 +28,44 @@ export const Difficulty = {
 
 export type Difficulty = typeof Difficulty[keyof typeof Difficulty];
 
+export const ConceptTag = {
+  COPY: 'COPY',
+  SWAP: 'SWAP',
+  POINTER_MOVEMENT: 'POINTER_MOVEMENT',
+  CONDITIONALS: 'CONDITIONALS',
+  LINEAR_SCAN: 'LINEAR_SCAN',
+  TWO_POINTERS: 'TWO_POINTERS',
+  THREE_POINTERS: 'THREE_POINTERS',
+  PARTITIONING: 'PARTITIONING',
+  STABLE_PARTITION: 'STABLE_PARTITION',
+  BUBBLE_SORT_PASS: 'BUBBLE_SORT_PASS',
+  ARRAY_ROTATION: 'ARRAY_ROTATION',
+  REVERSAL: 'REVERSAL',
+  SEARCH: 'SEARCH',
+  MAXIMUM_SELECTION: 'MAXIMUM_SELECTION',
+  DUPLICATE_DETECTION: 'DUPLICATE_DETECTION',
+  SORT_VALIDATION: 'SORT_VALIDATION',
+  WIGGLE_PATTERN: 'WIGGLE_PATTERN',
+  DUTCH_FLAG: 'DUTCH_FLAG',
+  NEXT_PERMUTATION: 'NEXT_PERMUTATION',
+  NESTED_SCAN: 'NESTED_SCAN'
+} as const;
+
+export type ConceptTag =
+  typeof ConceptTag[keyof typeof ConceptTag];
+
+export const AlgorithmPattern = {
+  SEQUENTIAL: 'SEQUENTIAL',
+  LOOPING: 'LOOPING',
+  TWO_POINTER: 'TWO_POINTER',
+  PARTITION: 'PARTITION',
+  GREEDY: 'GREEDY',
+  IN_PLACE: 'IN_PLACE',
+} as const;
+
+export type AlgorithmPattern =
+  typeof AlgorithmPattern[keyof typeof AlgorithmPattern];
+
 export interface Challenge {
   id: string;
   title: string;
@@ -49,6 +87,11 @@ export interface Challenge {
   instructions: Instruction[]; // Starting instructions (can be empty)
   unlocked: boolean;
   capabilities: InstructionCapabilities;
+
+  concepts: ConceptTag[];
+
+  learningObjectives?: string[];
+  pattern?: AlgorithmPattern;
 }
 
 export interface ChallengeProgress {

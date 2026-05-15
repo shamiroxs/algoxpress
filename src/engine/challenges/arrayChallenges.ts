@@ -6,6 +6,8 @@
 import type { Challenge } from './types';
 import { Difficulty } from './types';
 import { InstructionType } from '../instructions/types';
+import { ConceptTag } from './types';
+import { AlgorithmPattern } from './types';
 
 export const arrayChallenges: Challenge[] = [
   {
@@ -33,6 +35,17 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.PUT,
       ],
     },
+    concepts: [
+      ConceptTag.COPY,
+      ConceptTag.POINTER_MOVEMENT,
+    ],
+    
+    learningObjectives: [
+      'Understand picking and placing values',
+      'Understand moving between array positions',
+    ],
+    
+    pattern: AlgorithmPattern.SEQUENTIAL,
   },
   {
     id: 'challenge-1',
@@ -52,7 +65,18 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.MOVE_TO_END,
         InstructionType.SWAP,
       ],
-    }
+    },
+    concepts: [
+      ConceptTag.SWAP,
+      ConceptTag.TWO_POINTERS,
+    ],
+    
+    learningObjectives: [
+      'Learn swapping values',
+      'Understand operating on distant positions',
+    ],
+    
+    pattern: AlgorithmPattern.TWO_POINTER,
   },
   {
     id: 'challenge-2',
@@ -101,6 +125,17 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.PUT,
       ],
     },
+    concepts: [
+      ConceptTag.CONDITIONALS,
+    ],
+    
+    learningObjectives: [
+      'Compare two values',
+      'Keep the larger value',
+      'Understand conditional execution',
+    ],
+    
+    pattern: AlgorithmPattern.SEQUENTIAL,
   },
   {
     id: 'challenge-3',
@@ -132,6 +167,17 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.SWAP_WITH_NEXT,
       ],
     },
+    concepts: [
+      ConceptTag.SWAP,
+      ConceptTag.TWO_POINTERS,
+    ],
+    
+    learningObjectives: [
+      'Learn swapping values',
+      'Understand operating on distant positions',
+    ],
+    
+    pattern: AlgorithmPattern.TWO_POINTER,
   },
   {
     id: 'challenge-4',
@@ -170,6 +216,18 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.SWAP,
       ],
     },
+    concepts: [
+      ConceptTag.PARTITIONING,
+      ConceptTag.CONDITIONALS,
+    ],
+    
+    learningObjectives: [
+      'Group values by property',
+      'Detect even and odd values',
+      'Reorder using local swaps',
+    ],
+    
+    pattern: AlgorithmPattern.PARTITION,
   },
   {
     id: 'challenge-5',
@@ -218,6 +276,16 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.SWAP,
       ],
     },
+    concepts: [
+      ConceptTag.BUBBLE_SORT_PASS,
+      ConceptTag.CONDITIONALS,
+      ConceptTag.LINEAR_SCAN,
+    ],
+    
+    learningObjectives: [
+      'Understand compare-and-swap',
+      'Learn how large values move rightward',
+    ],
   },
   {
     id: 'challenge-6',
@@ -255,7 +323,19 @@ export const arrayChallenges: Challenge[] = [
       suggestedInstructions: [
         InstructionType.IF_GREATER,
       ],
-    }
+    },
+    concepts: [
+      ConceptTag.PARTITIONING,
+      ConceptTag.STABLE_PARTITION,
+      ConceptTag.CONDITIONALS,
+    ],
+    
+    learningObjectives: [
+      'Move matching values to one side',
+      'Preserve order while partitioning',
+    ],
+    
+    pattern: AlgorithmPattern.PARTITION,
   },
   {
     id: 'challenge-7',
@@ -298,6 +378,17 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.MOVE_RIGHT,
       ],
     },
+    concepts: [
+      ConceptTag.TWO_POINTERS,
+    ],
+    
+    learningObjectives: [
+      'Swap neighboring pairs',
+      'Skip already-processed regions',
+      'Coordinate synchronized pointers',
+    ],
+    
+    pattern: AlgorithmPattern.TWO_POINTER,
   },
   {
     id: 'challenge-8',
@@ -343,8 +434,16 @@ export const arrayChallenges: Challenge[] = [
 
         InstructionType.IF_MEET,
       ],
-    }
+    },
+    concepts: [
+      ConceptTag.REVERSAL,
+      ConceptTag.TWO_POINTERS,
+    ],
     
+    learningObjectives: [
+      'Reverse an array in place',
+      'Learn converging pointers',
+    ],
   }, 
   {
     id: 'challenge-9',
@@ -399,6 +498,16 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.PUT,
       ],
     },
+    concepts: [
+      ConceptTag.MAXIMUM_SELECTION,
+      ConceptTag.LINEAR_SCAN,
+      ConceptTag.SEARCH,
+    ],
+    
+    learningObjectives: [
+      'Track the maximum while scanning',
+      'Copy selected values to target positions',
+    ],
   },
   {
     id: 'challenge-10',
@@ -458,7 +567,17 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.IF_GREATER,
         InstructionType.IF_EQUAL,
       ],
-    }
+    },
+    concepts: [
+      ConceptTag.DUPLICATE_DETECTION,
+      ConceptTag.SEARCH,
+      ConceptTag.NESTED_SCAN,
+    ],
+    
+    learningObjectives: [
+      'Compare values across positions',
+      'Detect repeated elements',
+    ],
   },
   {
     id: 'challenge-11',
@@ -510,6 +629,16 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.LABEL,
       ],
     },
+    concepts: [
+      ConceptTag.SORT_VALIDATION,
+      ConceptTag.CONDITIONALS,
+      ConceptTag.LINEAR_SCAN,
+    ],
+    
+    learningObjectives: [
+      'Validate increasing order',
+      'Detect violations during traversal',
+    ],
   }, 
   {
     id: 'challenge-12',
@@ -561,7 +690,20 @@ export const arrayChallenges: Challenge[] = [
       suggestedInstructions: [
         InstructionType.IF_EQUAL,
       ],
-    }
+    },
+    concepts: [
+      ConceptTag.STABLE_PARTITION,
+      ConceptTag.TWO_POINTERS,
+      ConceptTag.CONDITIONALS,
+    ],
+    
+    learningObjectives: [
+      'Move matching values to the end',
+      'Preserve order of non-matching values',
+      'Coordinate read and write positions',
+    ],
+    
+    pattern: AlgorithmPattern.PARTITION,
   },
   {
     id: 'challenge-13',
@@ -618,6 +760,18 @@ export const arrayChallenges: Challenge[] = [
 
       ],
     },
+    concepts: [
+      ConceptTag.WIGGLE_PATTERN,
+      ConceptTag.CONDITIONALS,
+    ],
+    
+    learningObjectives: [
+      'Maintain alternating inequalities',
+      'Apply different rules on odd/even positions',
+      'Use local swaps to enforce global structure',
+    ],
+    
+    pattern: AlgorithmPattern.GREEDY,
   },
   {
     id: 'challenge-14',
@@ -691,6 +845,19 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.SWAP,
       ],
     },
+    concepts: [
+      ConceptTag.DUTCH_FLAG,
+      ConceptTag.THREE_POINTERS,
+      ConceptTag.PARTITIONING,
+    ],
+    
+    learningObjectives: [
+      'Partition arrays into three regions',
+      'Coordinate multiple pointers',
+      'Perform in-place classification',
+    ],
+    
+    pattern: AlgorithmPattern.PARTITION,
   },
   {
     id: 'challenge-15',
@@ -755,6 +922,17 @@ export const arrayChallenges: Challenge[] = [
         InstructionType.IF_MEET,
       ],
     },
+    concepts: [
+      ConceptTag.TWO_POINTERS,
+    ],
+    
+    learningObjectives: [
+      'Read from opposite ends simultaneously',
+      'Construct a new arrangement incrementally',
+      'Separate source and destination traversal',
+    ],
+    
+    pattern: AlgorithmPattern.TWO_POINTER,
   },
   {
     id: 'challenge-16',
@@ -885,6 +1063,18 @@ export const arrayChallenges: Challenge[] = [
 
       ],
     },
+    concepts: [
+      ConceptTag.NEXT_PERMUTATION,
+      ConceptTag.REVERSAL,
+      ConceptTag.SEARCH,
+      ConceptTag.TWO_POINTERS,
+    ],
+    
+    learningObjectives: [
+      'Find pivots in ordered structures',
+      'Reverse suffixes in place',
+      'Construct the next lexicographic ordering',
+    ],
   },
 ];
 
