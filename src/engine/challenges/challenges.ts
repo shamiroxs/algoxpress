@@ -2,7 +2,7 @@
  * Challenge definitions
  * MVP: 7-10 handcrafted Array challenges
  */ 
-
+/*
 import type { Challenge } from './types';
 import { Difficulty } from './types';
 import { InstructionType } from '../instructions/types';
@@ -888,3 +888,4 @@ export const challenges: Challenge[] = [
   },
 ];
 
+*/

@@ -1,8 +1,9 @@
 import type { Challenge } from './types';
-import { Difficulty } from './types';
-import { InstructionType } from '../instructions/types';
+//import { Difficulty } from './types';
+//import { InstructionType } from '../instructions/types';
 
 export const linkedChallenges: Challenge[] = [
+  /*
     {
         id: 'challenge-0',
         title: 'Start Here',
@@ -96,5 +97,5 @@ export const linkedChallenges: Challenge[] = [
             InstructionType.PUT,
           ],
         },
-      },
+      },*/
 ];
