@@ -2,7 +2,7 @@
 
 import posthog from 'posthog-js';
 
-const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY;
+const POSTHOG_KEY = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
 
 const isDev = import.meta.env.DEV;
 const isProd = import.meta.env.PROD;
