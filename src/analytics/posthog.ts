@@ -4,6 +4,9 @@ import posthog from 'posthog-js';
 
 const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY;
 
+const isDev = import.meta.env.DEV;
+const isProd = import.meta.env.PROD;
+
 export function initializeAnalytics() {
   if (!POSTHOG_KEY) {
     console.warn('[Analytics] Missing PostHog key');
@@ -11,7 +14,7 @@ export function initializeAnalytics() {
   }
 
   posthog.init(POSTHOG_KEY, {
-    api_host: 'https://app.posthog.com',
+    api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
 
     capture_pageview: false,
     capture_pageleave: true,
@@ -26,10 +29,23 @@ export function initializeAnalytics() {
     },
 
     loaded: (ph) => {
-      if (import.meta.env.DEV) {
-        ph.debug();
-      }
-    },
+        if (isDev) {
+          ph.debug();
+  
+          console.log('[Analytics] PostHog initialized');
+        }
+  
+        // Global behavioral context
+        ph.register({
+          platform: 'web',
+  
+          environment: isProd ? 'production' : 'development',
+  
+          analyticsVersion: 'v1',
+  
+          orchestrationMode: 'execution-engine',
+        });
+      },
   });
 }
 
