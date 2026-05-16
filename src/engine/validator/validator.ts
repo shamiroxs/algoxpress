@@ -12,6 +12,7 @@ export interface ValidationResult {
   message: string;
   stepCount: number;
   optimized: boolean;
+  mismatches?: number[];
 }
 
 /**
@@ -31,6 +32,36 @@ export function validateChallenge(
     };
   }
   
+  const mismatches: number[] = [];
+
+  let firstMismatchMessage = '';
+
+  for (let i = 0; i < state.array.length; i++) {
+    if (state.array[i] !== challenge.targetArray[i]) {
+      mismatches.push(i);
+
+      // Preserve existing UX-friendly message
+      if (!firstMismatchMessage) {
+        firstMismatchMessage =
+          `Mismatch at seat ${i}: expected ${challenge.targetArray[i]}, got ${state.array[i]}`;
+      }
+    }
+  }
+
+  if (mismatches.length > 0) {
+    return {
+      success: false,
+  
+      message: firstMismatchMessage,
+      
+      stepCount: state.stepCount,
+  
+      optimized: false,
+  
+      mismatches,
+    };
+  }
+  /*
   for (let i = 0; i < state.array.length; i++) {
     if (state.array[i] !== challenge.targetArray[i]) {
       return {
@@ -40,7 +71,7 @@ export function validateChallenge(
         optimized: false,
       };
     }
-  }
+  }*/
   
   // Check optimization goal
   const optimized = challenge.maxSteps

@@ -18,6 +18,19 @@ import {
 import { TUTORIAL_STEP_ORDER } from '../tutorial/steps';
 import { TUTORIAL_STEP_BEHAVIOR } from '../tutorial/behavior';
 
+import {
+  trackChallengeViewed,
+  trackChallengeStarted,
+  trackInstructionAdded,
+  trackInstructionRemoved,
+  trackRepeatedRetry,
+  trackChallengeReplayed,
+} from '../analytics/integrations/storeAnalytics';
+
+import {
+  incrementRetry,
+} from '../analytics/helpers/retryTracker';
+
 const PROGRESS_KEY = 'dsa-buddy-progress';
 
 type StoredProgress = Record<
@@ -414,6 +427,16 @@ export const useGameStore = create<GameState>((set, get) => ({
       initialInstructions
     );
 
+    const alreadyCompleted =
+    completedChallengeIds.has(challenge.id);
+
+    if (alreadyCompleted) {
+      trackChallengeReplayed({
+        challengeId: challenge.id,
+        concepts: challenge.concepts,
+      });
+    }
+
     set({
       currentChallenge: challenge,
       playerInstructions: initialInstructions,
@@ -431,6 +454,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       executionErrorContext: null,
       successHintDismissed: false,
       rewindHintShown: false,
+    });
+
+    trackChallengeViewed({
+      challengeId: challenge.id,
+      concepts: challenge.concepts,
     });
   },
   
@@ -453,6 +481,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       tutorial,
       maybeCompleteTutorial,
     } = get();
+
+    const challenge = get().currentChallenge;
+
+    const isFirstInstruction =
+      playerInstructions.length === 0;
   
     const newInstructions = [...playerInstructions];
   
@@ -468,6 +501,22 @@ export const useGameStore = create<GameState>((set, get) => ({
     });
   
     get().setPlayerInstructions(newInstructions);
+
+    if (challenge) {
+      if (isFirstInstruction) {
+        trackChallengeStarted({
+          challengeId: challenge.id,
+          concepts: challenge.concepts,
+        });
+      }
+    
+      trackInstructionAdded({
+        challengeId: challenge.id,
+        concepts: challenge.concepts,
+    
+        instructionType: instruction.type,
+      });
+    }
   
     if (tutorial.isActive) {
       maybeCompleteTutorial('AUTO');
@@ -478,15 +527,34 @@ export const useGameStore = create<GameState>((set, get) => ({
   
   
   removeInstruction: (instructionId) => {
-    const { playerInstructions } = get();
+    const { playerInstructions, currentChallenge } = get();
+    const removedInstruction =
+    playerInstructions.find(
+      (inst) => inst.id === instructionId
+    );
     const newInstructions = playerInstructions.filter((inst) => inst.id !== instructionId);
     get().setPlayerInstructions(newInstructions);
+
+    if (
+      removedInstruction &&
+      currentChallenge
+    ) {
+      trackInstructionRemoved({
+        challengeId: currentChallenge.id,
+        concepts: currentChallenge.concepts,
+  
+        instructionType:
+          removedInstruction.type,
+      });
+    }
   },
   
   updateInstruction: (instructionId, instruction) => {
     const { playerInstructions } = get();
     const newInstructions = updateInstructionRecursive(playerInstructions, instructionId, instruction);
     get().setPlayerInstructions(newInstructions);
+
+    
   },
   
   setExecutionState: (state) => set({ executionState: state }),
@@ -508,10 +576,26 @@ export const useGameStore = create<GameState>((set, get) => ({
   setValidationResult: (result) => set({ validationResult: result }),
   
   resetChallenge: () => {
+
+    const challenge = get().currentChallenge;
     const { engine, currentChallenge } = get();
     if (currentChallenge) {
       const newState = engine.reset();
       if (newState) {
+
+        if (challenge) {
+          const retryCount =
+            incrementRetry(challenge.id);
+        
+          if (retryCount >= 3) {
+            trackRepeatedRetry({
+              challengeId: challenge.id,
+              concepts: challenge.concepts,
+        
+              retryCount,
+            });
+          }
+        }
         set({
           executionState: newState,
           validationResult: null,
