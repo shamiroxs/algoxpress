@@ -2,7 +2,7 @@
 
 import posthog from 'posthog-js';
 
-const POSTHOG_KEY = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
+const POSTHOG_KEY = import.meta.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
 
 const isDev = import.meta.env.DEV;
 const isProd = import.meta.env.PROD;
@@ -14,7 +14,7 @@ export function initializeAnalytics() {
   }
 
   posthog.init(POSTHOG_KEY, {
-    api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+    api_host: import.meta.env.NEXT_PUBLIC_POSTHOG_HOST,
 
     capture_pageview: false,
     capture_pageleave: true,
