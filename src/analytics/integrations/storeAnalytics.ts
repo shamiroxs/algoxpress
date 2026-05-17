@@ -127,3 +127,42 @@ export function trackQuitMidProblem(
     },
   });
 }
+
+export function trackTutorialStarted() {
+  trackEvent(AnalyticsEvents.TUTORIAL_STARTED, {
+    category: 'exploration',
+
+    challengeId: 'challenge-0',
+
+    metadata: {
+      tutorial: true,
+    },
+  });
+}
+
+export function trackTutorialCompleted() {
+  trackEvent(AnalyticsEvents.TUTORIAL_COMPLETED, {
+    category: 'learning',
+
+    challengeId: 'challenge-0',
+
+    metadata: {
+      tutorial: true,
+    },
+  });
+}
+
+export function trackFirstCompletion(
+  payload: BasePayload
+) {
+  trackEvent(AnalyticsEvents.FIRST_COMPLETION, {
+    category: 'learning',
+
+    challengeId: payload.challengeId,
+    concepts: payload.concepts,
+
+    metadata: {
+      firstCompletion: true,
+    },
+  });
+}

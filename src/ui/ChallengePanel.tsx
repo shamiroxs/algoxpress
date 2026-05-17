@@ -8,9 +8,14 @@ import { useCurrentChallenge } from '../orchestrator/selectors';
 import { ArrayView } from '../renderer/ArrayView';
 import { useTutorialHighlight } from '../tutorial/selectors';
 import { motion } from 'framer-motion';
+import { useGameStore } from '../orchestrator/store';
 
 function HintRevealer({ hints }: { hints: string[] }) {
   const [revealed, setRevealed] = useState(0);
+  const incrementHintsRevealed =
+    useGameStore(
+      (s) => s.incrementHintsRevealed
+    );
 
   return (
     <div className="mb-4">
@@ -39,7 +44,10 @@ function HintRevealer({ hints }: { hints: string[] }) {
 
       {revealed < hints.length ? (
         <button
-          onClick={() => setRevealed(r => r + 1)}
+          onClick={() => {
+            setRevealed(r => r + 1)
+            incrementHintsRevealed();
+          }}
           className="mt-2 w-full py-1.5 rounded-lg border border-dashed border-gray-600 text-gray-500 text-xs hover:border-yellow-500/50 hover:text-yellow-400 transition-colors"
         >
           {revealed === 0 ? 'Show first hint' : `Show next hint (${revealed + 1}/${hints.length})`}

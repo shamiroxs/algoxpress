@@ -25,6 +25,9 @@ import {
   trackInstructionRemoved,
   trackRepeatedRetry,
   trackChallengeReplayed,
+  trackTutorialStarted,
+  trackTutorialCompleted,
+  trackFirstCompletion,
 } from '../analytics/integrations/storeAnalytics';
 
 import {
@@ -150,6 +153,10 @@ interface GameState {
 
   rewindHintShown: boolean;
   markRewindHintShown: () => void;
+
+  revealedHintsCount: number;
+  incrementHintsRevealed: () => void;
+  resetHintTracking: () => void;
   
   startTutorial: () => void;
   nextTutorialStep: () => void;
@@ -240,6 +247,18 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   scrollToChallengeOnSuccess: true,
   rewindHintShown: false,
+  revealedHintsCount: 0,
+
+  incrementHintsRevealed: () =>
+    set((state) => ({
+      revealedHintsCount:
+        state.revealedHintsCount + 1,
+    })),
+  
+  resetHintTracking: () =>
+    set({
+      revealedHintsCount: 0,
+    }),
 
   executionSpeed: 1,
 
@@ -265,13 +284,15 @@ export const useGameStore = create<GameState>((set, get) => ({
   markRewindHintShown: () =>
     set({ rewindHintShown: true }),
   
-  startTutorial: () =>
+  startTutorial: () => {
+    trackTutorialStarted();
     set({
       tutorial: {
         isActive: true,
         currentStep: TUTORIAL_STEP_ORDER[0],
       },
-    }),
+    });
+  },
   
   nextTutorialStep: () =>
     set((state) => {
@@ -312,6 +333,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   
       // If no more steps, end tutorial
       if (nextStep === step) {
+
+        trackTutorialCompleted();
         return {
           tutorial: {
             isActive: false,
@@ -352,10 +375,16 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   markChallengeCompleted: (challengeId, bestStepCount?: number) => {
+
+    const challenge =
+      get().currentChallenge;
+
     set((state) => {
       if (state.completedChallengeIds.has(challengeId)) {
         return state;
       }
+      const isFirstEverCompletion =
+        state.completedChallengeIds.size === 0;
   
       const next = new Set(state.completedChallengeIds);
       next.add(challengeId);
@@ -366,6 +395,16 @@ export const useGameStore = create<GameState>((set, get) => ({
         bestStepCount,
         completedAt: Date.now(),
       });
+
+      if (
+        isFirstEverCompletion &&
+        challenge
+      ) {
+        trackFirstCompletion({
+          challengeId: challenge.id,
+          concepts: challenge.concepts,
+        });
+      }  
   
       return { completedChallengeIds: next };
     });
@@ -443,7 +482,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       initialInstructions,
       executionState,
       tutorial: {
-        isActive: isTutorial,
+        isActive: false,
         currentStep: TUTORIAL_STEP_ORDER[0],
       },
       
@@ -454,7 +493,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       executionErrorContext: null,
       successHintDismissed: false,
       rewindHintShown: false,
+      revealedHintsCount: 0,
     });
+
+    if (isTutorial) {
+      get().startTutorial();
+    }
 
     trackChallengeViewed({
       challengeId: challenge.id,
@@ -603,6 +647,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           executionErrorContext: null,
           isExecuting: false,
           isPaused: false,
+          revealedHintsCount: 0,
         });
       }
     }

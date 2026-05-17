@@ -16,7 +16,14 @@ import {
   trackRuntimeError,
   trackValidationFailed,
   trackChallengeCompleted,
+
+  trackExecutionPaused,
+  trackExecutionResumed,
+  trackHintlessCompletion,
+  trackChallengeOptimized,
 } from '../analytics/integrations/controllerAnalytics';
+
+
 
 import {
   createExecutionMetrics,
@@ -209,6 +216,19 @@ export function runExecution(): void {
 export function pauseExecution(): void {
   const store = useGameStore.getState();
   executionMetrics.pauseCount += 1;
+
+  if (store.currentChallenge) {
+    trackExecutionPaused({
+      challengeId: store.currentChallenge.id,
+      concepts: store.currentChallenge.concepts,
+
+      currentStep:
+        store.executionState?.stepCount,
+
+      executionMode: 'autoplay',
+    });
+  }
+
   store.setIsPaused(true);
 }
 
@@ -219,6 +239,19 @@ export function resumeExecution(): void {
   const store = useGameStore.getState();
   
   if (store.isExecuting && store.isPaused) {
+
+    if (store.currentChallenge) {
+      trackExecutionResumed({
+        challengeId: store.currentChallenge.id,
+        concepts: store.currentChallenge.concepts,
+
+        currentStep:
+          store.executionState?.stepCount,
+
+        executionMode: 'autoplay',
+      });
+    }
+
     store.setIsPaused(false);
     runExecution();
   }
@@ -338,6 +371,30 @@ export function validateChallenge(): void {
 
     ...summary,
   });
+
+  if (store.revealedHintsCount === 0) {
+    trackHintlessCompletion({
+      challengeId: store.currentChallenge.id,
+      concepts: store.currentChallenge.concepts,
+    });
+  }
+
+  const maxSteps =
+  store.currentChallenge.maxSteps;
+
+  if (
+    typeof maxSteps === 'number' &&
+    result.stepCount <= maxSteps
+  ) {
+    trackChallengeOptimized({
+      challengeId: store.currentChallenge.id,
+      concepts: store.currentChallenge.concepts,
+
+      stepCount: result.stepCount,
+      maxSteps,
+    });
+  }
+  
   }
 }
 
