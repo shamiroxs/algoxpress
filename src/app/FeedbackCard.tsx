@@ -28,14 +28,14 @@ export function FeedbackCard({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         className="
-          w-40 sm:w-48 rounded-xl sm:rounded-2xl
+          w-32 sm:w-48 rounded-xl sm:rounded-2xl
           border border-emerald-500/30
           bg-emerald-500/10
           p-2 sm:p-4 shadow-lg
           backdrop-blur-sm
         "
       >
-        <p className="text-[11px] sm:text-sm font-semibold text-emerald-300">
+        <p className="text-[10px] sm:text-sm font-semibold text-emerald-300">
           ✓ Feedback Recieved
         </p>
 
