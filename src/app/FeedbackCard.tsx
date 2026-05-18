@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import clsx from 'clsx';
 
-type Mood = 'smooth' | 'delay' | 'rough';
+type Mood = 'good' | 'need_improvement' | 'bad';
 
 type Props = {
   expanded: boolean;
@@ -76,10 +76,10 @@ export function FeedbackCard({
       {/* Mood Buttons */}
       <div className="mt-1 sm:mt-4 flex items-center justify-between gap-1.5 sm:gap-2">
         <button
-          onClick={() => onMoodSelect('smooth')}
+          onClick={() => onMoodSelect('good')}
           className={clsx(
             'flex-1 rounded-lg sm:rounded-xl border px-1.5 py-1 sm:px-3 sm:py-2 text-base sm:text-xl transition-all',
-            selectedMood === 'smooth'
+            selectedMood === 'good'
               ? 'border-green-400 bg-green-500/20'
               : 'border-gray-700 bg-gray-900/40 hover:border-gray-500'
           )}
@@ -88,10 +88,10 @@ export function FeedbackCard({
         </button>
 
         <button
-          onClick={() => onMoodSelect('delay')}
+          onClick={() => onMoodSelect('need_improvement')}
           className={clsx(
             'flex-1 rounded-lg sm:rounded-xl border px-1.5 py-1 sm:px-3 sm:py-2 text-base sm:text-xl transition-all',
-            selectedMood === 'delay'
+            selectedMood === 'need_improvement'
               ? 'border-yellow-400 bg-yellow-500/20'
               : 'border-gray-700 bg-gray-900/40 hover:border-gray-500'
           )}
@@ -100,10 +100,10 @@ export function FeedbackCard({
         </button>
 
         <button
-          onClick={() => onMoodSelect('rough')}
+          onClick={() => onMoodSelect('bad')}
           className={clsx(
             'flex-1 rounded-lg sm:rounded-xl border px-1.5 py-1 sm:px-3 sm:py-2 text-base sm:text-xl transition-all',
-            selectedMood === 'rough'
+            selectedMood === 'bad'
               ? 'border-red-400 bg-red-500/20'
               : 'border-gray-700 bg-gray-900/40 hover:border-gray-500'
           )}

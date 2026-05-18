@@ -36,4 +36,11 @@ export const AnalyticsEvents = {
     CHALLENGE_OPTIMIZED: 'challenge_optimized',
     HINTLESS_COMPLETION: 'hintless_completion',
     FIRST_COMPLETION: 'first_completion',
+
+    FEEDBACK_CARD_OPENED: 'feedback_card_opened',
+    FEEDBACK_SUBMITTED: 'feedback_submitted',
+    FEEDBACK_MOOD_SELECTED: 'feedback_mood_selected',
+
+    SUPPORT_CARD_VIEWED: 'support_card_viewed',
+    SUPPORT_CARD_CLICKED: 'support_card_clicked'
   } as const;

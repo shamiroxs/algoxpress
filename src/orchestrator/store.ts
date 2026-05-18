@@ -106,7 +106,7 @@ function getNextTutorialStep(
   );
 }
 
-type CheckpointMood = 'smooth' | 'delay' | 'rough';
+type CheckpointMood = 'good' | 'need_improvement' | 'bad';
 
 type CheckpointFeedbackState = {
   mood: CheckpointMood | null;

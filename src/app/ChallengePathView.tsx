@@ -16,7 +16,24 @@ import { challengesByTrain } from '../engine/challenges';
 import { FeedbackCard } from './FeedbackCard';
 import { SupportCard } from './SupportCard';
 
+import { useEffect, useRef } from 'react';
+
+import { 
+  trackFeedbackCardOpened,
+  trackFeedbackSubmitted,
+  trackFeedbackMoodSelected,
+  
+  trackSupportCardClicked,
+  trackSupportCardViewed
+ } from '../analytics/integrations/storeAnalytics';
+
+import { submitFeedback } from '../utils/feedbackTracter';
+
 export function ChallengePathView() {
+
+  const feedbackTrackedRef = useRef(false);
+  const supportTrackedRef = useRef(false);
+
   const { trainId } = useParams<{ trainId: string }>();
 
   const challenges = challengesByTrain[trainId || 'array-train'] || [];
@@ -86,6 +103,69 @@ export function ChallengePathView() {
     ((dynamicUnlockLimit + 1) / challenges.length) * 100, 
     100
   );
+  const handleCheckpointSubmit = (
+    note: string
+  ) => {
+    const mood =
+      checkpointFeedback.mood ??
+      'unknown';
+
+    trackFeedbackSubmitted({
+      challengeId:
+        challenges[lastCompletedIndex]?.id,
+  
+      concepts:
+        challenges[lastCompletedIndex]
+          ?.concepts,
+  
+      mood:
+        checkpointFeedback.mood ??
+        'unknown',
+  
+      checkpointIndex: 5,
+  
+      completedChallenges:
+        completedCount,
+  
+      hasNote: note.trim().length > 0,
+  
+      noteLength:
+        note.trim().length,
+    });
+
+    submitFeedback({
+      challengeId:
+        challenges[lastCompletedIndex]?.id,
+  
+      mood,
+  
+      note,
+  
+      completedChallenges:
+        completedCount,
+    })
+  
+    submitCheckpointFeedback(note);
+  };
+
+  const handleMoodSelect = (
+    mood: 'good' | 'need_improvement' | 'bad'
+  ) => {
+    trackFeedbackMoodSelected({
+      challengeId:
+        challenges[lastCompletedIndex]?.id,
+  
+      concepts:
+        challenges[lastCompletedIndex]
+          ?.concepts,
+  
+      mood,
+  
+      checkpointIndex: 5,
+    });
+  
+    setCheckpointMood(mood);
+  };
 
   const shouldShowCheckpoint =
     completedCount >= 3 &&
@@ -93,6 +173,70 @@ export function ChallengePathView() {
   const shouldShowSupportCard =
     completedCount >= 8;
 
+  const handleSupportClick = (
+    previouslySupported: boolean
+  ) => {
+    trackSupportCardClicked({
+      challengeId:
+        challenges[lastCompletedIndex]?.id,
+
+      concepts:
+        challenges[lastCompletedIndex]
+          ?.concepts,
+
+      completedChallenges:
+        completedCount,
+
+      previouslySupported,
+    });
+  };
+    useEffect(() => {
+      if (
+        shouldShowCheckpoint &&
+        !feedbackTrackedRef.current
+      ) {
+        feedbackTrackedRef.current = true;
+    
+        trackFeedbackCardOpened({
+          challengeId: challenges[lastCompletedIndex]?.id,
+    
+          concepts:
+            challenges[lastCompletedIndex]
+              ?.concepts,
+    
+          checkpointIndex: 5,
+        });
+      }
+    }, [
+      shouldShowCheckpoint,
+      challenges,
+      lastCompletedIndex,
+    ]);
+    useEffect(() => {
+      if (
+        shouldShowSupportCard &&
+        !supportTrackedRef.current
+      ) {
+        supportTrackedRef.current = true;
+    
+        trackSupportCardViewed({
+          challengeId:
+            challenges[lastCompletedIndex]?.id,
+    
+          concepts:
+            challenges[lastCompletedIndex]
+              ?.concepts,
+    
+          completedChallenges:
+            completedCount,
+        });
+      }
+    }, [
+      shouldShowSupportCard,
+      challenges,
+      lastCompletedIndex,
+      completedCount,
+    ]);
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 relative">
       <button
@@ -209,8 +353,8 @@ export function ChallengePathView() {
                       expanded={!!checkpointFeedback.mood}
                       submitted={checkpointFeedback.submitted}
                       selectedMood={checkpointFeedback.mood}
-                      onMoodSelect={setCheckpointMood}
-                      onSubmit={submitCheckpointFeedback}
+                      onMoodSelect={handleMoodSelect}
+                      onSubmit={handleCheckpointSubmit}
                     />
                   </div>
                 )}
@@ -218,7 +362,11 @@ export function ChallengePathView() {
                 {/* Support Development Card */}
                 {index === 10 && shouldShowSupportCard && (
                   <div className="absolute right-full mr-4 sm:mr-6 top-1/2 -translate-y-1/2">
-                    <SupportCard />
+                    <SupportCard
+                      onSupportClick={
+                        handleSupportClick
+                      }
+                    />
                   </div>
                 )}
                 {/* Title */}

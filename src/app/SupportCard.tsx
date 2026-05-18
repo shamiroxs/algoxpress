@@ -7,7 +7,15 @@ const UPI_LINK =
   'upi://pay?pa=9544123218@ybl&pn=Shamir%20Ashraf&tn=Support%20Development&cu=INR';
 const STORAGE_KEY = 'support_clicked';
 
-export function SupportCard() {
+type Props = {
+  onSupportClick?: (
+    previouslySupported: boolean
+  ) => void;
+};
+
+export function SupportCard({
+  onSupportClick,
+}: Props) {
     const [supported, setSupported] = useState(false);
     
     useEffect(() => {
@@ -19,6 +27,7 @@ export function SupportCard() {
     }, []);
 
     const handleClick = () => {
+        onSupportClick?.(supported);
         setSupported(true);
     
         localStorage.setItem(STORAGE_KEY, 'true');

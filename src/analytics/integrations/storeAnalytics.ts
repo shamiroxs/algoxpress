@@ -166,3 +166,134 @@ export function trackFirstCompletion(
     },
   });
 }
+export function trackFeedbackCardOpened(
+  payload: BasePayload & {
+    checkpointIndex?: number;
+  }
+) {
+  trackEvent(
+    AnalyticsEvents.FEEDBACK_CARD_OPENED,
+    {
+      category: 'feedback',
+
+      challengeId: payload.challengeId,
+      concepts: payload.concepts,
+
+      metadata: {
+        checkpointIndex:
+          payload.checkpointIndex,
+      },
+    }
+  );
+}
+
+export function trackFeedbackSubmitted(
+  payload: BasePayload & {
+    mood: string;
+
+    checkpointIndex?: number;
+
+    completedChallenges?: number;
+
+    hasNote?: boolean;
+
+    noteLength?: number;
+  }
+) {
+  trackEvent(
+    AnalyticsEvents.FEEDBACK_SUBMITTED,
+    {
+      category: 'feedback',
+
+      challengeId: payload.challengeId,
+      concepts: payload.concepts,
+
+      metadata: {
+        mood: payload.mood,
+
+        checkpointIndex:
+          payload.checkpointIndex,
+
+        completedChallenges:
+          payload.completedChallenges,
+
+        hasNote: payload.hasNote,
+
+        noteLength:
+          payload.noteLength,
+      },
+    }
+  );
+}
+
+export function trackFeedbackMoodSelected(
+  payload: BasePayload & {
+    mood: 'good' | 'need_improvement' | 'bad';
+
+    checkpointIndex?: number;
+  }
+) {
+  trackEvent(
+    AnalyticsEvents.FEEDBACK_MOOD_SELECTED,
+    {
+      category: 'feedback',
+
+      challengeId: payload.challengeId,
+      concepts: payload.concepts,
+
+      metadata: {
+        mood: payload.mood,
+
+        checkpointIndex:
+          payload.checkpointIndex,
+      },
+    }
+  );
+}
+
+export function trackSupportCardViewed(
+  payload: BasePayload & {
+    completedChallenges?: number;
+  }
+) {
+  trackEvent(
+    AnalyticsEvents.SUPPORT_CARD_VIEWED,
+    {
+      category: 'feedback',
+
+      challengeId: payload.challengeId,
+      concepts: payload.concepts,
+
+      metadata: {
+        completedChallenges:
+          payload.completedChallenges,
+      },
+    }
+  );
+}
+
+export function trackSupportCardClicked(
+  payload: BasePayload & {
+    completedChallenges?: number;
+
+    previouslySupported?: boolean;
+  }
+) {
+  trackEvent(
+    AnalyticsEvents.SUPPORT_CARD_CLICKED,
+    {
+      category: 'feedback',
+
+      challengeId: payload.challengeId,
+      concepts: payload.concepts,
+
+      metadata: {
+        completedChallenges:
+          payload.completedChallenges,
+
+        previouslySupported:
+          payload.previouslySupported,
+      },
+    }
+  );
+}
