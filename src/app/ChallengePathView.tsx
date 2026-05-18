@@ -168,8 +168,7 @@ export function ChallengePathView() {
   };
 
   const shouldShowCheckpoint =
-    completedCount >= 3 &&
-    !checkpointFeedback.submitted;
+    completedCount >= 3
   const shouldShowSupportCard =
     completedCount >= 8;
 

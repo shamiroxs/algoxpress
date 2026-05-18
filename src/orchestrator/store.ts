@@ -35,6 +35,53 @@ import {
 } from '../analytics/helpers/retryTracker';
 
 const PROGRESS_KEY = 'dsa-buddy-progress';
+const FEEDBACK_KEY = 'dsa-buddy-feedback';
+
+type StoredFeedback = {
+  submitted: boolean;
+  mood?: CheckpointMood | null;
+  note?: string;
+  submittedAt?: number;
+};
+
+function loadFeedback(): CheckpointFeedbackState {
+  try {
+    const raw = localStorage.getItem(FEEDBACK_KEY);
+
+    if (!raw) {
+      return {
+        mood: null,
+        note: '',
+        submitted: false,
+      };
+    }
+
+    const parsed: StoredFeedback = JSON.parse(raw);
+
+    return {
+      mood: parsed.mood ?? null,
+      note: parsed.note ?? '',
+      submitted: parsed.submitted ?? false,
+    };
+  } catch {
+    return {
+      mood: null,
+      note: '',
+      submitted: false,
+    };
+  }
+}
+
+function persistFeedback(data: StoredFeedback) {
+  try {
+    localStorage.setItem(
+      FEEDBACK_KEY,
+      JSON.stringify(data)
+    );
+  } catch {
+    // ignore
+  }
+}
 
 type StoredProgress = Record<
   string,
@@ -232,11 +279,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   engine: new GameEngine(),
   successHintDismissed: false,
 
-  checkpointFeedback: {
-    mood: null,
-    note: '',
-    submitted: false,
-  },
+  checkpointFeedback: loadFeedback(),
 
   // Tutorial
   tutorial: {
@@ -417,21 +460,41 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ successHintDismissed: false }),
 
   setCheckpointMood: (mood) =>
-    set((state) => ({
-      checkpointFeedback: {
+    set((state) => {
+      const updated = {
         ...state.checkpointFeedback,
         mood,
-      },
-    })),
+      };
   
-  submitCheckpointFeedback: (note) =>
-    set((state) => ({
-      checkpointFeedback: {
-        ...state.checkpointFeedback,
-        note,
-        submitted: true,
-      },
-    })),
+      persistFeedback(updated);
+  
+      return {
+        checkpointFeedback: updated,
+      };
+    }),
+  
+    submitCheckpointFeedback: (note) =>
+      set((state) => {
+        // already submitted -> do nothing
+        if (state.checkpointFeedback.submitted) {
+          return state;
+        }
+    
+        const updated = {
+          ...state.checkpointFeedback,
+          note,
+          submitted: true,
+        };
+    
+        persistFeedback({
+          ...updated,
+          submittedAt: Date.now(),
+        });
+    
+        return {
+          checkpointFeedback: updated,
+        };
+      }),
   
   reorderInstructions: (fromIndex, toIndex) => {
     const { playerInstructions } = get();

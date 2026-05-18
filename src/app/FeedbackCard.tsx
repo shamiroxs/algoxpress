@@ -28,18 +28,18 @@ export function FeedbackCard({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         className="
-          w-48 rounded-2xl
+          w-40 sm:w-48 rounded-xl sm:rounded-2xl
           border border-emerald-500/30
           bg-emerald-500/10
-          p-4 shadow-lg
+          p-2 sm:p-4 shadow-lg
           backdrop-blur-sm
         "
       >
-        <p className="text-sm font-semibold text-emerald-300">
-          ✓ Inspection logged
+        <p className="text-[11px] sm:text-sm font-semibold text-emerald-300">
+          ✓ Feedback Recieved
         </p>
 
-        <p className="mt-1 text-xs text-emerald-100/80">
+        <p className="sm:mt-1 text-[9px] sm:text-xs text-emerald-100/80">
           Thanks, conductor.
         </p>
       </motion.div>
