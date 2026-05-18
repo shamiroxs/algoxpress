@@ -131,6 +131,7 @@ function DraggablePaletteItem({
   pointer,
   isGlobal = false,
   restrictToSingleInstruction,
+  restrictToAllInstruction,
   tutorialInstruction,
   onClickAdd,
 }: {
@@ -138,11 +139,13 @@ function DraggablePaletteItem({
   pointer: 'MOCO' | 'CHOCO' | 'LOCO';
   isGlobal?: boolean;
   restrictToSingleInstruction: boolean;
+  restrictToAllInstruction: boolean;
   tutorialInstruction: InstructionType | null;
   onClickAdd: (type: InstructionType, pointer: 'MOCO' | 'CHOCO' | 'LOCO') => void;
 }) {
   const isAllowedByTutorial =
-    !restrictToSingleInstruction || template.type === tutorialInstruction;
+    !restrictToAllInstruction &&
+    (!restrictToSingleInstruction || template.type === tutorialInstruction);
 
   const shouldPulse = useTutorialHighlight('INSTRUCTION_PALETTE', {
     instructionType: template.type,
@@ -372,6 +375,8 @@ export function InstructionPalette() {
   const restrictToSingleInstruction =
     !!tutorialInstruction && behavior?.highlight?.scope === 'INSTRUCTION_PALETTE';
 
+  const restrictAllInstruction = behavior?.highlight?.scope === 'HAND';
+
   /** highlight states */
   const paletteHighlight =
     highlight?.scope === 'INSTRUCTION_PALETTE' && !highlight.instructionType && !highlight.control;
@@ -539,6 +544,7 @@ export function InstructionPalette() {
                       pointer="MOCO"
                       isGlobal
                       restrictToSingleInstruction={restrictToSingleInstruction}
+                      restrictToAllInstruction={restrictAllInstruction}
                       tutorialInstruction={tutorialInstruction}
                       onClickAdd={handleAddInstruction}
                     />
@@ -575,6 +581,7 @@ export function InstructionPalette() {
                       template={template}
                       pointer="MOCO"
                       restrictToSingleInstruction={restrictToSingleInstruction}
+                      restrictToAllInstruction={restrictAllInstruction}
                       tutorialInstruction={tutorialInstruction}
                       onClickAdd={handleAddInstruction}
                     />
@@ -607,6 +614,7 @@ export function InstructionPalette() {
                       template={template}
                       pointer="CHOCO"
                       restrictToSingleInstruction={restrictToSingleInstruction}
+                      restrictToAllInstruction={restrictAllInstruction}
                       tutorialInstruction={tutorialInstruction}
                       onClickAdd={handleAddInstruction}
                     />
@@ -637,6 +645,7 @@ export function InstructionPalette() {
                       template={template}
                       pointer="LOCO"
                       restrictToSingleInstruction={restrictToSingleInstruction}
+                      restrictToAllInstruction={restrictAllInstruction}
                       tutorialInstruction={tutorialInstruction}
                       onClickAdd={handleAddInstruction}
                     />
