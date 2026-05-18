@@ -42,6 +42,7 @@ export function ControlBar() {
     successHintDismissed,
     rewindHintShown,
     markRewindHintShown,
+    resetSuccessHint,
   } = useGameStore();
 
   const isActive = useIsTutorialActive();
@@ -67,12 +68,14 @@ export function ControlBar() {
     setScrollToChallengeOnSuccess(true);
     executeSingleStep();
     endTutorial();
+    resetSuccessHint();
   };
 
   const onRun = () => {
     onAnyControlClick();
     setScrollToChallengeOnSuccess(true);
     runExecution();
+    resetSuccessHint();
 
     if (completesOnRun) {
       maybeCompleteTutorial('RUN_CLICK');

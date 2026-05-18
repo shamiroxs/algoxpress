@@ -26,7 +26,8 @@ export function TutorialOverlay() {
   const prevInstructionsRef = useRef(instructions);
   
   const {
-    maybeCompleteTutorial, 
+    maybeCompleteTutorial,
+    goToTutorialStep 
   } = useGameStore();
 
   const position = useTutorialOverlayPosition();
@@ -72,9 +73,21 @@ export function TutorialOverlay() {
     stepId === TutorialStepId.PALETTE_EXPLAINED ||
     stepId === TutorialStepId.PALETTE_HELP_EXPLAINED ||
     stepId === TutorialStepId.PROGRAM_AREA_EXPLAINED;
+  const showSkipButton =
+    stepId === TutorialStepId.WELCOME ||
+    stepId === TutorialStepId.CHALLENGE_PANEL ||
+    stepId === TutorialStepId.CHALLENGE_EXPLAINED ||
+    stepId === TutorialStepId.VISUALIZATION_EXPLAINED ||
+    stepId === TutorialStepId.PROGRAM_AREA_EXPLAINED ||
+    stepId === TutorialStepId.PALETTE_EXPLAINED ||
+    stepId === TutorialStepId.PALETTE_HELP_EXPLAINED;
     
   const handleNext = () => {
     maybeCompleteTutorial('ANY_CONTROL');
+  };
+
+  const handleSkip = () => {
+    goToTutorialStep(TutorialStepId.PICK_EXPLAINED);
   };
   const isWelcome = step?.id === TutorialStepId.WELCOME;
 
@@ -159,7 +172,35 @@ export function TutorialOverlay() {
       </div>
 
       </div>
+      {/* Skip button */}
+      {showSkipButton && (
+        <button
+          onClick={handleSkip}
+          className="
+            absolute
+            bottom-4
+            right-4 sm:right-8
 
+            text-[11px] sm:text-xs
+            px-3 py-1.5
+
+            rounded-md
+            bg-gray-800/90
+            text-gray-200
+            font-medium
+
+            border border-gray-600/60
+
+            hover:bg-gray-700
+            hover:text-white
+
+            transition
+            pointer-events-auto
+          "
+        >
+          Skip tutorial
+        </button>
+      )}
       
     </div>
   );

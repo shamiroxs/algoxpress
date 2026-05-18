@@ -209,6 +209,7 @@ interface GameState {
   nextTutorialStep: () => void;
   endTutorial: () => void;
   maybeCompleteTutorial: (trigger: TutorialTrigger) => void;
+  goToTutorialStep: (step: TutorialStepId) => void;
 
 
   reorderInstructions: (fromIndex: number, toIndex: number) => void;
@@ -350,7 +351,19 @@ export const useGameStore = create<GameState>((set, get) => ({
         },
       };
     }),
+  goToTutorialStep: (step) =>
+    set((state) => ({
+      tutorial: {
+        ...state.tutorial,
+        currentStep: step,
+      },
   
+      // Optional:
+      // clear workspace when skipping into coding section
+      ...(step === TutorialStepId.PICK_EXPLAINED
+        ? { playerInstructions: [] }
+        : {}),
+    })),
   
   endTutorial: () =>
     set({
@@ -661,7 +674,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newInstructions = updateInstructionRecursive(playerInstructions, instructionId, instruction);
     get().setPlayerInstructions(newInstructions);
 
-    
   },
   
   setExecutionState: (state) => set({ executionState: state }),
@@ -711,6 +723,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           isExecuting: false,
           isPaused: false,
           revealedHintsCount: 0,
+          successHintDismissed: false,
         });
       }
     }

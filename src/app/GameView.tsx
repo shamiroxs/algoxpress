@@ -412,10 +412,11 @@ useEffect(() => {
 useEffect(() => {
   let timer: ReturnType<typeof setTimeout> | null = null;
 
+  console.log(successHintDismissed)
   if (validationResult?.success && !successHintDismissed && !isTutorialActive) {
     timer = setTimeout(() => {
       setShowSuccessOverlay(true);
-    }, 3000); // 3 seconds
+    }, 2000); // 3 seconds
   } else {
     // reset if success disappears or conditions change
     setShowSuccessOverlay(false);

@@ -78,6 +78,7 @@ import { InstructionType } from '../engine/instructions/types';
     highlight: {
       scope: 'HAND',
     },
+    
     completesOn: 'AUTO',
     position: 'BOTTOM',
   },
