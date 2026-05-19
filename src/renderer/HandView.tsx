@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { getArrayLayout } from './layout';
 import { useTutorialHighlight } from '../tutorial/selectors';
 
+import type { ExecutionErrorContext } from '../interpreter/vm';
+
 interface HandViewProps {
   value: number | null;
   fill?: string;
@@ -9,6 +11,8 @@ interface HandViewProps {
   isActive?: boolean;
   size?: number;
   arrayLength: number;
+
+  errorContext?: ExecutionErrorContext;
 }
 
 export function HandView({
@@ -17,19 +21,27 @@ export function HandView({
   stroke = '#374151',
   isActive = false,
   size = 80,
-  arrayLength            // match array cell size
+  arrayLength,         // match array cell size
+  errorContext
 }: HandViewProps) {
 
   const { viewBoxWidth } = getArrayLayout(arrayLength, size);
   const isHighlighted = useTutorialHighlight('HAND');
   const hasValue = value !== null;
 
+  const isHandError =
+    errorContext?.kind === 'HAND';
   return (
     <motion.svg
       viewBox={`0 0 ${viewBoxWidth} ${size}`}
       className="w-full max-w-[360px] h-auto block mx-auto"
       animate={{
-        scale: isActive ? 1.1 : 1,
+        scale:
+          isHandError
+            ? 1.1
+            : isActive
+            ? 1.1
+            : 1,
       }}
       transition={{ duration: 0.2 }}
     >
@@ -50,8 +62,20 @@ export function HandView({
         cx={viewBoxWidth / 2}
         cy={size / 2}
         r={size / 2 - 4}
-        fill={hasValue ? fill : '#111827'}   // darker empty
-        stroke={hasValue ? stroke : '#374151'}
+        fill={
+          isHandError
+            ? '#7f1d1d'
+            : hasValue
+            ? fill
+            : '#111827'
+        }
+        stroke={
+          isHandError
+            ? '#ef4444'
+            : hasValue
+            ? stroke
+            : '#374151'
+        }
         strokeWidth={2}
       />
 

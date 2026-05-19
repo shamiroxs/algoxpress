@@ -945,6 +945,7 @@ const blurTargets = {
                   value={hand}
                   isActive={isHandActive}
                   arrayLength={array.length}
+                  errorContext={executionErrorContext ?? undefined}
                 />
               </div>
               <div className="mb-3 sm:mb-4 text-[10px] sm:text-xs text-gray-400">
@@ -978,6 +979,8 @@ const blurTargets = {
                 chocoPointer={chocoPointer}
                 // 👈 LOCO not here
                 errorContext={executionErrorContext ?? undefined}
+                mismatchIndexes={validationResult?.mismatches ?? []}
+
               />
             <div className="text-xs sm:text-sm text-gray-400 mb-1">
               Boarding Order
@@ -1010,6 +1013,7 @@ const blurTargets = {
               chocoPointer={hasExtraArray ? undefined : chocoPointer}
               locoPointer={locoPointer}
               errorContext={executionErrorContext ?? undefined}
+              mismatchIndexes={validationResult?.mismatches ?? []}
             />
           </div>
 

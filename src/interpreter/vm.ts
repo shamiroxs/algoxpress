@@ -13,7 +13,8 @@ export type ExecutionErrorContext =
   | { kind: 'INSTRUCTION'; instructionId: string }
   | { kind: 'POINTER'; target: 'MOCO' | 'CHOCO' | 'LOCO' }
   | { kind: 'ARRAY_INDEX'; index: number }
-  | { kind: 'ARRAY_RANGE'; from: number; to: number };
+  | { kind: 'ARRAY_RANGE'; from: number; to: number }
+  | { kind: 'HAND'; instructionId: string};
 
 export interface ExecutionResult {
   state: ExecutionState;
@@ -21,6 +22,40 @@ export interface ExecutionResult {
   error?: string;
   errorContext?: ExecutionErrorContext;
   completed: boolean;
+}
+
+function handError(
+  state: ExecutionState,
+  instruction: Instruction,
+  message: string
+): ExecutionResult {
+  return {
+    state,
+    success: false,
+    error: message,
+    errorContext: {
+      kind: 'HAND',
+      instructionId: instruction.id,
+    },
+    completed: false,
+  };
+}
+
+function instructionError(
+  state: ExecutionState,
+  instruction: Instruction,
+  message: string
+): ExecutionResult {
+  return {
+    state,
+    success: false,
+    error: message,
+    errorContext: {
+      kind: 'INSTRUCTION',
+      instructionId: instruction.id,
+    },
+    completed: false,
+  };
 }
 
 function getPointer(state: ExecutionState, target: 'MOCO' | 'CHOCO' | 'LOCO'): number {
@@ -75,24 +110,6 @@ function setValue(
   const ptr = getPointer(state, target);
   const arr = getArrayForPointer(state, target);
   arr[ptr] = value;
-}
-
-
-function instructionError(
-  state: ExecutionState,
-  instruction: Instruction,
-  message: string
-): ExecutionResult {
-  return {
-    state,
-    success: false,
-    error: message,
-    errorContext: {
-      kind: 'INSTRUCTION',
-      instructionId: instruction.id,
-    },
-    completed: false,
-  };
 }
 
 function pointerError(
@@ -167,8 +184,9 @@ export function executeStep(state: ExecutionState): ExecutionResult {
       /* ─────────────── IF BLOCKS ─────────────── */
 
       case InstructionType.IF_LESS: {
+        
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
+          return handError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
         }
 
         const ptr = getPointer(newState, instruction.target);
@@ -188,7 +206,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.IF_GREATER: {
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
+          return handError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
         }
 
         const ptr = getPointer(newState, instruction.target);
@@ -207,7 +225,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.IF_EQUAL: {
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
+          return handError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
         }
 
         const ptr = getPointer(newState, instruction.target);
@@ -227,7 +245,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
 
       case InstructionType.IF_NOT_EQUAL: {
         if (newState.hand === null) {
-          return instructionError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
+          return handError(newState, instruction, 'Cannot compare tickets. No ticket in clipboard.');
         }
 
         const ptr = getPointer(newState, instruction.target);
@@ -422,7 +440,11 @@ export function executeStep(state: ExecutionState): ExecutionResult {
           }
         
           if (newState.hand === null) {
-            return instructionError(newState, instruction, 'No ticket in clipboard. Pick up a ticket before using this instruction.');
+            return handError(
+              newState,
+              instruction,
+              'No ticket in clipboard. Pick up a ticket before using this instruction.'
+            );
           }
         
           arr[ptr] = newState.hand;

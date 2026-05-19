@@ -532,7 +532,7 @@ export function ProgramContainer({
     };
 
     const isError =
-      (errorContext?.kind === 'INSTRUCTION' || errorContext?.kind === 'POINTER') &&
+      (errorContext?.kind === 'INSTRUCTION' || errorContext?.kind === 'POINTER' || errorContext?.kind === 'HAND') &&
       currentInstructionId === instruction.id;
 
     const [isEditing, setIsEditing] = useState(false);

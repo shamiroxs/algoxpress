@@ -19,6 +19,8 @@ interface ArrayViewProps {
   cellHeight?: number;
 
   errorContext?: ExecutionErrorContext;
+
+  mismatchIndexes?: number[];
 }
 
 export function ArrayView({
@@ -28,7 +30,8 @@ export function ArrayView({
   locoPointer,
   cellWidth = 60,
   cellHeight = 60,
-  errorContext
+  errorContext,
+  mismatchIndexes
 
 }: ArrayViewProps) {
   const spacing = 10;
@@ -51,9 +54,12 @@ export function ArrayView({
         const hasLoco = locoPointer === index;
         const both = hasMoco && hasChoco && hasLoco;
 
-        const isErrorCell =
-        errorContext?.kind === 'ARRAY_INDEX' &&
-        errorContext.index === index;
+        const isExecutionErrorCell =
+          errorContext?.kind === 'ARRAY_INDEX' &&
+          errorContext.index === index;
+
+        const isMismatchCell =
+          mismatchIndexes?.includes(index);
 
         const fill = both
           ? '#7c3aed' // purple
@@ -84,10 +90,26 @@ export function ArrayView({
               width={cellWidth}
               height={cellHeight}
               rx={6}
-              fill={isErrorCell ? '#7f1d1d' : fill}
-              stroke={isErrorCell ? '#ef4444' : stroke}
+              fill={
+                isExecutionErrorCell
+                  ? '#7f1d1d'
+                  : isMismatchCell
+                  ? '#7f1d1d'
+                  : fill
+              }
+              
+              stroke={
+                isExecutionErrorCell
+                  ? '#ef4444'
+                  : isMismatchCell
+                  ? '#f59e0b'
+                  : stroke
+              }
               animate={{
-                scale: isErrorCell ? 1.1 : 1,
+                scale:
+                  isExecutionErrorCell || isMismatchCell
+                    ? 1.04
+                    : 1,
               }}
               strokeWidth={2}
               initial={{ scale: 1 }}
