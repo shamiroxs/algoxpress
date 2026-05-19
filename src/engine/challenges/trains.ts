@@ -13,13 +13,13 @@ export type Train = {
     },
     {
       id: 'linked-train',
-      title: 'Linked Line',
+      title: 'Linked Express',
       description: 'Linked list challenges',
       comingSoon: true,
     },
     {
       id: 'tree-train',
-      title: 'Tree Explorer',
+      title: 'Tree Express',
       description: 'Tree & recursion challenges',
       comingSoon: true,
     },
