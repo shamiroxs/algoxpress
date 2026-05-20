@@ -1094,17 +1094,17 @@ const blurTargets = {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="
-                          rounded-xl
+                          rounded-lg sm:rounded-xl
                           border border-emerald-500/30
                           bg-emerald-500/10
-                          p-3
+                          p-1 sm:p-3
                         "
                       >
-                        <p className="text-[10px] sm:text-sm font-semibold text-emerald-300">
+                        <p className="text-[8px] sm:text-sm font-semibold text-emerald-300">
                           ✓ Report received
                         </p>
 
-                        <p className="mt-0.5 sm:mt-1 text-[9px] sm:text-xs text-emerald-100/80">
+                        <p className="mt-0.5 sm:mt-1 text-[7px] sm:text-xs text-emerald-100/80">
                           Thank you for helping..
                         </p>
                       </motion.div>
