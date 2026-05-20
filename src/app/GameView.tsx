@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+import { Bug } from "lucide-react";
+
 import {
   useCurrentChallenge,
   usePlayerInstructions,
@@ -964,7 +966,7 @@ const blurTargets = {
                     font-medium
                   "
                 >
-                  🕷 Report
+                  <Bug className="w-3 h-3 text-orange-300" /> Report
                 </button>
               ) : (
                 <button
@@ -976,17 +978,13 @@ const blurTargets = {
                   className="
                     flex items-center gap-1
                     px-1 py-0.8
-                    rounded sm:rounded-md
-                    border border-orange-500/40
-                    bg-orange-500/10
-                    text-orange-300
-                    hover:bg-orange-500/20
+                    rounded sm:rounded-md                   
                     transition-colors
                     text-[10px] sm:text-xs
                     font-medium
                   "
                 >
-                  🕷
+                  <Bug className="w-3 h-3 text-orange-300" />
                 </button>
               )}
 
@@ -1001,7 +999,7 @@ const blurTargets = {
                     className="
                       absolute left-0 top-6 sm:top-10
                       z-50
-                      w-28 sm:w-60
+                      w-28 sm:w-52
                       rounded-xl sm:rounded-2xl
                       border border-gray-700
                       bg-gray-800/95
@@ -1055,8 +1053,8 @@ const blurTargets = {
                               flex-1 rounded-md sm:rounded-lg
                               border border-gray-600
                               bg-gray-700/40
-                              px-1 py-0.8 sm:px-3 sm:py-2
-                              text-[8px] sm:text-sm
+                              px-1 py-0.8 sm:px-1.8 sm:py-1
+                              text-[8px] sm:text-xs
                               text-gray-300
                               hover:bg-gray-700/70
                               transition-colors
@@ -1080,7 +1078,7 @@ const blurTargets = {
                             className="
                               flex-1 rounded-md sm:rounded-lg
                               bg-orange-500
-                              px-1 py-0.8 sm:px-3 sm:py-2
+                              px-1 py-0.8 sm:px-1.8 sm:py-1
                               text-[8px] sm:text-sm
                               font-medium text-white
                               hover:bg-orange-400
