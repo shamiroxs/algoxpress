@@ -984,11 +984,11 @@ const blurTargets = {
                     text-orange-300
                     hover:bg-orange-500/20
                     transition-colors
-                    text-[8px] sm:text-[10px]
+                    text-[8px] sm:text-xs
                     font-medium
                   "
                 >
-                  <Bug className="w-3 h-3 text-orange-300" /> Report
+                  <Bug className="w-4 h-4 text-orange-300" /> Report
                 </button>
               ) : (
                 <button
