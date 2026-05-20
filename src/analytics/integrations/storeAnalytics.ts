@@ -297,3 +297,54 @@ export function trackSupportCardClicked(
     }
   );
 }
+
+export function trackReportCardOpened(
+  payload: BasePayload & {
+    source?: 'workspace';
+  }
+) {
+  trackEvent(
+    AnalyticsEvents.REPORT_CARD_OPENED,
+    {
+      category: 'feedback',
+
+      challengeId: payload.challengeId,
+      concepts: payload.concepts,
+
+      metadata: {
+        source: payload.source,
+      },
+    }
+  );
+}
+
+export function trackReportSubmitted(
+  payload: BasePayload & {
+    reportLength?: number;
+
+    hasText?: boolean;
+
+    source?: 'workspace';
+  }
+) {
+  trackEvent(
+    AnalyticsEvents.REPORT_SUBMITTED,
+    {
+      category: 'feedback',
+
+      challengeId: payload.challengeId,
+      concepts: payload.concepts,
+
+      metadata: {
+        reportLength:
+          payload.reportLength,
+
+        hasText:
+          payload.hasText,
+
+        source:
+          payload.source,
+      },
+    }
+  );
+}

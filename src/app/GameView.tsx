@@ -10,6 +10,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Bug } from "lucide-react";
 
 import {
+  trackReportCardOpened,
+  trackReportSubmitted,
+} from '../analytics/integrations/storeAnalytics';
+
+import { submitReport } from '../utils/reportTracker';
+
+import {
   useCurrentChallenge,
   usePlayerInstructions,
   useExecutionError,
@@ -400,6 +407,24 @@ const instructionOrderSignature = useMemo(
   () => playerInstructions.map((i) => i.id).join('|'),
   [playerInstructions]
 );
+
+const handleOpenReportCard = () => {
+  const opening = !showReportCard;
+
+  setShowReportCard(opening);
+
+  if (opening) {
+    trackReportCardOpened({
+      challengeId: challenge.id,
+      concepts: challenge.concepts,
+      source: 'workspace',
+    });
+  }
+
+  if (reportSubmitted) {
+    setReportSubmitted(false);
+  }
+};
 
 useLayoutEffect(() => {
   if (activeDragItem) return;
@@ -949,10 +974,7 @@ const blurTargets = {
               {isDesktop ? (
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowReportCard((v) => !v);
-                    setReportSubmitted(false);
-                  }}
+                  onClick={handleOpenReportCard}
                   className="
                     flex items-center gap-1
                     px-1.5 py-0.8 sm:px-2 sm:py-1
@@ -971,10 +993,7 @@ const blurTargets = {
               ) : (
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowReportCard((v) => !v);
-                    setReportSubmitted(false);
-                  }}
+                  onClick={handleOpenReportCard}
                   className="
                     flex items-center gap-1
                     px-1 py-0.8
@@ -1065,11 +1084,30 @@ const blurTargets = {
 
                           <button
                             onClick={() => {
-                              // UI only for now
-                              console.log('REPORT:', reportText);
-
+                              trackReportSubmitted({
+                                challengeId: challenge.id,
+                                concepts: challenge.concepts,
+                            
+                                reportLength: reportText.trim().length,
+                            
+                                hasText:
+                                  reportText.trim().length > 0,
+                            
+                                source: 'workspace',
+                              });
+                            
+                              submitReport({
+                                challengeId: challenge.id,
+                              
+                                report: reportText,
+                              
+                                concepts: challenge.concepts,
+                              
+                                source: 'workspace',
+                              });
+                            
                               setReportSubmitted(true);
-
+                            
                               setTimeout(() => {
                                 setShowReportCard(false);
                                 setReportText('');

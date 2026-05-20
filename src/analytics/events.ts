@@ -42,5 +42,8 @@ export const AnalyticsEvents = {
     FEEDBACK_MOOD_SELECTED: 'feedback_mood_selected',
 
     SUPPORT_CARD_VIEWED: 'support_card_viewed',
-    SUPPORT_CARD_CLICKED: 'support_card_clicked'
+    SUPPORT_CARD_CLICKED: 'support_card_clicked',
+
+    REPORT_CARD_OPENED: 'report_card_opened',
+    REPORT_SUBMITTED: 'report_submitted',
   } as const;
