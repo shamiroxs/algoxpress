@@ -79,7 +79,7 @@ const instructionTemplates = [
   { type: InstructionType.JUMP, label: 'Jump', description: 'Jump to label' },
   { type: InstructionType.LABEL, label: 'Label', description: 'Define a label' },
   { type: InstructionType.SWAP, label: 'Swap', description: 'Swap moco and choco value' },
-  { type: InstructionType.SWAP_WITH_NEXT, label: 'SwapNxt', description: 'Swap current with next element' },
+  { type: InstructionType.SWAP_WITH_NEXT, label: 'SwpNxt', description: 'Swap current with next element' },
   { type: InstructionType.SWAP_WITH, label: 'Swap*', description: 'Swap loco value with moco or choco' },
   { type: InstructionType.IF_MEET, label: 'IFMeet', description: 'Jump if moco == choco' },
   { type: InstructionType.INCREMENT_VALUE, label: 'Value +', description: 'Increment value at pointer' },

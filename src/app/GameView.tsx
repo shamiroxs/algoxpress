@@ -1001,7 +1001,7 @@ const blurTargets = {
                     className="
                       absolute left-0 top-6 sm:top-10
                       z-50
-                      w-32 sm:w-60
+                      w-28 sm:w-60
                       rounded-xl sm:rounded-2xl
                       border border-gray-700
                       bg-gray-800/95
@@ -1052,10 +1052,10 @@ const blurTargets = {
                               setReportText('');
                             }}
                             className="
-                              flex-1 rounded-lg
+                              flex-1 rounded-md sm:rounded-lg
                               border border-gray-600
                               bg-gray-700/40
-                              px-1.2 py-1 sm:px-3 sm:py-2
+                              px-1 py-0.8 sm:px-3 sm:py-2
                               text-[8px] sm:text-sm
                               text-gray-300
                               hover:bg-gray-700/70
@@ -1078,9 +1078,9 @@ const blurTargets = {
                               }, 1400);
                             }}
                             className="
-                              flex-1 rounded-lg
+                              flex-1 rounded-md sm:rounded-lg
                               bg-orange-500
-                              px-1.2 py-1 sm:px-3 sm:py-2
+                              px-1 py-0.8 sm:px-3 sm:py-2
                               text-[8px] sm:text-sm
                               font-medium text-white
                               hover:bg-orange-400
