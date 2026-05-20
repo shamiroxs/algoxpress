@@ -58,6 +58,7 @@ export const arrayChallenges: Challenge[] = [
     maxSteps: 2,
     instructions: [],
     unlocked: true,
+    clipboard: false,
     capabilities: {
       allowedPointers: ['MOCO', 'CHOCO'],
       allowedInstructions: [
@@ -159,6 +160,7 @@ export const arrayChallenges: Challenge[] = [
       },  
     ],    
     unlocked: true,
+    clipboard: false,
     capabilities: {
       allowedPointers: ['MOCO'],
       allowedInstructions: [
@@ -368,6 +370,7 @@ export const arrayChallenges: Challenge[] = [
       },
     ],
     unlocked: true,
+    clipboard: false,
     capabilities: {
       allowedPointers: ['MOCO', 'CHOCO'],
       allowedInstructions: [
@@ -399,6 +402,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [5, 4, 3, 2, 1],
     targetArray: [1, 2, 3, 4, 5],
     maxSteps: 13,
+    clipboard: false,
     initialPointers: {
       MOCO: 0,
       CHOCO: 4, // last index

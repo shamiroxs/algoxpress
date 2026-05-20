@@ -383,6 +383,10 @@ const [activeDragItem, setActiveDragItem] = useState<DragItem | null>(null);
 const [layoutVersion, setLayoutVersion] = useState(0);
 const bumpLayout = () => setLayoutVersion(v => v + 1);
 
+const [showReportCard, setShowReportCard] = useState(false);
+const [reportText, setReportText] = useState('');
+const [reportSubmitted, setReportSubmitted] = useState(false);
+
 
 const addInstruction = useGameStore((s) => s.addInstruction);
 const removeInstruction = useGameStore((s) => s.removeInstruction);
@@ -930,13 +934,193 @@ const blurTargets = {
                 : ''
             }
           >
-          <h3 className={`text-white font-semibold  text-sm sm:text-base 
-            ${
-              challenge.clipboard === false ? 'mb-4 sm:mb-6' : 'mb-2 sm:mb-3'
-            }
-          `}>
-                Workspace
-          </h3>
+          <div
+            className={`relative flex items-center justify-center
+              ${
+                challenge.clipboard === false ? 'mb-4 sm:mb-6' : 'mb-2 sm:mb-3'
+              }
+            `}
+          >
+            {/* LEFT SIDE */}
+            <div className="absolute left-0">
+              {/* Report Button */}
+              {isDesktop ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowReportCard((v) => !v);
+                    setReportSubmitted(false);
+                  }}
+                  className="
+                    flex items-center gap-1
+                    px-1.5 py-0.8 sm:px-2 sm:py-1
+                    rounded sm:rounded-md
+                    border border-orange-500/40
+                    bg-orange-500/10
+                    text-orange-300
+                    hover:bg-orange-500/20
+                    transition-colors
+                    text-[8px] sm:text-[10px]
+                    font-medium
+                  "
+                >
+                  🕷 Report
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowReportCard((v) => !v);
+                    setReportSubmitted(false);
+                  }}
+                  className="
+                    flex items-center gap-1
+                    px-1 py-0.8
+                    rounded sm:rounded-md
+                    border border-orange-500/40
+                    bg-orange-500/10
+                    text-orange-300
+                    hover:bg-orange-500/20
+                    transition-colors
+                    text-[8px] sm:text-xs
+                    font-medium
+                  "
+                >
+                  🕷
+                </button>
+              )}
+
+              {/* Floating Report Card */}
+              <AnimatePresence>
+                {showReportCard && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                    transition={{ duration: 0.18 }}
+                    className="
+                      absolute left-0 top-6 sm:top-10
+                      z-50
+                      w-36 sm:w-60
+                      rounded-xl sm:rounded-2xl
+                      border border-gray-700
+                      bg-gray-800/95
+                      p-2 sm:p-4
+                      shadow-2xl
+                      backdrop-blur-md
+                    "
+                  >
+                    {!reportSubmitted ? (
+                      <>
+                        {/* Header */}
+                        <div>
+                          <p className="text-[8px] sm:text-[11px] font-semibold uppercase tracking-[0.12em] text-orange-300">
+                            Challenge Report
+                          </p>
+
+                          <p className="mt-0.8 sm:mt-1 text-[8px] sm:text-sm text-gray-200 leading-relaxed">
+                            Found an issue?
+                          </p>
+                        </div>
+
+                        {/* Textarea */}
+                        <div className="mt-1.5 sm:mt-3">
+                          <textarea
+                            value={reportText}
+                            onChange={(e) => setReportText(e.target.value)}
+                            placeholder="Describe the issue..."
+                            rows={2}
+                            className="
+                              w-full resize-none rounded-lg sm:rounded-xl
+                              border border-gray-700
+                              bg-gray-900/60
+                              px-2 py-2
+                              text-[8px] sm:text-sm text-white
+                              placeholder:text-gray-500
+                              outline-none
+                              transition-colors
+                              focus:border-orange-500
+                            "
+                          />
+                        </div>
+
+                        {/* Actions */}
+                        <div className="mt-1.5 sm:mt-3 flex gap-1 sm:gap-2">
+                          <button
+                            onClick={() => {
+                              setShowReportCard(false);
+                              setReportText('');
+                            }}
+                            className="
+                              flex-1 rounded-lg
+                              border border-gray-600
+                              bg-gray-700/40
+                              px-1.2 py-1 sm:px-3 sm:py-2
+                              text-[9px] sm:text-sm
+                              text-gray-300
+                              hover:bg-gray-700/70
+                              transition-colors
+                            "
+                          >
+                            Cancel
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              // UI only for now
+                              console.log('REPORT:', reportText);
+
+                              setReportSubmitted(true);
+
+                              setTimeout(() => {
+                                setShowReportCard(false);
+                                setReportText('');
+                              }, 1400);
+                            }}
+                            className="
+                              flex-1 rounded-lg
+                              bg-orange-500
+                              px-1.2 py-1 sm:px-3 sm:py-2
+                              text-[9px] sm:text-sm
+                              font-medium text-white
+                              hover:bg-orange-400
+                              transition-colors
+                            "
+                          >
+                            Send
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="
+                          rounded-xl
+                          border border-emerald-500/30
+                          bg-emerald-500/10
+                          p-3
+                        "
+                      >
+                        <p className="text-[10px] sm:text-sm font-semibold text-emerald-300">
+                          ✓ Report received
+                        </p>
+
+                        <p className="mt-0.5 sm:mt-1 text-[9px] sm:text-xs text-emerald-100/80">
+                          Thank you for helping..
+                        </p>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* CENTER TITLE */}
+            <h3 className="text-white font-semibold text-sm sm:text-base">
+              Workspace
+            </h3>
+          </div>
           {/* Hand */}
           {challenge.clipboard !== false && (
             <div className="rounded">
