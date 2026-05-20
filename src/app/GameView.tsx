@@ -982,7 +982,7 @@ const blurTargets = {
                     text-orange-300
                     hover:bg-orange-500/20
                     transition-colors
-                    text-[8px] sm:text-xs
+                    text-[10px] sm:text-xs
                     font-medium
                   "
                 >
@@ -1001,7 +1001,7 @@ const blurTargets = {
                     className="
                       absolute left-0 top-6 sm:top-10
                       z-50
-                      w-36 sm:w-60
+                      w-32 sm:w-60
                       rounded-xl sm:rounded-2xl
                       border border-gray-700
                       bg-gray-800/95
@@ -1014,11 +1014,11 @@ const blurTargets = {
                       <>
                         {/* Header */}
                         <div>
-                          <p className="text-[8px] sm:text-[11px] font-semibold uppercase tracking-[0.12em] text-orange-300">
+                          <p className="text-[7px] sm:text-[11px] font-semibold uppercase tracking-[0.12em] text-orange-300">
                             Challenge Report
                           </p>
 
-                          <p className="mt-0.8 sm:mt-1 text-[8px] sm:text-sm text-gray-200 leading-relaxed">
+                          <p className="mt-0.8 sm:mt-1 text-[7px] sm:text-sm text-gray-200 leading-relaxed">
                             Found an issue?
                           </p>
                         </div>
@@ -1035,7 +1035,7 @@ const blurTargets = {
                               border border-gray-700
                               bg-gray-900/60
                               px-2 py-2
-                              text-[8px] sm:text-sm text-white
+                              text-[7px] sm:text-sm text-white
                               placeholder:text-gray-500
                               outline-none
                               transition-colors
@@ -1056,7 +1056,7 @@ const blurTargets = {
                               border border-gray-600
                               bg-gray-700/40
                               px-1.2 py-1 sm:px-3 sm:py-2
-                              text-[9px] sm:text-sm
+                              text-[8px] sm:text-sm
                               text-gray-300
                               hover:bg-gray-700/70
                               transition-colors
@@ -1081,7 +1081,7 @@ const blurTargets = {
                               flex-1 rounded-lg
                               bg-orange-500
                               px-1.2 py-1 sm:px-3 sm:py-2
-                              text-[9px] sm:text-sm
+                              text-[8px] sm:text-sm
                               font-medium text-white
                               hover:bg-orange-400
                               transition-colors
