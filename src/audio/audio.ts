@@ -35,10 +35,10 @@ export function setSoundExecutionSpeed(speed: 1 | 2 | 4) {
   currentExecutionSpeed = speed;
 
   // Faster playback for gameplay sounds
-  sounds.step.playbackRate = speed;
-  sounds.swap.playbackRate = speed;
-  sounds.condition.playbackRate = speed;
-  sounds.hand.playbackRate = speed;
+  sounds.step.playbackRate = currentExecutionSpeed;
+  sounds.swap.playbackRate = currentExecutionSpeed;
+  sounds.condition.playbackRate = currentExecutionSpeed;
+  sounds.hand.playbackRate = currentExecutionSpeed;
 
   // Keep these cinematic
   sounds.error.playbackRate = 1;
