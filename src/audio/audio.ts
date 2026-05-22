@@ -57,3 +57,5 @@ export function playSound(sound: SoundKey) {
     // ignore autoplay errors
   }
 }
+
+setSoundExecutionSpeed(1);

@@ -34,6 +34,8 @@ import {
   incrementRetry,
 } from '../analytics/helpers/retryTracker';
 
+import { setSoundExecutionSpeed } from '../audio/audio';
+
 const PROGRESS_KEY = 'dsa-buddy-progress';
 const FEEDBACK_KEY = 'dsa-buddy-feedback';
 
@@ -307,15 +309,21 @@ export const useGameStore = create<GameState>((set, get) => ({
   executionSpeed: 1,
 
   cycleExecutionSpeed: () =>
-    set((state) => ({
-      executionSpeed:
+    set((state) => {
+      const nextSpeed =
         state.executionSpeed === 1
           ? 2
           : state.executionSpeed === 2
           ? 4
-          : 1,
-    })),
-
+          : 1;
+  
+      setSoundExecutionSpeed(nextSpeed);
+  
+      return {
+        executionSpeed: nextSpeed,
+      };
+    }),
+    
   getExecutionInterval: () => {
     const speed = get().executionSpeed;
     // base speed = 500ms at 1x
