@@ -23,18 +23,56 @@ import {
   trackChallengeOptimized,
 } from '../analytics/integrations/controllerAnalytics';
 
-
-
 import {
   createExecutionMetrics,
   buildExecutionSummary,
 } from '../analytics/helpers/executionMetrics';
+
+import { soundManager } from '../audio/soundManager';
+import { InstructionType } from '../engine/instructions/types';
 
 let runInterval: number | null = null;
 
 let executionMetrics =
   createExecutionMetrics();
 
+function playInstructionSound(
+  instructionType?: InstructionType
+): void {
+  if (!instructionType) return;
+
+  switch (instructionType) {
+
+    // hand actions
+    case InstructionType.PICK:
+    case InstructionType.PUT:
+      soundManager.play('hand');
+      break;
+
+    // swaps
+    case InstructionType.SWAP:
+    case InstructionType.SWAP_WITH:
+    case InstructionType.SWAP_WITH_NEXT:
+      soundManager.play('swap');
+      break;
+
+    // conditions
+    case InstructionType.IF_GREATER:
+    case InstructionType.IF_LESS:
+    case InstructionType.IF_EQUAL:
+    case InstructionType.IF_NOT_EQUAL:
+    case InstructionType.IF_END:
+    case InstructionType.IF_MEET:
+    case InstructionType.IF_EVEN:
+      soundManager.play('condition');
+      break;
+
+    // default movement/general
+    default:
+      soundManager.play('step', 1);
+      break;
+  }
+}
 /**
  * Execute single step
  * Used both by the Step button and the Run loop.
@@ -82,6 +120,17 @@ export function executeSingleStep(
   if (result.success) {
     store.setExecutionState(result.state);
     store.setExecutionError(null, null);
+
+    const executedInstruction =
+      state.executionStack[
+        state.executionStack.length - 1
+      ]?.instructions[
+        state.executionStack[
+          state.executionStack.length - 1
+        ]?.line
+      ];
+
+    playInstructionSound(executedInstruction?.type);
 
     if (store.currentChallenge) {
       if (manual) {
@@ -137,6 +186,8 @@ export function executeSingleStep(
           }
         } else {
           // Challenge not correct → show error
+          soundManager.play('error');
+
           store.setExecutionError(result.error || 'Execution failed', result.errorContext ?? null);
           stopExecution();
         }
@@ -155,6 +206,8 @@ export function executeSingleStep(
             step: result.state.stepCount,
           });
         }
+        soundManager.play('error');
+
         store.setExecutionError(result.error || 'Execution failed', result.errorContext ?? null);
         stopExecution();
       }
@@ -322,6 +375,8 @@ export function validateChallenge(): void {
     store.currentChallenge
   ) {
 
+    soundManager.play('error');
+
     executionMetrics.validationFailureCount += 1;
 
     trackValidationFailed({
@@ -334,6 +389,7 @@ export function validateChallenge(): void {
   }
 
   if (result?.success) {
+    soundManager.play('success');
 
     store.maybeCompleteTutorial('RUN_CLICK');
     store.maybeCompleteTutorial('ANY_CONTROL');

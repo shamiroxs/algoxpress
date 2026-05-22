@@ -84,6 +84,15 @@ import type { CollisionDetection } from '@dnd-kit/core';
 import { useTutorialStepId } from '../tutorial/selectors';
 import { TutorialStepId } from '../tutorial/types';
 
+import { soundManager } from '../audio/soundManager'
+
+import stepSound from '../assets/sounds/step.mp3'
+import swapSound from '../assets/sounds/swap.mp3'
+import conditionSound from '../assets/sounds/conditions.mp3'
+import handSound from '../assets/sounds/hand.mp3'
+import errorSound from '../assets/sounds/error.mp3'
+import successSound from '../assets/sounds/success.mp3'
+
 type DragItem =
   | {
       source: 'PALETTE';
@@ -457,6 +466,15 @@ useEffect(() => {
     if (timer) clearTimeout(timer);
   };
 }, [validationResult?.success, successHintDismissed, isTutorialActive]);
+
+useEffect(() => {
+  soundManager.register('step', stepSound)
+  soundManager.register('swap', swapSound)
+  soundManager.register('condition', conditionSound)
+  soundManager.register('hand', handSound)
+  soundManager.register('error', errorSound)
+  soundManager.register('success', successSound)
+}, [])
 
 /** program rects for accurate insert preview */
 const programContainerRef = useRef<HTMLDivElement | null>(null);
