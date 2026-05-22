@@ -11,7 +11,7 @@ import { cloneState } from './executionModel';
 
 export type ExecutionErrorContext =
   | { kind: 'INSTRUCTION'; instructionId: string }
-  | { kind: 'POINTER'; target: 'MOCO' | 'CHOCO' | 'LOCO' }
+  | { kind: 'POINTER'; target: 'MOCO' | 'CHOCO' | 'LOCO'; instructionId: string }
   | { kind: 'ARRAY_INDEX'; index: number }
   | { kind: 'ARRAY_RANGE'; from: number; to: number }
   | { kind: 'HAND'; instructionId: string};
@@ -57,6 +57,26 @@ function instructionError(
     completed: false,
   };
 }
+
+function pointerError(
+  state: ExecutionState,
+  instruction: Instruction,
+  target: 'MOCO' | 'CHOCO' | 'LOCO',
+  message: string
+): ExecutionResult {
+  return {
+    state,
+    success: false,
+    error: message,
+    errorContext: {
+      kind: 'POINTER',
+      target,
+      instructionId: instruction.id,
+    },
+    completed: false,
+  };
+}
+
 
 function getPointer(state: ExecutionState, target: 'MOCO' | 'CHOCO' | 'LOCO'): number {
   return target === 'MOCO' ? state.mocoPointer 
@@ -111,24 +131,6 @@ function setValue(
   const arr = getArrayForPointer(state, target);
   arr[ptr] = value;
 }
-
-function pointerError(
-  state: ExecutionState,
-  target: 'MOCO' | 'CHOCO' | 'LOCO',
-  message: string
-): ExecutionResult {
-  return {
-    state,
-    success: false,
-    error: message,
-    errorContext: {
-      kind: 'POINTER',
-      target,
-    },
-    completed: false,
-  };
-}
-
 
 /**
  * Execute a single instruction
@@ -193,7 +195,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         const arr = getArrayForPointer(newState, instruction.target);
 
         if (ptr < 0 || ptr >= arr.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
         }
 
         if (newState.hand > arr[ptr]) {
@@ -212,7 +214,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         const ptr = getPointer(newState, instruction.target);
         const arr = getArrayForPointer(newState, instruction.target);
         if (ptr < 0 || ptr >= arr.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
         }
 
         if (newState.hand < arr[ptr]) {
@@ -232,7 +234,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         const arr = getArrayForPointer(newState, instruction.target);
 
         if (ptr < 0 || ptr >= arr.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
         }
 
         if (newState.hand === arr[ptr]) {
@@ -252,7 +254,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         const arr = getArrayForPointer(newState, instruction.target);
 
         if (ptr < 0 || ptr >= arr.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
         }
 
         if (newState.hand !== arr[ptr]) {
@@ -327,7 +329,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         const arr = getArrayForPointer(newState, instruction.target);
 
         if (ptr < 0 || ptr >= arr.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
         }
 
         const value = arr[ptr];
@@ -375,7 +377,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
       case InstructionType.MOVE_LEFT: {
         const ptr = getPointer(newState, instruction.target);
         if (ptr <= 0) {
-          return pointerError(newState, instruction.target, 'Cannot move left. This is the first seat.');
+          return pointerError(newState, instruction, instruction.target, 'Cannot move left. This is the first seat.');
         }
         setPointer(newState, instruction.target, ptr - 1);
         frame.line++;
@@ -385,7 +387,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
       case InstructionType.MOVE_RIGHT: {
         const ptr = getPointer(newState, instruction.target);
         if (ptr >= getArrayLengthForPointer(newState, instruction.target) - 1) {
-          return pointerError(newState, instruction.target, 'Cannot move right. This is the last seat.');
+          return pointerError(newState, instruction, instruction.target, 'Cannot move right. This is the last seat.');
         }
         setPointer(newState, instruction.target, ptr + 1);
         frame.line++;
@@ -423,7 +425,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
           const arr = getArrayForPointer(newState, instruction.target);
         
           if (ptr < 0 || ptr >= arr.length) {
-            return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+            return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
           }
         
           newState.hand = arr[ptr];
@@ -436,7 +438,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
           const arr = getArrayForPointer(newState, instruction.target);
         
           if (ptr < 0 || ptr >= arr.length) {
-            return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+            return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
           }
         
           if (newState.hand === null) {
@@ -473,7 +475,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         const arr = getArrayForPointer(newState, instruction.target);
 
         if (ptr < 0 || ptr >= arr.length - 1) {
-          return pointerError(newState, instruction.target, 'Cannot swap seats here. There is no adjacent seat.');
+          return pointerError(newState, instruction, instruction.target, 'Cannot swap seats here. There is no adjacent seat.');
         }
         const temp = newState.array[ptr];
         newState.array[ptr] = newState.array[ptr + 1];
@@ -486,7 +488,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         const locoPtr = newState.locoPointer;
       
         if (locoPtr < 0 || locoPtr >= newState.array.length) {
-          return pointerError(newState, 'LOCO', 'Pointer is not on a valid seat.');
+          return pointerError(newState, instruction, 'LOCO', 'Pointer is not on a valid seat.');
         }
       
         const targetPtr =
@@ -497,6 +499,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
         if (targetPtr < 0 || targetPtr >= newState.array.length) {
           return pointerError(
             newState,
+            instruction, 
             instruction.swapTarget,
             'Pointer is not on a valid seat.'
           );
@@ -513,7 +516,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
       case InstructionType.INCREMENT_VALUE: {
         const ptr = getPointer(newState, instruction.target);
         if (ptr < 0 || ptr >= newState.array.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
         }
         const arr = getArrayForPointer(newState, instruction.target);
         arr[ptr]++;
@@ -524,7 +527,7 @@ export function executeStep(state: ExecutionState): ExecutionResult {
       case InstructionType.DECREMENT_VALUE: {
         const ptr = getPointer(newState, instruction.target);
         if (ptr < 0 || ptr >= newState.array.length) {
-          return pointerError(newState, instruction.target, 'Pointer is not on a valid seat.');
+          return pointerError(newState, instruction, instruction.target, 'Pointer is not on a valid seat.');
         }
         const arr = getArrayForPointer(newState, instruction.target);
         arr[ptr]--;
