@@ -29,6 +29,10 @@ import {
 
 import { submitFeedback } from '../utils/feedbackTracter';
 
+import { soundManager } from '../audio/soundManager';
+import enterChallengeMp3 from '../assets/sounds/enterChallenge.mp3';
+import backMp3 from '../assets/sounds/back.mp3';
+
 export function ChallengePathView() {
 
   const feedbackTrackedRef = useRef(false);
@@ -189,6 +193,11 @@ export function ChallengePathView() {
       previouslySupported,
     });
   };
+  useEffect(() => {
+    soundManager.register('enter', enterChallengeMp3)
+    soundManager.register('back', backMp3)
+  }, [])
+
     useEffect(() => {
       if (
         shouldShowCheckpoint &&
@@ -239,7 +248,11 @@ export function ChallengePathView() {
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 relative">
       <button
-        onClick={() => navigate('/')}
+        onClick={() => {
+          soundManager.play('back');
+        
+          navigate('/');
+        }}
         className="absolute top-4 left-4 text-gray-400 hover:text-white"
         >
         ← Back to Station
@@ -306,9 +319,13 @@ export function ChallengePathView() {
                 {/* Node */}
                 <motion.button
                   disabled={!isUnlocked}
-                  onClick={() =>
-                    isUnlocked && navigate(`/train/${trainId}/challenge/${challenge.id}`)
-                  }
+                  onClick={() => {
+                    if (!isUnlocked) return;
+                
+                    soundManager.play('enter');
+                
+                    navigate(`/train/${trainId}/challenge/${challenge.id}`);
+                  }}
                   animate={
                     isNext
                       ? {

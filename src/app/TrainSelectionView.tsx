@@ -1,9 +1,17 @@
 import { trains } from "../engine/challenges/trains";
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useEffect } from "react";
+
+import { soundManager } from "../audio/soundManager";
+import enterMp3 from '../assets/sounds/enter.mp3';
 
 export function TrainSelectionView() {
   const navigate = useNavigate();
+
+    useEffect(() => {
+      soundManager.register('enter', enterMp3)
+    }, [])
 
   return (
     /* Added overflow-x-hidden to prevent scrollbars during the slide-in animation */
@@ -35,7 +43,13 @@ export function TrainSelectionView() {
 
             {/* Train Car Button */}
             <motion.button
-              onClick={() => !train.comingSoon && navigate(`/train/${train.id}`)}
+              onClick={() => {
+                if (train.comingSoon) return;
+              
+                soundManager.play('enter');
+              
+                navigate(`/train/${train.id}`);
+              }}
               disabled={train.comingSoon}
               
               // 1. Pull-in from right to left

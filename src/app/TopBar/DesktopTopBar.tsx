@@ -4,6 +4,10 @@ import { InstructionPalette } from "../../ui/InstructionPalette/InstructionPalet
 import { useTutorialHighlight } from '../../tutorial/selectors';
 import { useGameStore } from '../../orchestrator/store';
 
+import { soundManager } from "../../audio/soundManager";
+import backMp3 from '../../assets/sounds/back.mp3';
+import { useEffect } from "react";
+
 type Props = {
     challengeTitle: string;
     mode: 'PLAY' | 'READ';
@@ -21,10 +25,18 @@ type Props = {
     const highlightChallenge = useTutorialHighlight('CHALLENGE_PANEL');
     const maybeCompleteTutorial = useGameStore(s => s.maybeCompleteTutorial);
 
+    useEffect(() => {
+      soundManager.register('back', backMp3)
+    }, [])
+
     return (
       <div className="h-48 relative flex items-center justify-between px-4 bg-gray-800 border-b border-gray-700 z-20">
         <button
-          onClick={onBack}
+          onClick={() => {
+            soundManager.play('back');
+          
+            onBack();
+          }}
           className="absolute top-4 left-4 text-gray-400 hover:text-white"
         >
           ← Back to Platform

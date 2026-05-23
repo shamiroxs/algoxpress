@@ -5,6 +5,10 @@ import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+import { soundManager } from "../audio/soundManager";
+import enterMp3 from '../assets/sounds/enter.mp3';
+import backMp3 from '../assets/sounds/back.mp3';
+
 export function SuccessOverlay() {
   const challenge = useCurrentChallenge();
   const dismissSuccessHint = useGameStore((s) => s.dismissSuccessHint);
@@ -45,6 +49,11 @@ export function SuccessOverlay() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [dismissSuccessHint, navigate]);
   
+  useEffect(() => {
+    soundManager.register('enter', enterMp3)
+    soundManager.register('back', backMp3)
+  }, [])
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -94,7 +103,11 @@ export function SuccessOverlay() {
         <div className="flex justify-between items-center mt-8">
           {/* Back = close overlay */}
           <button
-            onClick={dismissSuccessHint}
+            onClick={() => {
+              soundManager.play('back');
+            
+              dismissSuccessHint();
+            }}
             className="text-xs sm:text-sm text-gray-400 hover:text-white transition"
           >
             ← Back
@@ -102,7 +115,11 @@ export function SuccessOverlay() {
 
           {/* Continue */}
           <button
-            onClick={() => navigate(`/train/${trainId}`)}
+            onClick={() => {
+              soundManager.play('enter');
+
+              navigate(`/train/${trainId}`);
+            }}
             className="
               rounded-md bg-green-500 px-4 py-2
               text-xs sm:text-sm font-semibold text-black
