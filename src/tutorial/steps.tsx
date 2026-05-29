@@ -44,6 +44,11 @@ export const TUTORIAL_STEPS: TutorialStepContent[] = [
     text: 'Tap the ⓘ icon to see what each card does',
   },  
   {
+    id: TutorialStepId.PALETTE_HELP_OPENED,
+    title: 'Card details',
+    text: 'Here you can see the use of each cards',
+  }, 
+  {
     id: TutorialStepId.PICK_EXPLAINED,
     title: 'Your first instruction',
     text: (

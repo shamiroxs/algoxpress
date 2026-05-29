@@ -13,6 +13,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGameStore } from '../../orchestrator/store';
 import type { Instruction } from '../../engine/instructions/types';
 import { InstructionType } from '../../engine/instructions/types';
+import { TutorialStepId } from '../../tutorial/types';
 
 import {
   createInstruction,
@@ -367,6 +368,15 @@ export function InstructionPalette() {
     [allowedInstructions]
   );
 
+  const tutorialStepId = useGameStore((s) => s.tutorial.currentStep);
+
+  useEffect(() => {
+    const shouldAutoOpen =
+      tutorialStepId === TutorialStepId.PALETTE_HELP_OPENED;
+  
+    setShowHelp(shouldAutoOpen);
+  }, [tutorialStepId]);
+  
   /** Tutorial behavior */
   const behavior = useTutorialBehavior();
   const highlight = behavior?.highlight;

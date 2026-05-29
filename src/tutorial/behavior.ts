@@ -53,6 +53,16 @@ import { InstructionType } from '../engine/instructions/types';
     completesOn: 'ANY_CONTROL',
     position: 'BOTTOM',
   },
+
+  [TutorialStepId.PALETTE_HELP_OPENED]: {
+    blocksUI: true,
+    highlight: {
+      scope: 'INSTRUCTION_PALETTE',
+      control: 'HELP',
+    },
+    completesOn: 'AUTO',
+    position: 'BOTTOM',
+  },
   
   [TutorialStepId.PROGRAM_AREA_EXPLAINED]: {
     highlight: {
