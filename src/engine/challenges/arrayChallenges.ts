@@ -81,65 +81,6 @@ export const arrayChallenges: Challenge[] = [
   },
   {
     id: 'challenge-2',
-    title: 'Ticket Challenge',
-    description: `Seat 1 challenges Seat 0. Higher ticket wins.`,
-    hints: ['Compare the tickets in Seat 0 and Seat 1. Keep the higher value in Seat 0.'],
-    difficulty: Difficulty.EASY,
-    initialArray: [4, 9, 6, 2],
-    targetArray: [9, 9, 6, 2],
-    maxSteps: 7,
-    instructions: [
-      {
-        id: 'pick',
-        type: InstructionType.PICK,
-        target: 'MOCO',
-      },
-      {
-        id: 'move-right',
-        type: InstructionType.MOVE_RIGHT,
-        target: 'MOCO',
-      },
-      {
-        id: 'move-left',
-        type: InstructionType.MOVE_LEFT,
-        target: 'MOCO',
-      },
-      {
-        id: 'put',
-        type: InstructionType.PUT,
-        target: 'MOCO',
-      },
-    ],
-    unlocked: true,
-    capabilities: {
-      allowedPointers: ['MOCO'],
-      allowedInstructions: [
-        InstructionType.PICK,
-        InstructionType.PUT,
-
-        InstructionType.IF_GREATER,
-        InstructionType.IF_LESS,
-
-      ],
-      suggestedInstructions: [
-        InstructionType.PICK,
-        InstructionType.PUT,
-      ],
-    },
-    concepts: [
-      ConceptTag.CONDITIONALS,
-    ],
-    
-    learningObjectives: [
-      'Compare two values',
-      'Keep the larger value',
-      'Understand conditional execution',
-    ],
-    
-    pattern: AlgorithmPattern.SEQUENTIAL,
-  },
-  {
-    id: 'challenge-3',
     title: 'Seat Rotation',
     description: 'All passengers move left, the first passenger goes to last seat',
     hints: ['Swap each passenger with their right neighbor, one at a time.'],
@@ -182,7 +123,7 @@ export const arrayChallenges: Challenge[] = [
     pattern: AlgorithmPattern.TWO_POINTER,
   },
   {
-    id: 'challenge-4',
+    id: 'challenge-3',
     title: 'Group Boarding',
     description: `Even tickets must board before odd tickets.`,
     hints: ['Move even tickets numbers left', 'Move odd tickets numbers right.'],
@@ -232,7 +173,7 @@ export const arrayChallenges: Challenge[] = [
     pattern: AlgorithmPattern.PARTITION,
   },
   {
-    id: 'challenge-5',
+    id: 'challenge-4',
     title: 'Bubble Up',
     description: 'The highest-value ticket must reach the last seat in a single pass.',
     hints: [
@@ -290,7 +231,7 @@ export const arrayChallenges: Challenge[] = [
     ],
   },
   {
-    id: 'challenge-6',
+    id: 'challenge-5',
     title: 'Penalty Boarding',
     description: `Passengers with penalty tickets (negative) must board before regular ones.`,
     hints: [
@@ -340,7 +281,7 @@ export const arrayChallenges: Challenge[] = [
     pattern: AlgorithmPattern.PARTITION,
   },
   {
-    id: 'challenge-7',
+    id: 'challenge-6',
     title: 'Balanced Carriage',
     description: `Something suspicious, some passengers ticket numbers 
     is the exact average of their neighbors. Shuffle the pairs.`,
@@ -394,7 +335,7 @@ export const arrayChallenges: Challenge[] = [
     pattern: AlgorithmPattern.TWO_POINTER,
   },
   {
-    id: 'challenge-8',
+    id: 'challenge-7',
     title: 'Backwards Tickets',
     description: `The compartment was filled from the wrong direction.`,
     hints: ['Reverse the order of all ticket values.'],
@@ -450,7 +391,7 @@ export const arrayChallenges: Challenge[] = [
     ],
   }, 
   {
-    id: 'challenge-9',
+    id: 'challenge-8',
     title: 'VIP Seat',
     description: `A VIP is already seated somewhere. Seat 0 is also reserved by them.
     (highest ticket number is the VIP)`,
@@ -514,7 +455,7 @@ export const arrayChallenges: Challenge[] = [
     ],
   },
   {
-    id: 'challenge-10',
+    id: 'challenge-9',
     title: 'Duplicate Ticket',
     description: `Only one ticket per passenger is allowed.
     Report duplicate ticket at seat zero`,
@@ -584,7 +525,7 @@ export const arrayChallenges: Challenge[] = [
     ],
   },
   {
-    id: 'challenge-11',
+    id: 'challenge-10',
     title: 'Inspection Check',
     description: `An inspector checks ticket order before departure.`,
     hints: ['Set Seat 0 to 0 if the remaining seats are NOT increasing order',
@@ -645,7 +586,7 @@ export const arrayChallenges: Challenge[] = [
     ],
   }, 
   {
-    id: 'challenge-12',
+    id: 'challenge-11',
     title: 'Clear the Aisle',
     description: `Passengers without tickets must step aside without disturbing valid ones.`,
     hints: [
@@ -710,7 +651,7 @@ export const arrayChallenges: Challenge[] = [
     pattern: AlgorithmPattern.PARTITION,
   },
   {
-    id: 'challenge-13',
+    id: 'challenge-12',
     title: 'Wiggle Sort',
     description: `Passengers must alternate: low, high, low, high...
     Odd seats must hold higher tickets than their neighbors.`,
@@ -778,7 +719,7 @@ export const arrayChallenges: Challenge[] = [
     pattern: AlgorithmPattern.GREEDY,
   },
   {
-    id: 'challenge-14',
+    id: 'challenge-13',
     title: 'Ticket Classes',
     description: `Passengers of classes: 0 = Economy, 1 = Business, 2 = First Class. 
     Board them in order.`,
@@ -864,7 +805,7 @@ export const arrayChallenges: Challenge[] = [
     pattern: AlgorithmPattern.PARTITION,
   },
   {
-    id: 'challenge-15',
+    id: 'challenge-14',
     title: 'Alternate Boarding',
     description: `Tickets are sorted. Board the highest and lowest alternatingly.`,
     hints: [
@@ -939,7 +880,7 @@ export const arrayChallenges: Challenge[] = [
     pattern: AlgorithmPattern.TWO_POINTER,
   },
   {
-    id: 'challenge-16',
+    id: 'challenge-15',
     title: 'Boarding Order',
     description: `The conductor mixed up the boarding sequence. Restore it to the next permutation.`,
     hints: [
