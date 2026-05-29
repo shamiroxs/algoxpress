@@ -334,7 +334,7 @@ export function GameView() {
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
 
   /** ---------- LOCAL UI STATE ---------- */
-  const [mode, setMode] = useState<'PLAY' | 'READ'>('PLAY');
+  const [mode, setMode] = useState<'PLAY' | 'READ'>('READ');
 
   /** ---------- GAME DATA ---------- */
   const array = useArrayState();
