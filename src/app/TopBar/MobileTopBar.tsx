@@ -46,7 +46,7 @@ type Props = {
           <div className="absolute left-0 right-0 flex justify-center pointer-events-none">
             <div
               className={`pointer-events-auto flex items-center gap-2 cursor-pointer select-none
-                ${highlightChallenge ? 'ring-2 ring-yellow-400 rounded-lg' : ''}
+                ${highlightChallenge ? 'animate-pulse ring-2 ring-yellow-400 rounded-lg ' : ''}
               `}
               onClick={() => {
                 onToggleChallenge();

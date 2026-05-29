@@ -45,7 +45,7 @@ type Props = {
         <div
           className={`
             absolute left-1 flex items-center justify-center gap-3 cursor-pointer select-none
-            ${highlightChallenge ? 'ring-2 ring-yellow-400 rounded-lg' : ''}
+            ${highlightChallenge ? 'animate-pulse ring-2 ring-yellow-400 rounded-lg' : ''}
           `}
           onClick={() => {
             onToggleChallenge();

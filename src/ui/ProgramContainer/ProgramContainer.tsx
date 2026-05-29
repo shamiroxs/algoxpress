@@ -246,9 +246,11 @@ export function ProgramContainer({
   function ProgramDropzone({
     children,
     highlight,
+    pulse,
   }: {
     children: React.ReactNode;
     highlight?: boolean;
+    pulse?: boolean;
   }) {
     const { setNodeRef, isOver } = useDroppable({
       id: 'PROGRAM_DROPZONE',
@@ -265,6 +267,7 @@ export function ProgramContainer({
               ? 'ring-2 ring-green-400'
               : 'ring-2 ring-gray-700'
           }
+          ${pulse ? 'animate-pulse ring-2 ring-yellow-400' : ''}
         `}
       >
         {children}
@@ -999,10 +1002,19 @@ export function ProgramContainer({
     );
   }
 
-  const highlightProgram = useTutorialHighlight(
+  const shouldPulse = useTutorialHighlight('INSTRUCTION_PALETTE', {
+    instructionType: InstructionType.PICK,
+  });
+  
+  const programControlHighlight = useTutorialHighlight(
     'INSTRUCTION_PALETTE',
-    { control: 'PROGRAM' }
+    {
+      control: 'PROGRAM',
+    }
   );
+  
+  //const highlightProgram =
+    //shouldPulse || programControlHighlight;
 
   return (
     <div
@@ -1036,7 +1048,7 @@ export function ProgramContainer({
       {/* Arrow overlay */}
       <ProgramArrowsOverlay key={layoutVersion} isPhone={isPhone}/>
 
-      <ProgramDropzone highlight={highlightProgram}>
+      <ProgramDropzone highlight={programControlHighlight} pulse={shouldPulse}>
         <SortableContext
           items={playerInstructions.map((i) => i.id)}
           strategy={verticalListSortingStrategy}
