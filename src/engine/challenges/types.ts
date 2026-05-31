@@ -77,6 +77,9 @@ export interface Challenge {
   targetArray: number[];
   extraArray?: number[];
   maxSteps?: number; // Optional optimization goal
+  starRequirements?: {
+    speedSeconds?: number;
+  };
   initialPointers?: {
     MOCO?: number;
     CHOCO?: number;

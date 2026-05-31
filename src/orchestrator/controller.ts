@@ -30,11 +30,15 @@ import {
 
 import { soundManager } from '../audio/soundManager';
 import { InstructionType } from '../engine/instructions/types';
+import { getSpeedLimit } from '../engine/challenges/utils';
 
 let runInterval: number | null = null;
 
 let executionMetrics =
   createExecutionMetrics();
+
+//make this challenge specific later
+const SPEED_STAR_LIMIT_MS = 10_000;
 
 function playInstructionSound(
   instructionType?: InstructionType
@@ -179,9 +183,31 @@ export function executeSingleStep(
           store.setExecutionError(null, null);
           store.setValidationResult(validationResult);
           if (store.currentChallenge && store.executionState) {
+            const elapsedMs =
+              store.challengeStartedAt == null
+                ? Infinity
+                : Date.now() - store.challengeStartedAt;
+
+            const speedLimitMs =
+              getSpeedLimit(store.currentChallenge) * 1000;
+
+            const completedWithinTime =
+              elapsedMs <= speedLimitMs;
+
             store.markChallengeCompleted(
               store.currentChallenge.id,
-              store.executionState.stepCount
+              {
+                bestStepCount:
+                  store.executionState.stepCount,
+
+                completedWithinTime,
+
+                completedWithoutHints:
+                  store.revealedHintsCount === 0,
+
+                completedOptimally:
+                  !!validationResult.optimized,
+              }
             );
           }
         } else {
@@ -394,11 +420,28 @@ export function validateChallenge(): void {
     store.maybeCompleteTutorial('RUN_CLICK');
     store.maybeCompleteTutorial('ANY_CONTROL');
 
+    const elapsedMs =
+      store.challengeStartedAt == null
+        ? Infinity
+        : Date.now() - store.challengeStartedAt;
+
+    const completedWithinTime =
+      elapsedMs <= SPEED_STAR_LIMIT_MS;
     
     // Mark challenge as completed in store
     store.markChallengeCompleted(
       store.currentChallenge.id,
-      result.stepCount
+      {
+        bestStepCount: result.stepCount,
+    
+        completedWithinTime,
+    
+        completedWithoutHints:
+          store.revealedHintsCount === 0,
+    
+        completedOptimally:
+          !!result.optimized,
+      }
     );
     
     /*

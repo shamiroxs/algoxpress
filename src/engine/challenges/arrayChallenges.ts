@@ -19,6 +19,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [7, 0, 0, 0],
     targetArray: [7, 7, 0, 0],
     maxSteps: 3,
+ 
     instructions: [],
     unlocked: true,
     capabilities: {
@@ -56,6 +57,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [10, 20, 30, 40, 50],
     targetArray: [50, 20, 30, 40, 10],
     maxSteps: 2,
+
     instructions: [],
     unlocked: true,
     clipboard: false,
@@ -88,6 +90,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [1, 2, 3, 4],
     targetArray: [2, 3, 4, 1],
     maxSteps: 15,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     instructions: [
       {
         id: 'loop-start',
@@ -131,6 +136,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [1, 2, 3, 4, 5, 6],
     targetArray: [2, 4, 6, 1, 5, 3],
     maxSteps: 37,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     clipboard: false,
     instructions: [
       {
@@ -184,6 +192,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [4, 2, 7, 1, 3],
     targetArray: [2, 4, 1, 3, 7],
     maxSteps: 28,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialPointers: {
       MOCO: 0,
       CHOCO: 1, // last index
@@ -242,6 +253,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [1, -2, 3, -4, 5, -6],
     targetArray: [-2, -4, -6, 1, 5, 3],
     maxSteps: 31,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialHand: 0,
     instructions: [
       {
@@ -294,6 +308,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [1, 2, 3, 4, 5],
     targetArray: [2, 1, 4, 3, 5],
     maxSteps: 12,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialPointers: {
       MOCO: 0,  // points to left of each pair
       CHOCO: 1, // points to right of each pair (always MOCO + 1)
@@ -343,6 +360,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [5, 4, 3, 2, 1],
     targetArray: [1, 2, 3, 4, 5],
     maxSteps: 13,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     clipboard: false,
     initialPointers: {
       MOCO: 0,
@@ -401,6 +421,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [0, 7, 2, 9, 1],
     targetArray: [9, 7, 2, 9, 1],
     maxSteps: 42,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     instructions: [
       {
         id: 'pick',
@@ -464,6 +487,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [0, 3, 4, 2, 2],
     targetArray: [2, 3, 4, 2, 2],
     maxSteps: 23,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialPointers: {
       MOCO: 1,
     },
@@ -535,6 +561,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [1, 3, 5, 7, 6],
     targetArray: [0, 3, 5, 7, 6],
     maxSteps: 26,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     instructions: [
       {
         id: 'loop-start',
@@ -598,6 +627,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [0, 1, 0, 3, 12, 0],
     targetArray: [1, 3, 12, 0, 0, 0],
     maxSteps: 28,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialHand: 0,
     initialPointers: {
       MOCO: 0,
@@ -664,6 +696,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [3, 5, 2, 1, 6, 4],
     targetArray: [3, 5, 1, 6, 2, 4],
     maxSteps: 27,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialPointers: {
       MOCO: 0,  // current scanner
       CHOCO: 1, // lookahead (always MOCO + 1)
@@ -731,6 +766,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [2, 0, 2, 1, 1, 0],
     targetArray: [0, 0, 1, 1, 2, 2],
     maxSteps: 40,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialHand: 1,
     initialPointers: {
       MOCO: 0,   // left boundary (next 0 slot)
@@ -818,6 +856,9 @@ export const arrayChallenges: Challenge[] = [
     targetArray: [6, 1, 5, 2, 4, 3],
     extraArray: [1, 2, 3, 4, 5, 6],
     maxSteps: 30,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialPointers: {
       MOCO: 0,   // left pointer (min side)
       CHOCO: 5,  // right pointer (max side)
@@ -900,7 +941,10 @@ export const arrayChallenges: Challenge[] = [
     difficulty: Difficulty.HARD,
     initialArray: [2, 1, 5, 4, 3, 0, 0],
     targetArray: [2, 3, 0, 0, 1, 4, 5],
-    maxSteps: 60,
+    maxSteps: 20,
+    starRequirements: {
+      speedSeconds: 60,
+    },
     initialPointers: {
       MOCO: 5,   // scans for pivot from right
       CHOCO: 6,  // scans for swap candidate / reversal right end

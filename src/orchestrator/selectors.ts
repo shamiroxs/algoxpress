@@ -13,6 +13,13 @@ export const useCurrentChallenge = () =>
 export const useChallenges = () =>
   useGameStore((state) => state.challenges);
 
+export const useChallengeStars = (
+  challengeId: string
+) =>
+  useGameStore((state) =>
+    state.getChallengeStars(challengeId)
+  );
+
 export const useExecutionState = () =>
   useGameStore((state) => state.executionState);
 

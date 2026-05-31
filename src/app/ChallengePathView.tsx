@@ -76,6 +76,9 @@ export function ChallengePathView() {
     }
   };
 
+  const getChallengeStars =
+    useGameStore((s) => s.getChallengeStars);
+
   const nextChallengeIndex = challenges.findIndex(
     c => c.unlocked && !isChallengeCompleted(c.id)
   );
@@ -293,6 +296,8 @@ export function ChallengePathView() {
 
             const isCompleted = isChallengeCompleted(challenge.id);
 
+            const stars = getChallengeStars(challenge.id);
+
             // Hard lock (never unlock if false)
             const isHardLocked = !challenge.unlocked;
 
@@ -397,6 +402,42 @@ export function ChallengePathView() {
                   >
                     {challenge.title}
                   </p>
+                  {isUnlocked && (
+                    <div className="flex gap-2 mt-1 text-xs">
+                      <span
+                        title="Completed within time"
+                        className={
+                          stars.speed
+                            ? ''
+                            : 'opacity-30'
+                        }
+                      >
+                        ⭐
+                      </span>
+
+                      <span
+                        title="No hints used"
+                        className={
+                          stars.noHints
+                            ? ''
+                            : 'opacity-30'
+                        }
+                      >
+                        ⭐
+                      </span>
+
+                      <span
+                        title="Optimal solution"
+                        className={
+                          stars.optimal
+                            ? ''
+                            : 'opacity-30'
+                        }
+                      >
+                        ⭐
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Status indicators */}

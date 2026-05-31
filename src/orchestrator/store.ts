@@ -39,6 +39,7 @@ import { setSoundExecutionSpeed } from '../audio/audio';
 const PROGRESS_KEY = 'dsa-buddy-progress';
 const FEEDBACK_KEY = 'dsa-buddy-feedback';
 
+
 type StoredFeedback = {
   submitted: boolean;
   mood?: CheckpointMood | null;
@@ -85,13 +86,24 @@ function persistFeedback(data: StoredFeedback) {
   }
 }
 
+type ChallengeStars = {
+  speed: boolean;
+  noHints: boolean;
+  optimal: boolean;
+};
+
 type StoredProgress = Record<
   string,
   {
     challengeId: string;
     completed: boolean;
+
     bestStepCount?: number;
     completedAt?: number;
+
+    completedWithinTime?: boolean;
+    completedWithoutHints?: boolean;
+    completedOptimally?: boolean;
   }
 >;
 
@@ -118,6 +130,10 @@ function upsertProgressEntry(
     completed: boolean;
     bestStepCount?: number;
     completedAt?: number;
+
+    completedWithinTime?: boolean;
+    completedWithoutHints?: boolean;
+    completedOptimally?: boolean;
   }
 ) {
   try {
@@ -138,6 +154,18 @@ function upsertProgressEntry(
 
       // update completion time only on first completion
       completedAt: existing?.completedAt ?? data.completedAt ?? Date.now(),
+      
+      completedWithinTime:
+        existing?.completedWithinTime ||
+        data.completedWithinTime,
+
+      completedWithoutHints:
+        existing?.completedWithoutHints ||
+        data.completedWithoutHints,
+
+      completedOptimally:
+        existing?.completedOptimally ||
+        data.completedOptimally,
     };
 
     localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
@@ -167,6 +195,8 @@ interface GameState {
   // Challenge state
   currentChallenge: Challenge | null;
   challenges: Challenge[];
+
+  challengeStartedAt: number | null;
   
   // Execution state
   executionState: ExecutionState | null;
@@ -191,6 +221,11 @@ interface GameState {
     currentStep: TutorialStepId;
     spotlightRect?: DOMRect | null;
   };
+
+  getChallengeStars: (
+    challengeId: string
+  ) => ChallengeStars;
+
   setTutorialSpotlight: (rect: DOMRect | null) => void;
 
   executionSpeed: 1 | 2 | 4;
@@ -239,7 +274,12 @@ interface GameState {
   isChallengeCompleted: (challengeId: string) => boolean;
   markChallengeCompleted: (
     challengeId: string,
-    bestStepCount?: number
+    data: {
+      bestStepCount?: number;
+      completedWithinTime: boolean;
+      completedWithoutHints: boolean;
+      completedOptimally: boolean;
+    }
   ) => void;
   
   successHintDismissed: boolean;
@@ -271,6 +311,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   // Initial state
   currentChallenge: null,
   challenges: [],
+  challengeStartedAt: null,
   executionState: null,
   isExecuting: false,
   isPaused: false,
@@ -438,12 +479,69 @@ export const useGameStore = create<GameState>((set, get) => ({
     return get().completedChallengeIds.has(challengeId);
   },
 
-  markChallengeCompleted: (challengeId, bestStepCount?: number) => {
+  getChallengeStars: (challengeId) => {
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY);
+  
+      if (!raw) {
+        return {
+          speed: false,
+          noHints: false,
+          optimal: false,
+        };
+      }
+  
+      const progress: StoredProgress =
+        JSON.parse(raw);
+  
+      const entry = progress[challengeId];
+  
+      return {
+        speed:
+          entry?.completedWithinTime ?? false,
+  
+        noHints:
+          entry?.completedWithoutHints ?? false,
+  
+        optimal:
+          entry?.completedOptimally ?? false,
+      };
+    } catch {
+      return {
+        speed: false,
+        noHints: false,
+        optimal: false,
+      };
+    }
+  },
+
+  markChallengeCompleted: (
+    challengeId,
+    completionData
+  ) => {
 
     const challenge =
       get().currentChallenge;
 
     set((state) => {
+      upsertProgressEntry(challengeId, {
+        challengeId,
+        completed: true,
+        bestStepCount:
+        completionData.bestStepCount,
+    
+        completedAt: Date.now(),
+      
+        completedWithinTime:
+          completionData.completedWithinTime,
+      
+        completedWithoutHints:
+          completionData.completedWithoutHints,
+      
+        completedOptimally:
+          completionData.completedOptimally,
+      });
+      
       if (state.completedChallengeIds.has(challengeId)) {
         return state;
       }
@@ -452,13 +550,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   
       const next = new Set(state.completedChallengeIds);
       next.add(challengeId);
-  
-      upsertProgressEntry(challengeId, {
-        challengeId,
-        completed: true,
-        bestStepCount,
-        completedAt: Date.now(),
-      });
 
       if (
         isFirstEverCompletion &&
@@ -562,6 +653,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     set({
       currentChallenge: challenge,
+      challengeStartedAt: Date.now(),
       playerInstructions: initialInstructions,
       initialInstructions,
       executionState,

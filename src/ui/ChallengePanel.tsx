@@ -9,6 +9,7 @@ import { ArrayView } from '../renderer/ArrayView';
 import { useTutorialHighlight } from '../tutorial/selectors';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../orchestrator/store';
+import { getSpeedLimit } from '../engine/challenges/utils';
 
 function HintRevealer({ hints }: { hints: string[] }) {
   const [revealed, setRevealed] = useState(0);
@@ -84,18 +85,33 @@ export function ChallengePanel() {
           {challenge.description}
         </p>
 
-        <div className="flex items-center gap-2">
-          <span className={`px-2 py-1 rounded text-xs font-semibold ${
-            challenge.difficulty === 'EASY' ? 'bg-green-600' :
-            challenge.difficulty === 'MEDIUM' ? 'bg-yellow-600' :
-            'bg-red-600'
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          {/* Difficulty Badge */}
+          <span className={`px-2 py-1 rounded text-xs font-bold tracking-wide uppercase ${
+            challenge.difficulty === 'EASY' ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' :
+            challenge.difficulty === 'MEDIUM' ? 'bg-amber-600/20 text-amber-400 border border-amber-500/30' :
+            'bg-rose-600/20 text-rose-400 border border-rose-500/30'
           }`}>
             {challenge.difficulty}
           </span>
+
+          {/* Speed Goal */}
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-medium shadow-sm">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>
+                <strong className="font-bold">{getSpeedLimit(challenge)}s</strong></span>
+            </div>
+
+          {/* Max Steps Goal */}
           {challenge.maxSteps && (
-            <span className="text-gray-400 text-xs">
-              Optimal: ≤{challenge.maxSteps} steps
-            </span>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium shadow-sm">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span><strong className="font-bold">{challenge.maxSteps} steps</strong></span>
+            </div>
           )}
         </div>
       </div>
