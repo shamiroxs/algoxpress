@@ -453,16 +453,10 @@ useEffect(() => {
   return () => clearInterval(id);
 }, [challengeStartedAt]);
 
-const formattedTime = useMemo(() => {
-  const totalSeconds = Math.floor(elapsed / 1000);
-
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  return `${minutes.toString().padStart(2, '0')}:${seconds
-    .toString()
-    .padStart(2, '0')}`;
-}, [elapsed]);
+const elapsedSeconds = Math.floor(elapsed / 1000);
+const formattedSeconds = elapsedSeconds
+  .toString()
+  .padStart(3, '0');
 
 useLayoutEffect(() => {
   if (activeDragItem) return;
@@ -1216,7 +1210,7 @@ const blurTargets = {
                 font-mono
               "
             >
-              {formattedTime}
+              {formattedSeconds}
             </div>
           </div>
           </div>
