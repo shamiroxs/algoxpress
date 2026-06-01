@@ -316,23 +316,23 @@ export function ChallengePathView() {
         >
         ← Back to Station
         </button>
-        <div className="absolute top-4 right-4">
-          <div className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 min-w-[180px] shadow-lg">
+        <div className="absolute top-1 right-1 sm:top-4 sm:right-4">
+          <div className="bg-gray-800 border border-gray-700 rounded-lg sm:rounded-xl px-2 sm:px-4 py-1 sm:py-2 min-w-[120px] sm:min-w-[180px] shadow-lg">
             
             <div className="flex justify-between items-center">
-              <span className="text-yellow-400 text-[10px] font-bold">
+              <span className="text-yellow-400 text-[8px] sm:text-[10px] font-bold">
                 ⭐ {totalStars}
               </span>
 
-              <span className="text-[10px] text-gray-400">
+              <span className="text-[8px] sm:text-[10px] text-gray-400">
                 Rank
               </span>
             </div>
 
-            <div className="text-white font-semibold text-xs">
+            <div className="text-white font-semibold text-[10px] sm:text-xs">
               {currentLevel.title}
             </div>
-            <div className="mt-2 relative h-3 bg-gray-700 rounded-full overflow-hidden">
+            <div className="mt-0.5 sm:mt-2 relative h-2 sm:h-3 bg-gray-700 rounded-full overflow-hidden">
               <div
                 className="h-full bg-yellow-400 transition-all duration-500"
                 style={{
@@ -341,7 +341,7 @@ export function ChallengePathView() {
               />
 
               {nextLevel && (
-                <div className="absolute inset-0 flex items-center justify-end pr-2 text-[10px] text-white">
+                <div className="absolute inset-0 flex items-center justify-end pr-2 text-[8px] sm:text-[10px] text-white">
                   {totalStars} / {nextLevel.threshold}
                 </div>
               )}
