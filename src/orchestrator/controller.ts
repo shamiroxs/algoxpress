@@ -37,9 +37,6 @@ let runInterval: number | null = null;
 let executionMetrics =
   createExecutionMetrics();
 
-//make this challenge specific later
-const SPEED_STAR_LIMIT_MS = 10_000;
-
 function playInstructionSound(
   instructionType?: InstructionType
 ): void {
@@ -425,8 +422,11 @@ export function validateChallenge(): void {
         ? Infinity
         : Date.now() - store.challengeStartedAt;
 
-    const completedWithinTime =
-      elapsedMs <= SPEED_STAR_LIMIT_MS;
+      const speedLimitMs =
+        getSpeedLimit(store.currentChallenge) * 1000;
+    
+      const completedWithinTime =
+        elapsedMs <= speedLimitMs;
     
     // Mark challenge as completed in store
     store.markChallengeCompleted(

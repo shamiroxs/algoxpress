@@ -79,6 +79,62 @@ export function ChallengePathView() {
   const getChallengeStars =
     useGameStore((s) => s.getChallengeStars);
 
+  const totalStars = challenges.reduce((total, challenge) => {
+    const stars = getChallengeStars(challenge.id);
+  
+    return (
+      total +
+      (stars.speed ? 1 : 0) +
+      (stars.noHints ? 1 : 0) +
+      (stars.optimal ? 1 : 0)
+    );
+  }, 0);
+  
+  const LEVELS = [
+    {
+      title: 'Trainee Passenger',
+      threshold: 0,
+    },
+    {
+      title: 'Naive Conductor',
+      threshold: 3,
+    },
+    {
+      title: 'Ticket Inspector',
+      threshold: 15,
+    },
+    {
+      title: 'Route Dispatcher',
+      threshold: 30,
+    },
+    {
+      title: 'Master Rail Architect',
+      threshold: 42,
+    },
+  ];
+  
+  const currentLevel =
+    [...LEVELS]
+      .reverse()
+      .find(level => totalStars >= level.threshold)!;
+  
+  const currentLevelIndex =
+    LEVELS.findIndex(
+      level => level.title === currentLevel.title
+    );
+  
+  const nextLevel =
+    LEVELS[currentLevelIndex + 1] ?? null;
+  
+  const progressToNextLevel = nextLevel
+    ? (
+        ((totalStars - currentLevel.threshold) /
+          (nextLevel.threshold -
+            currentLevel.threshold)) *
+        100
+      )
+    : 100;
+
   const nextChallengeIndex = challenges.findIndex(
     c => c.unlocked && !isChallengeCompleted(c.id)
   );
@@ -260,6 +316,39 @@ export function ChallengePathView() {
         >
         ← Back to Station
         </button>
+        <div className="absolute top-4 right-4">
+          <div className="bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 min-w-[180px] shadow-lg">
+            
+            <div className="flex justify-between items-center">
+              <span className="text-yellow-400 text-[10px] font-bold">
+                ⭐ {totalStars}
+              </span>
+
+              <span className="text-[10px] text-gray-400">
+                Rank
+              </span>
+            </div>
+
+            <div className="text-white font-semibold text-xs">
+              {currentLevel.title}
+            </div>
+            <div className="mt-2 relative h-3 bg-gray-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-yellow-400 transition-all duration-500"
+                style={{
+                  width: `${progressToNextLevel}%`,
+                }}
+              />
+
+              {nextLevel && (
+                <div className="absolute inset-0 flex items-center justify-end pr-2 text-[10px] text-white">
+                  {totalStars} / {nextLevel.threshold}
+                </div>
+              )}
+            </div>
+            
+          </div>
+        </div>
       <div className="max-w-xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-2 text-center">
           Array Express
