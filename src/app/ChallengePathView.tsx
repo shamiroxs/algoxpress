@@ -349,7 +349,7 @@ export function ChallengePathView() {
             
           </div>
         </div>
-      <div className="max-w-xl mx-auto">
+      <div className="mt-3 sm:mt-0 max-w-xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-2 text-center">
           Array Express
         </h1>
