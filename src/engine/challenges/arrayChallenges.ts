@@ -19,7 +19,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [7, 0, 0, 0],
     targetArray: [7, 7, 0, 0],
     maxSteps: 3,
- 
+    starRequirements: {
+      speedSeconds: 70,
+    },
     instructions: [],
     unlocked: true,
     capabilities: {
@@ -57,7 +59,9 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [10, 20, 30, 40, 50],
     targetArray: [50, 20, 30, 40, 10],
     maxSteps: 2,
-
+    starRequirements: {
+      speedSeconds: 60,
+    },
     instructions: [],
     unlocked: true,
     clipboard: false,
@@ -91,7 +95,7 @@ export const arrayChallenges: Challenge[] = [
     targetArray: [2, 3, 4, 1],
     maxSteps: 15,
     starRequirements: {
-      speedSeconds: 60,
+      speedSeconds: 70,
     },
     instructions: [
       {
@@ -136,9 +140,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [1, 2, 3, 4, 5, 6],
     targetArray: [2, 4, 6, 1, 5, 3],
     maxSteps: 37,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+
     clipboard: false,
     instructions: [
       {
@@ -192,9 +194,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [4, 2, 7, 1, 3],
     targetArray: [2, 4, 1, 3, 7],
     maxSteps: 28,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+ 
     initialPointers: {
       MOCO: 0,
       CHOCO: 1, // last index
@@ -253,9 +253,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [1, -2, 3, -4, 5, -6],
     targetArray: [-2, -4, -6, 1, 5, 3],
     maxSteps: 31,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+    
     initialHand: 0,
     instructions: [
       {
@@ -296,63 +294,6 @@ export const arrayChallenges: Challenge[] = [
   },
   {
     id: 'challenge-6',
-    title: 'Balanced Carriage',
-    description: `Something suspicious, some passengers ticket numbers 
-    is the exact average of their neighbors. Shuffle the pairs.`,
-    hints: [
-      'Swap every adjacent pair: positions (0,1), (2,3), (4,5)...',
-      'After swapping each pair, MOCO should skip the already-swapped element.',
-      'CHOCO always stays one step ahead of MOCO.',
-    ],
-    difficulty: Difficulty.EASY,
-    initialArray: [1, 2, 3, 4, 5],
-    targetArray: [2, 1, 4, 3, 5],
-    maxSteps: 12,
-    starRequirements: {
-      speedSeconds: 60,
-    },
-    initialPointers: {
-      MOCO: 0,  // points to left of each pair
-      CHOCO: 1, // points to right of each pair (always MOCO + 1)
-    },
-    instructions: [
-      {
-        id: 'loop-start',
-        type: InstructionType.LABEL,
-        labelName: 'loop',
-      },
-      {
-        id: 'jump-loop',
-        type: InstructionType.JUMP,
-        label: 'loop',
-      },
-    ],
-    unlocked: true,
-    clipboard: false,
-    capabilities: {
-      allowedPointers: ['MOCO', 'CHOCO'],
-      allowedInstructions: [
-        InstructionType.MOVE_RIGHT,
-        InstructionType.SWAP,
-      ],
-      suggestedInstructions: [
-        InstructionType.MOVE_RIGHT,
-      ],
-    },
-    concepts: [
-      ConceptTag.TWO_POINTERS,
-    ],
-    
-    learningObjectives: [
-      'Swap neighboring pairs',
-      'Skip already-processed regions',
-      'Coordinate synchronized pointers',
-    ],
-    
-    pattern: AlgorithmPattern.TWO_POINTER,
-  },
-  {
-    id: 'challenge-7',
     title: 'Backwards Tickets',
     description: `The compartment was filled from the wrong direction.`,
     hints: ['Reverse the order of all ticket values.'],
@@ -360,9 +301,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [5, 4, 3, 2, 1],
     targetArray: [1, 2, 3, 4, 5],
     maxSteps: 13,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+    
     clipboard: false,
     initialPointers: {
       MOCO: 0,
@@ -411,6 +350,64 @@ export const arrayChallenges: Challenge[] = [
     ],
   }, 
   {
+    id: 'challenge-7',
+    title: 'Balanced Carriage',
+    description: `Something suspicious, some passengers ticket numbers 
+    is the exact average of their neighbors. Shuffle the pairs.`,
+    hints: [
+      'Swap every adjacent pair: positions (0,1), (2,3), (4,5)...',
+      'After swapping each pair, MOCO should skip the already-swapped element.',
+      'CHOCO always stays one step ahead of MOCO.',
+    ],
+    difficulty: Difficulty.EASY,
+    initialArray: [1, 2, 3, 4, 5],
+    targetArray: [2, 1, 4, 3, 5],
+    maxSteps: 12,
+    starRequirements: {
+      speedSeconds: 100,
+    },
+    initialPointers: {
+      MOCO: 0,  // points to left of each pair
+      CHOCO: 1, // points to right of each pair (always MOCO + 1)
+    },
+    instructions: [
+      {
+        id: 'loop-start',
+        type: InstructionType.LABEL,
+        labelName: 'loop',
+      },
+      {
+        id: 'jump-loop',
+        type: InstructionType.JUMP,
+        label: 'loop',
+      },
+    ],
+    unlocked: true,
+    clipboard: false,
+    capabilities: {
+      allowedPointers: ['MOCO', 'CHOCO'],
+      allowedInstructions: [
+        InstructionType.MOVE_RIGHT,
+        InstructionType.SWAP,
+      ],
+      suggestedInstructions: [
+        InstructionType.MOVE_RIGHT,
+      ],
+    },
+    concepts: [
+      ConceptTag.TWO_POINTERS,
+    ],
+    
+    learningObjectives: [
+      'Swap neighboring pairs',
+      'Skip already-processed regions',
+      'Coordinate synchronized pointers',
+    ],
+    
+    pattern: AlgorithmPattern.TWO_POINTER,
+  },
+  
+  {
     id: 'challenge-8',
     title: 'VIP Seat',
     description: `A VIP is already seated somewhere. Seat 0 is also reserved by them.
@@ -421,9 +418,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [0, 7, 2, 9, 1],
     targetArray: [9, 7, 2, 9, 1],
     maxSteps: 42,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+
     instructions: [
       {
         id: 'pick',
@@ -487,9 +482,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [0, 3, 4, 2, 2],
     targetArray: [2, 3, 4, 2, 2],
     maxSteps: 23,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+ 
     initialPointers: {
       MOCO: 1,
     },
@@ -562,7 +555,7 @@ export const arrayChallenges: Challenge[] = [
     targetArray: [0, 3, 5, 7, 6],
     maxSteps: 26,
     starRequirements: {
-      speedSeconds: 60,
+      speedSeconds: 220,
     },
     instructions: [
       {
@@ -628,7 +621,7 @@ export const arrayChallenges: Challenge[] = [
     targetArray: [1, 3, 12, 0, 0, 0],
     maxSteps: 28,
     starRequirements: {
-      speedSeconds: 60,
+      speedSeconds: 220,
     },
     initialHand: 0,
     initialPointers: {
@@ -696,9 +689,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [3, 5, 2, 1, 6, 4],
     targetArray: [3, 5, 1, 6, 2, 4],
     maxSteps: 27,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+  
     initialPointers: {
       MOCO: 0,  // current scanner
       CHOCO: 1, // lookahead (always MOCO + 1)
@@ -766,9 +757,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [2, 0, 2, 1, 1, 0],
     targetArray: [0, 0, 1, 1, 2, 2],
     maxSteps: 40,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+
     initialHand: 1,
     initialPointers: {
       MOCO: 0,   // left boundary (next 0 slot)
@@ -856,9 +845,7 @@ export const arrayChallenges: Challenge[] = [
     targetArray: [6, 1, 5, 2, 4, 3],
     extraArray: [1, 2, 3, 4, 5, 6],
     maxSteps: 30,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+
     initialPointers: {
       MOCO: 0,   // left pointer (min side)
       CHOCO: 5,  // right pointer (max side)
@@ -942,9 +929,7 @@ export const arrayChallenges: Challenge[] = [
     initialArray: [2, 1, 5, 4, 3, 0, 0],
     targetArray: [2, 3, 0, 0, 1, 4, 5],
     maxSteps: 20,
-    starRequirements: {
-      speedSeconds: 60,
-    },
+
     initialPointers: {
       MOCO: 5,   // scans for pivot from right
       CHOCO: 6,  // scans for swap candidate / reversal right end

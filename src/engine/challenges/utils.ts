@@ -8,12 +8,12 @@ export function getSpeedLimit(challenge: Challenge): number {
 
   switch (challenge.difficulty) {
     case Difficulty.EASY:
-      return 30;
+      return 80;
 
     case Difficulty.MEDIUM:
-      return 60;
+      return 200;
 
     case Difficulty.HARD:
-      return 90;
+      return 900;
   }
 }

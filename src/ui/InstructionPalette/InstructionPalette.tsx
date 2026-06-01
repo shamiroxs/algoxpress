@@ -65,8 +65,8 @@ const instructionTemplates = [
   { type: InstructionType.PICK, label: 'Copy', description: 'Copy value at pointer' },
   { type: InstructionType.PUT, label: 'Paste', description: 'Paste value at pointer' },
   { type: InstructionType.MOVE_TO_END, label: 'ToEnd', description: 'Move pointer to end (pointer = length - 1)' },
-  { type: InstructionType.IF_GREATER, label: 'IFGreat', description: 'If clipboard > current value' },
-  { type: InstructionType.IF_LESS, label: 'IFLess', description: 'If clipboard < current value' },
+  { type: InstructionType.IF_GREATER, label: 'IFGreat', description: 'If clipboard < current value' },
+  { type: InstructionType.IF_LESS, label: 'IFLess', description: 'If clipboard > current value' },
   { type: InstructionType.IF_EQUAL, label: 'IFEqual', description: 'If clipboard === current value' },
   { type: InstructionType.IF_NOT_EQUAL, label: 'IFNotEqual', description: 'If clipboard !== current value' },
   {

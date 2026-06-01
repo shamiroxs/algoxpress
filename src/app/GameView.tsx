@@ -437,6 +437,33 @@ const handleOpenReportCard = () => {
   }
 };
 
+const challengeStartedAt = useGameStore(
+  (s) => s.challengeStartedAt
+);
+
+const [elapsed, setElapsed] = useState(0);
+
+useEffect(() => {
+  if (!challengeStartedAt) return;
+
+  const id = setInterval(() => {
+    setElapsed(Date.now() - challengeStartedAt);
+  }, 1000);
+
+  return () => clearInterval(id);
+}, [challengeStartedAt]);
+
+const formattedTime = useMemo(() => {
+  const totalSeconds = Math.floor(elapsed / 1000);
+
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes.toString().padStart(2, '0')}:${seconds
+    .toString()
+    .padStart(2, '0')}`;
+}, [elapsed]);
+
 useLayoutEffect(() => {
   if (activeDragItem) return;
   setLayoutVersion((v) => v + 1);
@@ -1176,6 +1203,22 @@ const blurTargets = {
             <h3 className="text-white font-semibold text-sm sm:text-base">
               Workspace
             </h3>
+
+            <div className="absolute right-0">
+            <div
+              className="
+                px-1 py-0.5 sm:px-2 sm:py-1
+                rounded sm:rounded-md
+                border border-cyan-500/40
+                bg-cyan-500/10
+                text-cyan-300
+                text-[8px] sm:text-xs
+                font-mono
+              "
+            >
+              {formattedTime}
+            </div>
+          </div>
           </div>
           {/* Hand */}
           {challenge.clipboard !== false && (
