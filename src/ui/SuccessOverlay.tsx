@@ -77,7 +77,7 @@ export function SuccessOverlay() {
         initial={{ scale: 0.95, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="relative bg-gray-900 rounded-xl p-6 sm:p-8 w-[84%] sm:w-[92%] max-w-xl border 
+        className="relative bg-gray-900 rounded-xl p-5 sm:p-8 w-[86%] sm:w-[92%] max-w-xl border 
         border-green-600"
         onClick={(e) => e.stopPropagation()}
       >
@@ -86,7 +86,7 @@ export function SuccessOverlay() {
         </h2>
 
         {/* Validation panel */}
-        <div className="rounded-lg bg-white/5 p-3 sm:p-4 mb-4 sm:mb-6 border border-white/10">
+        <div className="rounded-lg bg-white/5 py-2 sm:p-4 mb-4 sm:mb-6 border border-white/10">
           <p className="text-xs sm:text-base text-gray-200">
             {validationResult?.message}
           </p>
