@@ -86,16 +86,16 @@ export function SuccessOverlay() {
         </h2>
 
         {/* Validation panel */}
-        <div className="rounded-lg bg-white/5 p-4 mb-6 border border-white/10">
+        <div className="rounded-lg bg-white/5 p-3 sm:p-4 mb-4 sm:mb-6 border border-white/10">
           <p className="text-xs sm:text-base text-gray-200">
             {validationResult?.message}
           </p>
-          <div className="mt-3 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
+          <div className="mt-3 flex flex-wrap justify-center gap-1 sm:gap-2 text-[10px] sm:text-sm">
 
               {/* Optimization Badge (Using your "stars.optimal" state if applicable, or validationResult) */}
               {challenge.maxSteps && (
                 <span
-                  className={`px-2.5 py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
+                  className={`px-1.5 sm:px-2.5 sm:py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
                     validationResult?.optimized
                       ? 'bg-green-500/10 border-green-500/30 text-green-400'
                       : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
@@ -104,7 +104,7 @@ export function SuccessOverlay() {
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  <span>{validationResult?.optimized ? 'Optimized' : 'Can be optimized'}</span>
+                  <span>{validationResult?.optimized ? 'Optimized' : 'Optimized'}</span>
                   <span className="font-bold">{validationResult?.optimized ? '✓' : '✗'}</span>
                 </span>
               )}
@@ -141,12 +141,12 @@ export function SuccessOverlay() {
           </div>
         </div>
 
-        <p className="text-xs sm:text-base text-gray-300 mb-8">
+        <p className="text-xs sm:text-base text-gray-300 mb-4 sm:mb-8">
           {successLine}
         </p>
 
         {/* Footer buttons */}
-        <div className="flex justify-between items-center mt-8">
+        <div className="flex justify-between items-center mt-4 sm:mt-8">
           {/* Back = close overlay */}
           <button
             onClick={() => {
