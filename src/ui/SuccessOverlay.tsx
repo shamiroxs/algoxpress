@@ -77,7 +77,7 @@ export function SuccessOverlay() {
         initial={{ scale: 0.95, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="relative bg-gray-900 rounded-xl p-5 sm:p-8 w-[86%] sm:w-[92%] max-w-xl border 
+        className="relative bg-gray-900 rounded-xl p-4 sm:p-8 w-[88%] sm:w-[92%] max-w-xl border 
         border-green-600"
         onClick={(e) => e.stopPropagation()}
       >
@@ -86,7 +86,7 @@ export function SuccessOverlay() {
         </h2>
 
         {/* Validation panel */}
-        <div className="rounded-lg bg-white/5 py-2 sm:p-4 mb-4 sm:mb-6 border border-white/10">
+        <div className="rounded-lg bg-white/5 p-3 sm:p-4 mb-4 sm:mb-6 border border-white/10">
           <p className="text-xs sm:text-base text-gray-200">
             {validationResult?.message}
           </p>
@@ -111,7 +111,7 @@ export function SuccessOverlay() {
 
               {/* Speed Star Badge */}
               <span
-                className={`px-2.5 py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
+                className={`px-1.5 py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
                   runResult.speed
                     ? 'bg-green-500/10 border-green-500/30 text-green-400'
                     : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
@@ -126,7 +126,7 @@ export function SuccessOverlay() {
 
               {/* No Hints Star Badge */}
               <span
-                className={`px-2.5 py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
+                className={`px-1.5 py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
                   runResult.noHints
                     ? 'bg-green-500/10 border-green-500/30 text-green-400'
                     : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
