@@ -24,6 +24,18 @@ export function SuccessOverlay() {
     'All conditions satisfied. You may advance.',
     'Proceed when ready.',
   ];
+  
+  const currentCompletionResult =
+    useGameStore(
+      (s) => s.currentCompletionResult
+    );
+
+  const runResult =
+    currentCompletionResult ?? {
+      speed: false,
+      noHints: false,
+      optimal: false,
+    };
 
   if (!challenge) return null;
 
@@ -78,20 +90,54 @@ export function SuccessOverlay() {
           <p className="text-xs sm:text-base text-gray-200">
             {validationResult?.message}
           </p>
-          <div className="mt-1 text-xs sm:text-sm text-gray-400">
-            <span>Steps: {validationResult?.stepCount}</span>
-            {challenge.maxSteps && (
+          <div className="mt-3 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
+
+              {/* Optimization Badge (Using your "stars.optimal" state if applicable, or validationResult) */}
+              {challenge.maxSteps && (
+                <span
+                  className={`px-2.5 py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
+                    validationResult?.optimized
+                      ? 'bg-green-500/10 border-green-500/30 text-green-400'
+                      : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
+                  }`}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>{validationResult?.optimized ? 'Optimized' : 'Can be optimized'}</span>
+                  <span className="font-bold">{validationResult?.optimized ? '✓' : '✗'}</span>
+                </span>
+              )}
+
+              {/* Speed Star Badge */}
               <span
-                className={
-                  validationResult?.optimized
-                    ? 'text-green-400'
-                    : 'text-yellow-400'
-                }
+                className={`px-2.5 py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
+                  runResult.speed
+                    ? 'bg-green-500/10 border-green-500/30 text-green-400'
+                    : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
+                }`}
               >
-                {' '}
-                • {validationResult?.optimized ? 'Optimized ✔' : 'Can be optimized ✗'}
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Time </span>
+                <span className="font-bold">{runResult.speed ? '✓' : '✗'}</span>
               </span>
-            )}
+
+              {/* No Hints Star Badge */}
+              <span
+                className={`px-2.5 py-1 rounded border flex items-center gap-1.5 font-medium transition-colors ${
+                  runResult.noHints
+                    ? 'bg-green-500/10 border-green-500/30 text-green-400'
+                    : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
+                }`}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                <span>No Hints</span>
+                <span className="font-bold">{runResult.noHints ? '✓' : '✗'}</span>
+              </span>
           </div>
         </div>
 

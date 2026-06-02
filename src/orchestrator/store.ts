@@ -92,6 +92,12 @@ type ChallengeStars = {
   optimal: boolean;
 };
 
+type RunCompletionResult = {
+  speed: boolean;
+  noHints: boolean;
+  optimal: boolean;
+};
+
 type StoredProgress = Record<
   string,
   {
@@ -281,7 +287,15 @@ interface GameState {
       completedOptimally: boolean;
     }
   ) => void;
+
+  currentCompletionResult: RunCompletionResult | null;
+  setCurrentCompletionResult: (
+    result: RunCompletionResult | null
+  ) => void;
   
+  completionTimeSeconds: number | null;
+  setCompletionTimeSeconds: (seconds: number) => void;
+
   successHintDismissed: boolean;
   dismissSuccessHint: () => void;
   resetSuccessHint: () => void;
@@ -346,6 +360,15 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({
       revealedHintsCount: 0,
     }),
+
+  completionTimeSeconds: null,
+
+  setCompletionTimeSeconds: (seconds) =>
+    set({ completionTimeSeconds: seconds }),
+
+  currentCompletionResult: null,
+  setCurrentCompletionResult: (result) =>
+    set({ currentCompletionResult: result }),
 
   executionSpeed: 1,
 
@@ -522,6 +545,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     const challenge =
       get().currentChallenge;
+    
+    get().setCurrentCompletionResult({
+      speed: completionData.completedWithinTime,
+      noHints: completionData.completedWithoutHints,
+      optimal: completionData.completedOptimally,
+    });
 
     set((state) => {
       upsertProgressEntry(challengeId, {
@@ -654,6 +683,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({
       currentChallenge: challenge,
       challengeStartedAt: Date.now(),
+      completionTimeSeconds: null,
+      currentCompletionResult: null,
       playerInstructions: initialInstructions,
       initialInstructions,
       executionState,
@@ -824,6 +855,8 @@ export const useGameStore = create<GameState>((set, get) => ({
           isPaused: false,
           revealedHintsCount: 0,
           successHintDismissed: false,
+          completionTimeSeconds: null,
+          currentCompletionResult: null,
         });
       }
     }
@@ -842,6 +875,8 @@ export const useGameStore = create<GameState>((set, get) => ({
         isPaused: false,
         successHintDismissed: false,
         rewindHintShown: false,
+        currentCompletionResult: null,
+        completionTimeSeconds: null,
       });
     }
   },
