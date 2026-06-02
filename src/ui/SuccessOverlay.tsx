@@ -86,7 +86,7 @@ export function SuccessOverlay() {
         </h2>
 
         {/* Validation panel */}
-        <div className="rounded-lg bg-white/5 p-3 sm:p-4 mb-4 sm:mb-6 border border-white/10">
+        <div className="rounded-lg bg-white/5 px-1 py-3 sm:p-4 mb-4 sm:mb-6 border border-white/10">
           <p className="text-xs sm:text-base text-gray-200">
             {validationResult?.message}
           </p>
