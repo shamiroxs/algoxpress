@@ -7,7 +7,7 @@
 import { useGameStore } from '../orchestrator/store';
 import { useNavigate } from 'react-router-dom';
 import { Difficulty } from '../engine/challenges/types';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 
 import { useParams } from 'react-router-dom';
@@ -16,7 +16,7 @@ import { challengesByTrain } from '../engine/challenges';
 import { FeedbackCard } from './FeedbackCard';
 import { SupportCard } from './SupportCard';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { 
   trackFeedbackCardOpened,
@@ -75,6 +75,11 @@ export function ChallengePathView() {
         return 'bg-red-500';
     }
   };
+  const [promotion, setPromotion] = useState<{
+    oldLevel: string;
+    newLevel: string;
+  } | null>(null);
+  
 
   const getChallengeStars =
     useGameStore((s) => s.getChallengeStars);
@@ -166,6 +171,39 @@ export function ChallengePathView() {
     ((dynamicUnlockLimit + 1) / challenges.length) * 100, 
     100
   );
+
+  useEffect(() => {
+    const PROMOTION_KEY = 'dsa-buddy-rank';
+  
+    const previousRank =
+      localStorage.getItem(PROMOTION_KEY);
+  
+    if (
+      previousRank &&
+      previousRank !== currentLevel.title
+    ) {
+      const previousIndex = LEVELS.findIndex(
+        l => l.title === previousRank
+      );
+  
+      const currentIndex = LEVELS.findIndex(
+        l => l.title === currentLevel.title
+      );
+  
+      if (currentIndex > previousIndex) {
+        setPromotion({
+          oldLevel: previousRank,
+          newLevel: currentLevel.title,
+        });
+      }
+    }
+  
+    localStorage.setItem(
+      PROMOTION_KEY,
+      currentLevel.title
+    );
+  }, [currentLevel.title]);
+
   const handleCheckpointSubmit = (
     note: string
   ) => {
@@ -540,6 +578,108 @@ export function ChallengePathView() {
           })}
         </div>
       </div>
+
+      <AnimatePresence>
+        {promotion && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-30 p-4">
+            {/* Background Dimmer Dismissal click */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0"
+              onClick={() => setPromotion(null)}
+            />
+
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0, y: 50 }}
+              animate={{ 
+                scale: 1, 
+                opacity: 1, 
+                y: 0,
+                transition: { type: 'spring', damping: 15, stiffness: 150 }
+              }}
+              exit={{ scale: 0.9, opacity: 0, y: 30 }}
+              className="relative bg-gray-800 border-2 border-yellow-500/30 rounded-3xl p-8 max-w-sm text-center overflow-hidden"
+            >
+              {/* Bouncing Badge/Emoji */}
+              <motion.div 
+                animate={{ 
+                  y: [0, -12, 0],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: 2.5, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+                className="text-3xl sm:text-6xl mb-2 sm:mb-4 filter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]"
+              >
+                👑
+              </motion.div>
+
+              {/* Header */}
+              <motion.h2 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0, transition: { delay: 0.1 } }}
+                className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-500 tracking-tight uppercase"
+              >
+                Rank Up!
+              </motion.h2>
+
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.6, transition: { delay: 0.2 } }}
+                className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1"
+              >
+                Your Journey Evolves
+              </motion.p>
+
+              {/* Level Progression Display */}
+              <div className="mt-2 sm:mt-3 bg-gray-900/50 backdrop-blur-md rounded-2xl p-2 border border-gray-700/50 relative">
+                <div className="text-[10px] sm:text-xs font-semibold text-gray-500 line-through">
+                  {promotion.oldLevel}
+                </div>
+                
+                {/* Animated Directional Arrow */}
+                <motion.div 
+                  animate={{ y: [0, 3, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="text-indigo-400 font-bold text-xs sm:text-sm"
+                >
+                  ↓
+                </motion.div>
+
+                <motion.div 
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: [0.95, 1.02, 1], transition: { delay: 0.3, duration: 0.4 } }}
+                  className="text-yellow-400 font-extrabold text-lg sm:text-xl tracking-wide drop-shadow-[0_2px_8px_rgba(234,179,8,0.2)]"
+                >
+                  {promotion.newLevel}
+                </motion.div>
+              </div>
+
+              {/* Motivational subtext */}
+              <p className="mt-2 text-[10px] sm:text-xs text-gray-400 px-2">
+                New compartments await you, Engineer.
+              </p>
+
+              {/* Duolingo-style Button CTA */}
+              <motion.button
+                whileHover={{ scale: 1.03, translateY: -2 }}
+                whileTap={{ scale: 0.98, translateY: 0 }}
+                onClick={() => {
+                  soundManager.play('enter'); // Reusing your enter sound asset for confirmation punchiness
+                  setPromotion(null);
+                }}
+                className="mt-4 w-full py-4 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-gray-950 font-black text-sm sm:text-base rounded-2xl shadow-[0_4px_0_#b45309] active:border-b-0 transition-all uppercase"
+              >
+                Continue Journey
+              </motion.button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
