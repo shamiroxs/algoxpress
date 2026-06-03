@@ -32,6 +32,7 @@ import { submitFeedback } from '../utils/feedbackTracter';
 import { soundManager } from '../audio/soundManager';
 import enterChallengeMp3 from '../assets/sounds/enterChallenge.mp3';
 import backMp3 from '../assets/sounds/back.mp3';
+import promotionMp3 from '../assets/sounds/promotion.mp3';
 
 export function ChallengePathView() {
 
@@ -293,7 +294,15 @@ export function ChallengePathView() {
   useEffect(() => {
     soundManager.register('enter', enterChallengeMp3)
     soundManager.register('back', backMp3)
+    soundManager.register('promotion', promotionMp3);
   }, [])
+
+  useEffect(() => {
+    if (promotion) {
+      soundManager.stopAll()
+      soundManager.play('promotion');
+    }
+  }, [promotion]);
 
     useEffect(() => {
       if (
@@ -581,7 +590,7 @@ export function ChallengePathView() {
 
       <AnimatePresence>
         {promotion && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-30 p-4">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-30 p-2 sm:p-4">
             {/* Background Dimmer Dismissal click */}
             <motion.div 
               initial={{ opacity: 0 }}
@@ -600,7 +609,7 @@ export function ChallengePathView() {
                 transition: { type: 'spring', damping: 15, stiffness: 150 }
               }}
               exit={{ scale: 0.9, opacity: 0, y: 30 }}
-              className="relative bg-gray-800 border-2 border-yellow-500/30 rounded-3xl p-8 max-w-sm text-center overflow-hidden"
+              className="relative bg-gray-800 border-2 border-yellow-500/30 rounded-3xl p-6 sm:p-8 max-w-sm text-center overflow-hidden"
             >
               {/* Bouncing Badge/Emoji */}
               <motion.div 
@@ -669,7 +678,6 @@ export function ChallengePathView() {
                 whileHover={{ scale: 1.03, translateY: -2 }}
                 whileTap={{ scale: 0.98, translateY: 0 }}
                 onClick={() => {
-                  soundManager.play('enter'); // Reusing your enter sound asset for confirmation punchiness
                   setPromotion(null);
                 }}
                 className="mt-4 w-full py-4 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-gray-950 font-black text-sm sm:text-base rounded-2xl shadow-[0_4px_0_#b45309] active:border-b-0 transition-all uppercase"

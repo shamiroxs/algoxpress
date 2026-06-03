@@ -24,6 +24,13 @@ class SoundManager {
       // avoid unhandled promise errors
       audio.play().catch(() => {})
     }
+
+    stopAll() {
+      Object.values(this.sounds).forEach((audio) => {
+        audio.pause()
+        audio.currentTime = 0
+      })
+    }
   }
   
   export const soundManager = new SoundManager()
