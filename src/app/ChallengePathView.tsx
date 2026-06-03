@@ -192,10 +192,14 @@ export function ChallengePathView() {
       );
   
       if (currentIndex > previousIndex) {
-        setPromotion({
-          oldLevel: previousRank,
-          newLevel: currentLevel.title,
-        });
+        const timer = setTimeout(() => {
+          setPromotion({
+            oldLevel: previousRank,
+            newLevel: currentLevel.title,
+          });
+        }, 1000);
+  
+        return () => clearTimeout(timer);
       }
     }
   
@@ -204,6 +208,12 @@ export function ChallengePathView() {
       currentLevel.title
     );
   }, [currentLevel.title]);
+
+  useEffect(() => {
+    if (promotion) {
+      soundManager.play('promotion');
+    }
+  }, [promotion]);
 
   const handleCheckpointSubmit = (
     note: string
@@ -520,7 +530,7 @@ export function ChallengePathView() {
                   </div>
                 )}
                 {/* Title */}
-                <div className="absolute left-14 sm:left-20 top-1/2 -translate-y-1/2 w-64 text-left whitespace-normal">
+                <div className="absolute left-14 sm:left-20 top-1/2 -translate-y-1/2 w-36 text-left whitespace-normal">
                   <p
                     className={clsx(
                       'font-semibold text-sm sm:text-base',
