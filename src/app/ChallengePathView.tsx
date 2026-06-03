@@ -197,7 +197,7 @@ export function ChallengePathView() {
             oldLevel: previousRank,
             newLevel: currentLevel.title,
           });
-        }, 1000);
+        }, 1500);
   
         return () => clearTimeout(timer);
       }
@@ -530,7 +530,7 @@ export function ChallengePathView() {
                   </div>
                 )}
                 {/* Title */}
-                <div className="absolute left-14 sm:left-20 top-1/2 -translate-y-1/2 w-36 text-left whitespace-normal">
+                <div className="absolute left-14 sm:left-20 top-1/2 -translate-y-1/2 w-36 sm:w-64 text-left whitespace-normal">
                   <p
                     className={clsx(
                       'font-semibold text-sm sm:text-base',
@@ -681,6 +681,7 @@ export function ChallengePathView() {
                 whileHover={{ scale: 1.03, translateY: -2 }}
                 whileTap={{ scale: 0.98, translateY: 0 }}
                 onClick={() => {
+                  soundManager.play('back');
                   setPromotion(null);
                 }}
                 className="mt-4 w-full py-4 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-gray-950 font-black text-sm sm:text-base rounded-2xl shadow-[0_4px_0_#b45309] active:border-b-0 transition-all uppercase"
