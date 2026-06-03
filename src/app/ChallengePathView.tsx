@@ -197,7 +197,7 @@ export function ChallengePathView() {
             oldLevel: previousRank,
             newLevel: currentLevel.title,
           });
-        }, 1500);
+        }, 1300);
   
         return () => clearTimeout(timer);
       }
