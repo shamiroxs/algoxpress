@@ -297,13 +297,6 @@ export function ChallengePathView() {
     soundManager.register('promotion', promotionMp3);
   }, [])
 
-  useEffect(() => {
-    if (promotion) {
-      soundManager.stopAll()
-      soundManager.play('promotion');
-    }
-  }, [promotion]);
-
     useEffect(() => {
       if (
         shouldShowCheckpoint &&
@@ -609,7 +602,7 @@ export function ChallengePathView() {
                 transition: { type: 'spring', damping: 15, stiffness: 150 }
               }}
               exit={{ scale: 0.9, opacity: 0, y: 30 }}
-              className="relative bg-gray-800 border-2 border-yellow-500/30 rounded-3xl p-6 sm:p-8 max-w-sm text-center overflow-hidden"
+              className="relative bg-gray-800 border-2 border-yellow-500/30 rounded-3xl p-6 sm:p-8 max-w-sm text-center"
             >
               {/* Bouncing Badge/Emoji */}
               <motion.div 
