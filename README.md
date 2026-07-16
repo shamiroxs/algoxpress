@@ -129,8 +129,7 @@ Building AlgoXpress involved solving several engineering problems:
 
 - Designing a deterministic instruction execution engine
 - Maintaining replayable execution history
-- Keeping rendering independent from execution logic
-- Running algorithms without blocking the UI using Web Workers
+- Running algorithms without blocking the UI
 - Synchronizing animations with interpreter execution
 - Creating an extensible instruction system for future DSA topics
 
@@ -155,21 +154,16 @@ Currently supports:
 
 ## Completed
 
+- In-place array replacement
 - Array visualization
 - Custom interpreter
 - Execution engine
 - Replay system
-- SVG renderer
-- Instruction editor
-
-## In Progress
-
-- In-place array replacement
-- Linked List visualization
-- Tree visualization
 
 ## Planned
 
+- Linked List visualization
+- Tree visualization
 - Graph visualization
 - Sorting algorithms
 - Stack & Queue challenges
@@ -255,7 +249,7 @@ Most DSA platforms assume learners already understand:
 - Execution flow
 - Algorithm reasoning
 
-For many beginners, these concepts are the hardest part—not the programming language itself.
+For many beginners, these concepts are the hardest part, not the programming language itself.
 
 AlgoXpress aims to bridge the gap between:
 
